@@ -1,2 +1,2 @@
-# fudstops
-füdstops: dining recommendations for students
+# Füdstops: Dining Recommendations for Students
+
