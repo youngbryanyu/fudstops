@@ -5,7 +5,7 @@ const CryptoJS = require("crypto-js");
 const verify = require("../verifyToken")
 
 // UPDATE - update user
-router.put("/:id", verify, async (req, res) => {
+router.put("/:id", verify, async (req, res) => { // ":" is param and "?" is query param
     if (req.user.id === req.params.id || req.user.isAdmin) { // if valid user or user is admin
         if (req.body.password) { // if password required get decrypted password
             req.body.password = CryptoJS.AES.encrypt(
@@ -18,7 +18,7 @@ router.put("/:id", verify, async (req, res) => {
             const updatedUser = await User.findByIdAndUpdate(
                 req.params.id, 
                 { // update user info to whatever is in the body of the request
-                    $set:req.body 
+                    $set:req.body // update parameters in the body
                 }, 
                 { new: true } // makes sure the updated user is returned in the JSON
             ); 

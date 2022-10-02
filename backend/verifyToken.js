@@ -12,7 +12,7 @@ function verify(req, res, next) {
                 res.status(403).json("JWT token is invalid!");
                 return;
             }
-            req.user = user;
+            req.user = user; // sets req.user 
             next();
         })
     } else {
