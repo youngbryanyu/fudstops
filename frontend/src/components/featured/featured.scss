@@ -1,6 +1,6 @@
 // featured.scss - styling for featured page
 .featured {
-    height: 90vh;
+    height: 70vh;
     position: relative;
 
     .category {
@@ -38,8 +38,18 @@
         display: flex;
         flex-direction: column;
 
-        img {
-            width: 400px;
+        // img {
+        //     width: 400px;
+        // }
+
+        .featuredTitle {
+            margin: 20px 0px;
+            font-size: 28px;
+        }
+        
+        .foodItemName {
+            margin: 10px 0px;
+            font-size: 18px;
         }
 
         .desc {
@@ -61,14 +71,14 @@
                 margin-right: 10px;
                 cursor: pointer;
 
-                &.play {
-                    background-color: white;
-                    color: var(--main-color);
+                &.more {
+                    background-color: goldenrod;
+                    color: white;
                 }
 
-                &.more {
-                    background-color: gray;
-                    color: white;
+                &.diningCourt {
+                    background-color: white;
+                    color: var(--main-color);
                 }
 
                 span {

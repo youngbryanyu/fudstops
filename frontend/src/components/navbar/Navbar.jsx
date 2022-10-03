@@ -1,51 +1,56 @@
-// Navbar.jsx - javascript for navigation bar at top of screen
-import { ArrowDropDown, Notifications, Search } from "@material-ui/icons"
-import { useState } from "react"
-import "./navbar.scss"
+// navigation bar at top of page
+import { ArrowDropDown, Notifications, Search } from "@material-ui/icons";
+import { useState } from "react";
+import "./navbar.scss";
+import logo from "../fudstops_white_logo.png"
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
 
-    window.onscroll = () => { // listen for scrolling
-        setIsScrolled(window.pageYOffset === 0 ? false : true); // sets isScrolled to false if y-offset == 0
-        return () => window.onscroll = null; // cleanup function to prevent loop
+    window.onscroll = () => {
+        setIsScrolled(window.pageYOffset === 0 ? false : true);
+        return () => (window.onscroll = null);
     };
 
-    console.log(isScrolled);
-
     return (
-        <div className={isScrolled ? "navbar scrolled" : "navbar"}> {/* sets classname depending on whether we scrolled from the top */}
+        <div className={isScrolled ? "navbar scrolled" : "navbar"}>
             <div className="container">
                 <div className="left">
-                    <img 
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png" 
-                        alt="" 
+                    <img
+                        src={logo}
+                        alt=""
                     />
-                    <span>Homepage</span>
-                    <span>Series</span>
-                    <span>Movies</span>
-                    <span>New and Popular</span>
-                    <span>My List</span>
+                    <span>Home</span>
+                    <span>Favorites</span>
+                    <div className="diningDropdown">
+                        <span>Dining courts ▾</span>
+                        <div className="diningDropdownOptions">
+                            <span className="highlight">Windsor</span>
+                            <span className="highlight">Wiley</span>
+                            <span className="highlight">Ford</span>
+                            <span className="highlight">Earhart</span>
+                            <span className="highlight">Hillenbrand</span>
+                        </div>
+                    </div>
                 </div>
                 <div className="right">
-                    <Search className="icon"/>
-                    <span>KID</span>
-                    <Notifications className="icon"/>
-                    <img 
-                        src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" 
-                        alt="" 
+                    <Search className="icon" />
+                    <Notifications className="icon" />
+                    <img
+                        src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                        alt=""
                     />
                     <div className="profile">
-                        <ArrowDropDown className="icon"/>
+                        <ArrowDropDown className="icon" />
                         <div className="options">
-                            <span>Settings</span>
-                            <span>Logout</span>
+                            <span className="highlight">Settings</span>
+                            <span className="highlight">Logout</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

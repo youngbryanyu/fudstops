@@ -7,7 +7,7 @@
         rgba(0, 0, 0, 0) 0%,
         rgba(0, 0, 0, 1) 100%
         ),
-        url("http://s3-us-west-2.amazonaws.com/techvibes/wp-content/uploads/2017/04/24135159/Netflix-Background.jpg");
+        url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
     position: relative;
   
@@ -19,11 +19,11 @@
             justify-content: space-between;
   
             .logo {
-                height: 40px;
+                height: 60px;
             }
   
             .loginButton {
-                background-color: red;
+                background-color: goldenrod;
                 border: none;
                 color: white;
                 border-radius: 5px;
@@ -31,6 +31,7 @@
                 font-size: 16px;
                 font-weight: 500;
                 cursor: pointer;
+                z-index: 2;
             }
         }
     }
@@ -69,7 +70,7 @@
             height: 50px;
             border-radius: 5px;
     
-            input{
+            input {
                 flex: 9;
                 height: 100%;
                 border: none;
@@ -79,7 +80,7 @@
             .registerButton{
                 flex: 3;
                 height: 100%;
-                background-color: red;
+                background-color: goldenrod;
                 border: none;
                 color: white;
                 font-size: 22px;

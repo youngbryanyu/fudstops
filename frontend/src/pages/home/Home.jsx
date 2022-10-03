@@ -1,20 +1,18 @@
-/* Home.jsx - main javascript file for home page */
-import Featured from "../../components/featured/Featured"
-import List from "../../components/list/List"
-import Navbar from "../../components/navbar/Navbar"
-import "./home.scss"
+// Javascript for home page
+import Navbar from "../../components/navbar/Navbar";
+import Featured from "../../components/featured/Featured";
+import "./home.scss";
+import List from "../../components/list/List";
 
 const Home = () => {
-    return (
-        <div className='home'>
-            <Navbar /> {/* navigation at top */}
-            <Featured /> {/* featured panel */}
-            <List /> {/* lists of movies */}
-            <List />
-            <List />
-            <List />
-        </div>
-    )  
-}
+  return (
+    <div className="home">
+      <Navbar/>
+      <Featured/>
+      <List/>
+      <List/>
+    </div>
+  );
+};
 
-export default Home
+export default Home;

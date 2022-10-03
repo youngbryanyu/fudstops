@@ -1,50 +1,56 @@
-// List.jsx - javascript for movie list
-import { ArrowBackIosOutlined, ArrowForwardIosOutlined } from "@material-ui/icons"
-import { useRef, useState } from "react"
-import ListItem from "../listItem/ListItem"
-import "./list.scss"
+// Javascript for list of food items
+import {
+    ArrowBackIosOutlined,
+    ArrowForwardIosOutlined,
+} from "@material-ui/icons";
+import { useRef, useState } from "react";
+import ListItem from "../listItem/ListItem";
+import "./list.scss";
 
 export default function List() {
-    // const [isMoved, setIsMoved] = useState(false);
+    const [isMoved, setIsMoved] = useState(false);
     const [slideNumber, setSlideNumber] = useState(0);
 
-    const listRef = useRef() // for referencing the list of movies container
+    const listRef = useRef();
 
-    const handleClick = (direction) => { // for handling clicking on arrows (scrolling)
-        // setIsMoved(true);
-        let distance = listRef.current.getBoundingClientRect().x - 50 // gets current x-distance from left border (-50 because of left margin)
-        if (direction === "left" && slideNumber > 0) { // TODO: fix clicking on arrows mid scroll
+    const handleClick = (direction) => {
+        setIsMoved(true);
+        let distance = listRef.current.getBoundingClientRect().x - 50;
+        if (direction === "left" && slideNumber > 0) {
             setSlideNumber(slideNumber - 1);
-            listRef.current.style.transform = `translateX(${230 + distance}px)`; // scroll left
+            listRef.current.style.transform = `translateX(${230 + distance}px)`;
         }
-        if (direction === "right" && slideNumber < 5) { // TODO: adjust slide number value for different sized screens
+        if (direction === "right" && slideNumber < 5) {
             setSlideNumber(slideNumber + 1);
-            listRef.current.style.transform = `translateX(${-230 + distance}px)`; // scroll right
+            listRef.current.style.transform = `translateX(${-230 + distance}px)`;
         }
-    }
+    };
     return (
         <div className="list">
-            <span className="listTitle">Continue to watch</span>
+            <span className="listTitle">Recommended for You</span>
             <div className="wrapper">
-                <ArrowBackIosOutlined 
-                    className="sliderArrow left" 
-                    onClick={()=>handleClick("left")}
-                    // style={{display: !isMoved && "none"}} // left arrow doesn't appear until scrolled
+                <ArrowBackIosOutlined
+                    className="sliderArrow left"
+                    onClick={() => handleClick("left")}
+                    style={{ display: !isMoved && "none" }}
                 />
-                <div className="container" ref={listRef}> {/* list of movies container*/}
-                    <ListItem index={0}/>
-                    <ListItem index={1}/>
-                    <ListItem index={2}/>
-                    <ListItem index={3}/>
-                    <ListItem index={4}/>
-                    <ListItem index={5}/>
-                    <ListItem index={6}/>
-                    <ListItem index={7}/>
-                    <ListItem index={8}/>
-                    <ListItem index={9}/>
+                <div className="container" ref={listRef}>
+                    <ListItem index={0} />
+                    <ListItem index={1} />
+                    <ListItem index={2} />
+                    <ListItem index={3} />
+                    <ListItem index={4} />
+                    <ListItem index={5} />
+                    <ListItem index={6} />
+                    <ListItem index={7} />
+                    <ListItem index={8} />
+                    <ListItem index={9} />
                 </div>
-                <ArrowForwardIosOutlined className="sliderArrow right" onClick={()=>handleClick("right")}/>
+                <ArrowForwardIosOutlined
+                    className="sliderArrow right"
+                    onClick={() => handleClick("right")}
+                />
             </div>
         </div>
-    )
+    );
 }

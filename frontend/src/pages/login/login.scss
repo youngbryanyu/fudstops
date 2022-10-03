@@ -1,4 +1,3 @@
-// login.scss - javascript for login page
 .login {
     width: 100vw;
     height: 100vh;
@@ -7,7 +6,7 @@
         rgba(0, 0, 0, 0,) 0%, 
         rgba(0, 0, 0, 1) 100%
         ), 
-        url("http://s3-us-west-2.amazonaws.com/techvibes/wp-content/uploads/2017/04/24135159/Netflix-Background.jpg");
+        url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
     position: relative;
     
@@ -19,7 +18,7 @@
             justify-content: space-between;
 
             .logo {
-                height: 40px;
+                height: 60px;
             }
         }
     }
@@ -52,6 +51,7 @@
                 background-color: gray;
                 color: white;
                 padding-left: 10px;
+                border: none;
 
                 &::placeholder {
                     color: lightgray;
@@ -61,18 +61,21 @@
             button {
                 height: 40px;
                 border-radius: 5px;
-                background-color: red;
+                background-color: goldenrod;
                 color: white;
                 font-size: 18px;
                 font-weight: 500;
                 cursor: pointer;
+                border: none;
             }
 
             span {
                 color: lightgray;
-                b {
-                    color: white;
-                }
+            }
+
+            b {
+                color: white;
+                cursor: pointer;
             }
         }
     }
