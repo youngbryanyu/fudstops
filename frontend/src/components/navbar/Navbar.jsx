@@ -3,6 +3,7 @@ import { ArrowDropDown, Notifications, Search } from "@material-ui/icons";
 import { useState } from "react";
 import "./navbar.scss";
 import logo from "../fudstops_white_logo.png"
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -16,20 +17,36 @@ const Navbar = () => {
         <div className={isScrolled ? "navbar scrolled" : "navbar"}>
             <div className="container">
                 <div className="left">
-                    <img
-                        src={logo}
-                        alt=""
-                    />
-                    <span>Home</span>
-                    <span>Favorites</span>
+                    <Link to="/" className="link">
+                        <img
+                            src={logo}
+                            alt=""
+                        />
+                    </Link>
+                    <Link to="/" className="link">
+                        <span>Home</span>
+                    </Link>
+                    <Link to="/favorites" className="link">
+                        <span>Favorites</span>
+                    </Link>
                     <div className="diningDropdown">
                         <span>Dining courts ▾</span>
                         <div className="diningDropdownOptions">
-                            <span className="highlight">Windsor</span>
-                            <span className="highlight">Wiley</span>
-                            <span className="highlight">Ford</span>
-                            <span className="highlight">Earhart</span>
-                            <span className="highlight">Hillenbrand</span>
+                            <Link to="/menu" className="link">
+                                <span className="highlight">Windsor</span>
+                            </Link>
+                            <Link to="/menu" className="link">
+                                <span className="highlight">Wiley</span>
+                            </Link>
+                            <Link to="/menu" className="link">
+                                <span className="highlight">Ford</span>
+                            </Link>
+                            <Link to="/menu" className="link">
+                                <span className="highlight">Earhart</span>
+                            </Link>
+                            <Link to="/menu" className="link">
+                                <span className="highlight">Hillenbrand</span>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -43,8 +60,12 @@ const Navbar = () => {
                     <div className="profile">
                         <ArrowDropDown className="icon" />
                         <div className="options">
-                            <span className="highlight">Settings</span>
-                            <span className="highlight">Logout</span>
+                            <Link to="/settings" className="link">
+                                <span className="highlight">Settings</span>
+                            </Link>
+                            <Link to="/login" className="link"> {/* won't work until user becomes logged out */}
+                                <span className="highlight">Logout</span>
+                            </Link>
                         </div>
                     </div>
                 </div>

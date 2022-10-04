@@ -41,13 +41,20 @@
                     border-radius: 5px;
                 }
 
+                .link {
+                    padding: 10px 0px;
+                    margin-right: 0px;
+                    cursor: pointer;
+                    // display: inline;
+                }
+                
                 span {
                     padding: 10px;
                     margin-right: 0px;
                     cursor: pointer;
                 }
 
-                .highlight {
+                .link {
                     &:hover {
                         background-color: goldenrod;
                         border-radius: 5px;
@@ -89,16 +96,21 @@
                     border-radius: 5px;
                 }
 
-                span {
-                    padding: 10px;
+                .link {
+                    padding: 10px 0px;
+                    margin-right: 0px;
                     cursor: pointer;
-                }
+                    // display: inline;
 
-                .highlight {
                     &:hover {
                         background-color: goldenrod;
                         border-radius: 5px;
                     }
+                }
+
+                span {
+                    padding: 10px;
+                    cursor: pointer;
                 }
 
                 &:hover {

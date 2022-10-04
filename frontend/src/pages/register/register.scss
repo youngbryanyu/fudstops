@@ -21,18 +21,22 @@
             .logo {
                 height: 60px;
             }
-  
-            .loginButton {
-                background-color: goldenrod;
-                border: none;
-                color: white;
-                border-radius: 5px;
-                padding: 5px 15px;
-                font-size: 16px;
-                font-weight: 500;
-                cursor: pointer;
+
+            .link {
                 z-index: 2;
+                .loginButton {
+                    background-color: goldenrod;
+                    border: none;
+                    color: white;
+                    border-radius: 5px;
+                    padding: 5px 15px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    cursor: pointer;
+                }
             }
+  
+            
         }
     }
   
