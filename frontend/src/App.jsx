@@ -7,7 +7,7 @@ import FoodInfo from "./pages/foodInfo/FoodInfo";
 import Menu from "./pages/menu/Menu";
 
 const App = () => {
-  return <Register />;
+  return <Home />;
 };
 
 export default App;
