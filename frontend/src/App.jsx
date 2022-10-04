@@ -9,6 +9,7 @@ import Settings from "./pages/settings/Settings";
 
 const App = () => {
   return <Settings />;
+
 };
 
 export default App;
