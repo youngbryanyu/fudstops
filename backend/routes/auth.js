@@ -1,4 +1,4 @@
-// auth.js - API routing for authentication
+// API routing for authentication - sign up and login
 const router = require("express").Router(); // post=create, put=update, get=fetch data
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
@@ -7,8 +7,10 @@ const jwt = require("jsonwebtoken");
 // REGISTER - create new user
 router.post("/register", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     const newUser = new User({
-        username: req.body.username, // body of POST request
+        username: req.body.username,
         email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        isAdmin: req.body.isAdmin,
         password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET_KEY).toString() // encrypt password using AES
     });
 
