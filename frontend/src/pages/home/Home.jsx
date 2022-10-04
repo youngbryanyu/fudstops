@@ -1,8 +1,9 @@
 // Javascript for home page
 import Navbar from "../../components/navbar/Navbar";
-import Featured from "../../components/featured/Featured";
+import Featured from "./featured/Featured";
 import "./home.scss";
-import List from "../../components/list/List";
+import List from "./list/List";
+import Footer from "../../components/footer/Footer";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Featured/>
       <List/>
       <List/>
+      <Footer/>
     </div>
   );
 };
