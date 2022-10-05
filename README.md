@@ -13,4 +13,4 @@ In the `frontend` directory, you can run:
 
 In the `backend` directory, you can run:
 
-`yarn start` or `npm run start` or `node index.js`
+`yarn start` or `npm run start`
