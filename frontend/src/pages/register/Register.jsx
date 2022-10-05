@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import "./register.scss";
 import logo from "../../components/fudstops_white_logo.png";
+import { Link } from "react-router-dom";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -26,7 +27,11 @@ export default function Register() {
                         src={logo}
                         alt=""
                     />
-                    <button className="loginButton">Sign In</button>
+                    <Link to="/login" className="link">
+                        <button className="loginButton">
+                            Sign In
+                        </button>
+                    </Link>
                 </div>
             </div>
             <div className="container">
