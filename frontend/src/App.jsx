@@ -15,6 +15,7 @@ import {
 import Favorites from "./pages/favorites/Favorites";
 
 const App = () => {
+
     const loggedIn = false; // whether logged in or not
     return (
         <Router>
