@@ -4,11 +4,20 @@ import { useState } from "react";
 import "./navbar.scss";
 import logo from "../fudstops_white_logo.png"
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { logout } from "../../authContext/apiCalls";
+import { AuthContext } from "../../authContext/AuthContext";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const { dispatch } = useContext(AuthContext); // get auth context
 
-    window.onscroll = () => {
+    const handleLogout = (e) => {
+        e.preventDefault(); // need this to prevent default behavior or else login won't work
+        logout(dispatch); // login and store the user in local storage (context)
+    }
+
+    window.onscroll = () => { // want to make nav bar black when we scroll past y=0
         setIsScrolled(window.pageYOffset === 0 ? false : true);
         return () => (window.onscroll = null);
     };
@@ -64,7 +73,7 @@ const Navbar = () => {
                                 <span className="highlight">Settings</span>
                             </Link>
                             <Link to="/login" className="link"> {/* won't work until user becomes logged out */}
-                                <span className="highlight">Logout</span>
+                                <span className="highlight" onClick={handleLogout}>Logout</span>
                             </Link>
                         </div>
                     </div>

@@ -13,19 +13,20 @@ import {
     Navigate,
 } from "react-router-dom";
 import Favorites from "./pages/favorites/Favorites";
+import { useContext } from "react";
+import { AuthContext } from "./authContext/AuthContext";
 
 const App = () => {
-
-    const loggedIn = false; // whether logged in or not
+    const { user } = useContext(AuthContext); // get user from auth context
     return (
         <Router>
             <Routes>
                 {/* take user to register page unless they are logged in. If they're logged in take them to home*/}
-                <Route exact path="/" element={loggedIn ? <Home /> : <Navigate to="/register" />} />
-                <Route path="/register" element={!loggedIn ? <Register /> : <Navigate to="/" />} />
-                <Route path="/login" element={!loggedIn ? <Login /> : <Navigate to="/" />} />
+                <Route exact path="/" element={user ? <Home /> : <Navigate to="/register" />} />
+                <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+                <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
                 { // paths for when logged in
-                    loggedIn && (
+                    user && (
                         <>
                             <Route path="/" element={<Home />} />
                             <Route path="/favorites" element={<Favorites />} />
