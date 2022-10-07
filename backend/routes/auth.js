@@ -9,7 +9,6 @@ router.post("/register", async (req, res) => { // use async/await to ensure requ
     const newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
         isAdmin: req.body.isAdmin,
         password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET_KEY).toString() // encrypt password using AES
     });
