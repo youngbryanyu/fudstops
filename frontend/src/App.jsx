@@ -18,22 +18,34 @@ import { AuthContext } from "./authContext/AuthContext";
 
 const App = () => {
     const { user } = useContext(AuthContext); // get user from auth context
+
     return (
         <Router>
             <Routes>
-                {/* take user to register page unless they are logged in. If they're logged in take them to home*/}
-                <Route exact path="/" element={user ? <Home /> : <Navigate to="/register" />} />
-                <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-                <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+                {/* user can only access other pages if logged in, and can't access login pages if logged in already */}
                 { // paths for when logged in
                     user && (
                         <>
                             <Route path="/" element={<Home />} />
                             <Route path="/favorites" element={<Favorites />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
+                            <Route path="/foodInfo" element={<FoodInfo />} />
+                            <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/menu" element={<Menu />} />
+                            <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
+                        </>
+                    )
+                }
+                { // paths for when logged out - should redirect to register page if not logged in except for /login
+                    !user && (
+                        <>
+                            <Route path="/" element={<Register />} />
+                            <Route path="/favorites" element={<Register />} />
+                            <Route path="/foodInfo" element={<Register />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/menu" element={<Register />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/settings" element={<Register />} />
                         </>
                     )
                 }
