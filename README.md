@@ -2,7 +2,7 @@
 
 ## Available Scripts
 
-In the `frontend` directory, you can run:
+In the `frontend` directory run:
 
 `yarn start` or `npm run start`
 
@@ -11,6 +11,6 @@ In the `frontend` directory, you can run:
 - The page will reload if you make edits.
 - You will also see any lint errors in the console.
 
-In the `backend` directory, you can run:
+In the `backend` directory run:
 
 `yarn start` or `npm run start`
