@@ -1,5 +1,7 @@
 # Füdstops: Dining Recommendations for Students
 
+A convenient and centralized spot for students to view menus & dining locations, rate items, save favorites, and recieve personalized food recommendations!
+
 ## Available Scripts
 
 In the `frontend` directory run:
