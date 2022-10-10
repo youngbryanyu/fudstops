@@ -140,7 +140,7 @@ export default function Register() {
 
                 <div className="input">
                     <input
-                        type="email"
+                        type="email" // TODO: make this email or phone number
                         placeholder="email address"
                         onChange={(e) => {
                             setEmail(
