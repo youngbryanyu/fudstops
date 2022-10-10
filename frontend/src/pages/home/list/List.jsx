@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import ListItem from "../listItem/ListItem";
 import "./list.scss";
 
-export default function List() {
+export default function List(props) {
     const [slideNumber, setSlideNumber] = useState(0);
     const { height, width } = useWindowDimensions();
     const MAX_NUM_SCROLLS = 6; // 10 items, 4 on screen at a time
@@ -39,7 +39,7 @@ export default function List() {
     };
     return (
         <div className="list">
-            <span className="listTitle">Recommended for You</span>
+            <span className="listTitle">{props.title}</span>
             <div className="wrapper">
                 <ArrowBackIosOutlined
                     className="sliderArrow left"

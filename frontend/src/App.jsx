@@ -30,7 +30,7 @@ const App = () => {
                             <Route path="/favorites" element={<Favorites />} />
                             <Route path="/foodInfo" element={<FoodInfo />} />
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
-                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
                         </>
@@ -43,7 +43,7 @@ const App = () => {
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
                             <Route path="/login" element={<Login />} />
-                            <Route path="/menu" element={<Register />} />
+                            <Route path="/menu/:location" element={<Register />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
                         </>
