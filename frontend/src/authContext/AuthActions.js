@@ -7,7 +7,7 @@ export const loginStart = () => ({
 // on successful login
 export const loginSuccess = (user) => ({
     type: "LOGIN_SUCCESS",
-    payload: user,
+    payload: user
 });
 
 // when login fails

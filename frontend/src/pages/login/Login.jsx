@@ -15,26 +15,36 @@ export default function Login() {
     const { dispatch } = useContext(AuthContext);
     const [recentlyRegistered, setRecentlyRegistered] = useState(false);
 
+    const [user, setUser] = useState(null);
 
-    const { user } = useContext(AuthContext); // get user from auth context
-
+    /**
+     * Handles logging in the user when they click sign in
+     */
     const handleLogin = (e) => {
-        e.preventDefault(); // need this to prevent default behavior or else login won't work
-        login({ email, password }, dispatch); // login and store the user in local storage (context)
-
-        if (user == null) {
-            setIsValidCredentials(false);
-        }
-    }
-
-    const location = useLocation(); // get whether user just registered when navigating from register page 
-    if (location.state != null) { // null if manually navigated to this page (not after successful register)
-        // setRecentlyRegistered(true);
-        // console.log(recentlyRegistered);
+        e.preventDefault(); // prevent default behavior
+        login({ email, password }, dispatch).then( // login and store the user in local storage (context)
+            returnedUser => setUser(returnedUser) // get user from login
+        ); // note: the useState here is causing a warning
     }
 
     /**
-     * Get whether user just registered when navigating from register page 
+    * After log in attempt, set flag for whether or not it was a successful attempt (to determine whether to display error message)
+    */
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        if (user == null) {
+            setIsValidCredentials(false);
+        }
+    }, [user]);
+
+    const location = useLocation(); // get whether user just registered when navigating from register page 
+
+    /**
+     * Get whether user just registered (navigated from register page) 
      */
     useEffect(() => {
         if (location.state != null) {
@@ -45,9 +55,9 @@ export default function Login() {
     /**
      * Display a 5 second message informing the user their sign up was successful
      */
-    const firstUpdate = useRef(true);
     useEffect(() => {
         if (recentlyRegistered) {
+            window.history.replaceState({}, document.title, null); // prevents message from showing up after page reload
             setTimeout(() => {
                 setRecentlyRegistered(false);
             }, 5000);
