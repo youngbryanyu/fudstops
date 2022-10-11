@@ -6,13 +6,15 @@ import Login from "./pages/login/Login";
 import FoodInfo from "./pages/foodInfo/FoodInfo";
 import Menu from "./pages/menu/Menu";
 import Settings from "./pages/settings/Settings";
+import Favorites from "./pages/favorites/Favorites";
+import ForgotPassword from "./pages/forgotPassword/forgotPassword";
+import ForgotPasswordReset from "./pages/forgotPasswordReset/forgotPasswordReset";
 import {
     BrowserRouter as Router,
     Routes,
     Route,
     Navigate,
 } from "react-router-dom";
-import Favorites from "./pages/favorites/Favorites";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 
@@ -29,6 +31,8 @@ const App = () => {
                             <Route path="/" element={<Home />} />
                             <Route path="/favorites" element={<Favorites />} />
                             <Route path="/foodInfo" element={<FoodInfo />} />
+                            <Route path="/forgotPassword" element={<Home />} /> {/* Should go to home when logged in */}
+                            <Route path="/forgotPasswordReset/:id/:token" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
@@ -42,6 +46,8 @@ const App = () => {
                             <Route path="/" element={<Register />} />
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
+                            <Route path="/forgotPassword" element={<ForgotPassword />} /> 
+                            <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} /> 
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
                             <Route path="/register" element={<Register />} />

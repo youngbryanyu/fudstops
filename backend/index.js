@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
+const passwordResetRoute = require("./routes/passwordReset");
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoute); // endpoint for authentication
 app.use("/api/users", userRoute); // endpoint for users
+app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetting password if user forgot
 
 app.listen(8000, ()=>{ // start server, listen for connections
     console.log("backend is running");

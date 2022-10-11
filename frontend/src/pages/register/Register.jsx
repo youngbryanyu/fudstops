@@ -12,9 +12,9 @@ const VALID_EMAIL_REGEX = /.+@.+\.[A-Za-z]+$/;
 const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
 
 const EXISTING_CREDENTIALS_ERROR = "Email, phone number, or username already taken."
-const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone format."
+const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone number format."
 const INVALID_USERNAME_ERROR = "Invalid username. Username cannot contain spaces and minimum length must be at least "
-const INVALID_PASSWORD_ERROR = "Invalid password. The minimum length must be at least "
+const INVALID_PASSWORD_ERROR = "Invalid password. The length must be at least "
 const MIN_PASSWORD_LENGTH = 5;
 const MIN_USERNAME_LENGTH = 1;
 
@@ -135,7 +135,6 @@ export default function Register() {
             return;
         }
 
-        // TODO: determine whether input is email or phone
         if (isValidEmailFormat(emailOrPhone)) {
             setEmail(emailOrPhone);
             setPhone(username + EMPTY_PHONE_STRING); // to indicate empty phone
@@ -196,20 +195,20 @@ export default function Register() {
                 <h1>Find all your favorite foods at Purdue.</h1>
                 <h2>Sign up for free.</h2>
                 <p>
-                    Ready to eat good? Enter your email to create your account.
+                    Ready to eat good? Enter your phone number or email to create your account.
                 </p>
 
                 <div className="input">
                     <input
                         type="email"
-                        placeholder="email or phone number"
+                        placeholder="Phone number or email"
                         onChange={(e) => {
                             setEmailOrPhone(
                                 e.target.value
                             )
                         }}
                         ref={emailOrPhoneRef}
-                        // onKeyDown={(clickedGetStarted) ? handleRegister : handleSetEmailEnter} // if all forms are shown, hitting enter while cursor is on email should submit form --> TODO: need to fix this, email box freezes after clicking enter
+                        // onKeyDown={(clickedGetStarted) ? handleRegister : handleSetEmailEnter} // if all forms are shown, hitting enter while cursor is on email should submit form --> NIT: need to fix this, email box freezes after clicking enter
                         onKeyDown={handleGetStartedEnter}
                     />
                     {!clickedGetStarted && ( // hide this button when user clicks on next

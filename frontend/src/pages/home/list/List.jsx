@@ -18,7 +18,7 @@ export default function List(props) {
     const [isScrollingLeft, setIsScrollingLeft] = useState();
     const [isScrollingRight, setIsScrollingRight] = useState();
 
-    const handleClick = (direction) => { // TODO: prevent button from being clicked multiple times in a row
+    const handleClick = (direction) => {
         let distance = listRef.current.getBoundingClientRect().x - 50;
         if (direction === "left" && slideNumber > 0) {
             setIsScrollingLeft(true);
