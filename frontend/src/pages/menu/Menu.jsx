@@ -3,6 +3,11 @@ import Footer from "../../components/footer/Footer";
 import Navbar from "../../components/navbar/Navbar";
 import "./menu.scss";
 import { Link } from "react-router-dom";
+import Location from "../location/Location";
+import "./menu.scss";
+import List from "../home/list/List";
+import ListItem from "../home/listItem/ListItem";
+
 
 
 const Menu = () => {
