@@ -9,6 +9,7 @@ router.post("/register", async (req, res) => { // use async/await to ensure requ
     const newUser = new User({
         username: req.body.username,
         email: req.body.email,
+        phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET_KEY).toString() // encrypt password using AES
     });
@@ -24,9 +25,15 @@ router.post("/register", async (req, res) => { // use async/await to ensure requ
 // LOGIN
 router.post("/login", async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email }); // try to find one user matching the email from DB
+        const user = await User.findOne({ // try to find one user matching the email/phone/username from DB
+            $or: [
+                { email: req.body.loginMethod }, // the name of this is the name in Login.jsx passed to login() in handleLogin
+                { phone: req.body.loginMethod },
+                { username: req.body.loginMethod}
+            ]
+        });
         if (!user) {
-            res.status(401).json("Wrong username or password!"); // if no matching email in DB
+            res.status(401).json("Wrong email/phone/username, or password!"); // if no matching email in DB
             return;
         }
 
