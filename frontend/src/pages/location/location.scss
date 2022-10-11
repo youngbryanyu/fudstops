@@ -1,0 +1,122 @@
+// location.scss - styling for featured page
+.location {
+    height: 70vh;
+    position: relative;
+
+    .category {
+        position: absolute;
+        top: 80px;
+        left: 50px;
+        font-size: 30px;
+        font-weight: 500;
+        color: black;
+        display: flex;
+        align-items: center;
+
+        select {
+            cursor: pointer;
+            background-color: var(--main-color);
+            border: 1px solid white;
+            color: white;
+            margin-left: 20px;
+            padding: 5px;
+        }
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .box {
+        margin: 10px;
+        width: auto;
+
+        .boxHeader {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 25px;
+            background-color: #659DBD;
+            border-radius: 20px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        .boxCaption {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 20px;
+            background-color: #5d91ae;
+            border-radius: 20px;
+            font-family: 'Playfair Display', serif;
+            
+        }
+
+        .boxDesc {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #5789a3;
+            border-radius: 20px;
+            font-family: 'Playfair Display', serif;
+
+        }
+
+    }
+
+    .info {
+        width: 35%;
+        position: absolute;
+        left: 50px;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+
+        .locationName {
+            margin: 20px 0px;
+            font-size: 28px;
+        }
+        
+        .stationName {
+            margin: 10px 0px;
+            font-size: 18px;
+        }
+
+        .desc {
+            margin: 20px 0px;
+        }
+
+        .buttons {
+            display: flex;
+
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 500;
+                margin-right: 10px;
+                cursor: pointer;
+
+                &.more {
+                    background-color: goldenrod;
+                    color: white;
+                }
+
+                &.diningCourt {
+                    background-color: white;
+                    color: var(--main-color);
+                }
+
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+}

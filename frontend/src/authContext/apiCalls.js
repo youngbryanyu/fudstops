@@ -7,6 +7,7 @@ export const login = async (user, dispatch) => {
     try {
         const res = await axios.post("auth/login", user);
         dispatch(loginSuccess(res.data));
+        return res.data; // return promise which includes result (contains user if successful)
     } catch (err) {
         dispatch(loginFailure());
     }

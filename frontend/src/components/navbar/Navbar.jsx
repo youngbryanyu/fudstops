@@ -41,19 +41,19 @@ const Navbar = () => {
                     <div className="diningDropdown">
                         <span>Dining courts ▾</span>
                         <div className="diningDropdownOptions">
-                            <Link to="/menu" className="link">
+                            <Link to="/menu/Windsor" className="link">
                                 <span className="highlight">Windsor</span>
                             </Link>
-                            <Link to="/menu" className="link">
+                            <Link to="/menu/Wiley" className="link">
                                 <span className="highlight">Wiley</span>
                             </Link>
-                            <Link to="/menu" className="link">
+                            <Link to="/menu/Ford" className="link">
                                 <span className="highlight">Ford</span>
                             </Link>
-                            <Link to="/menu" className="link">
+                            <Link to="/menu/Earhart" className="link">
                                 <span className="highlight">Earhart</span>
                             </Link>
-                            <Link to="/menu" className="link">
+                            <Link to="/menu/Hillenbrand" className="link">
                                 <span className="highlight">Hillenbrand</span>
                             </Link>
                         </div>
