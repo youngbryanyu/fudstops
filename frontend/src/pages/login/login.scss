@@ -43,7 +43,7 @@
             background-color: var(--main-color);
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
+            justify-content: space-between;
 
             input {
                 height: 40px;
@@ -77,6 +77,20 @@
                 color: white;
                 cursor: pointer;
             }
+        }
+
+        .errorMessage {
+            margin-top: 5px;
+            p {
+                text-align: center;
+                font-size: 14px;
+                color: red;
+            }
+        }
+
+        .recentlyRegisteredMessage {
+            margin-top: -20px; // to center the sign in box
+            margin-bottom: 20px;
         }
     }
 }
