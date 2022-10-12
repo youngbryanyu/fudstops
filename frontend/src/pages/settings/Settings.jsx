@@ -3,6 +3,7 @@ import Navbar from "../../components/navbar/Navbar";
 import Featured from "../home/featured/Featured";
 import "./settings.scss";
 import Footer from "../../components/footer/Footer";
+import { Link } from "react-router-dom";
 
 
 const Settings = () => {
@@ -12,11 +13,17 @@ const Settings = () => {
             <h1>Info & Settings</h1>
 
              <div className="container">
-                    <button className="">Number</button>
-                    <button className="">Email</button>
+                    <Link to="/personalInfo" className="link">
+                        <button className="">Number</button>
+                    </Link>
+                    <Link to="/personalInfo" className="link">
+                        <button className="">Email</button>
+                    </Link>
+                    <Link to="/personalInfo" className="link">
+                        <button className="">Profile Picture</button>
+                    </Link>
                     <button className="">Preferences</button>
                     <button className="">Location</button>
-                    <button className="">Profile Picture</button>
             </div>
 
             <div className="container2">
