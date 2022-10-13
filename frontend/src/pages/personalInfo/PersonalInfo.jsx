@@ -15,7 +15,7 @@ const PersonalInfo = () => {
 
 
     const { user } = useContext(AuthContext); // get user from auth context
-    const url = 'users/find/' + user._id; //get the user id field
+    const url = 'users/find/' + user._id; //get the user id field from api
     // console.log(user._id);
     // console.log(user);
 

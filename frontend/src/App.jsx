@@ -34,7 +34,7 @@ const App = () => {
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
-                            <Route path="/personalInfo" element={<PersonalInfo />} /> {/* Should go to this when user is in settings page */}
+                            <Route path="/personalInfo" element={<PersonalInfo />} /> {/* Should go to this when user is in settings page*/}
                         </>
                     )
                 }
