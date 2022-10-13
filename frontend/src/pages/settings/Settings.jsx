@@ -14,13 +14,7 @@ const Settings = () => {
 
              <div className="container">
                     <Link to="/personalInfo" className="link">
-                        <button className="">Number</button>
-                    </Link>
-                    <Link to="/personalInfo" className="link">
-                        <button className="">Email</button>
-                    </Link>
-                    <Link to="/personalInfo" className="link">
-                        <button className="">Profile Picture</button>
+                        <button className="">Personal Information</button>
                     </Link>
                     <button className="">Preferences</button>
                     <button className="">Location</button>
