@@ -33,7 +33,7 @@ const ForgotPasswordReset = () => {
     useEffect(() => {
         const verifyUrl = async () => {
             try {
-                await axios.get("");
+                await axios.get(""); // --> get from forgotPasswordReset
                 setValidUrl(true);
             } catch (err) {
                 setValidUrl(false);
@@ -53,7 +53,7 @@ const ForgotPasswordReset = () => {
                 setIsError(true);
                 return;
             }
-            const { data } = await axios.post("", { password }); // try to reset password
+            await axios.post("", { password }); // try to reset password --> post to forgotPasswordReset
             setResetSuccessfully(true); // reset succesfully if no error caught
             setIsError(false); // no error if reset successfully
             setErrorMessage(INVALID_TOKEN_ERROR);

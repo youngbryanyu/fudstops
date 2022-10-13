@@ -145,7 +145,7 @@ export default function Register() {
     };
 
     /**
-     * Try to register when email and phone are set
+     * Try to register when email and phone are set in handleRegister()
      */
     const isFirstRender = useRef(true); // don't do anything on first render
     useEffect(() => {
@@ -249,3 +249,5 @@ export default function Register() {
         </div>
     );
 }
+
+// TODO: fix bug where hitting enter when cursor is on email box doesn't submit form

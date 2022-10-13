@@ -1,35 +1,11 @@
-// JS for login page
+// JS for forgot password page
 import "./forgotPassword.scss";
 import logo from "../../components/fudstops_white_logo.png";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const EMPTY_PHONE_STRING = " has no phone." // empty phone number contains this
-const EMPTY_EMAIL_STRING = " has no email." // empty email contains this
-
-const SENT_RESET_LINK_STRING = "Reset link was sent successfully!";
-
-// Francis Gagnon: from https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
-const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
-
-/**
- * Returns whether input is a valid phone number format
- */
-function isValidPhoneFormat(input) {
-    return VALID_PHONE_REGEX.test(input);
-}
-
-/**
- * Strips a phone number string of the non digit characters
- */
-function stripNonDigits(phoneNumber) {
-    return phoneNumber.replace(/\D/g, '');
-}
-
-// TODO: 
-// --> if any user in DB contains email/phone then send text/email
-// --> create two APIs: reset by password and reset by email, make check in frontend to determine which one to call (look at Register.jsx)
+const SENT_RESET_LINK_STRING = "Reset link was sent successfully to your email and/or phone number!";
 
 export default function ForgotPassword() {
     const [emailOrPhoneOrUsername, setEmailOrPhoneOrUsername] = useState("");
@@ -82,7 +58,7 @@ export default function ForgotPassword() {
 
                 <form>
                     <h1>Forgot Password?</h1>
-                    <input type="email" placeholder="Email" onChange={(e) => setEmailOrPhoneOrUsername(e.target.value)} />
+                    <input type="email" placeholder="Phone number, username, or email" onChange={(e) => setEmailOrPhoneOrUsername(e.target.value)} />
                     <button className="resetButton" onClick={handleReset}>Send Reset Link</button>
 
                     <div className="errorMessage"> {/* error message if invalid credentials (user == null) */}

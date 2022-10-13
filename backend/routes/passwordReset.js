@@ -5,14 +5,57 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
 const ResetPasswordToken = require("../models/ResetPasswordToken");
+const sendText = require("../utils/sendText");
+
+const EMPTY_PHONE_STRING = " has no phone." // empty phone number contains this
+const EMPTY_EMAIL_STRING = " has no email." // empty email contains this
+
+const VALID_EMAIL_REGEX = /.+@.+\.[A-Za-z]+$/;
+
+// Francis Gagnon: from https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+
+/**
+ *  Returns whether email address is in a valid format 
+ */
+function isValidEmailFormat(input) {
+    return VALID_EMAIL_REGEX.test(input);
+}
+
+/**
+ * Returns whether input is a valid phone number format
+ */
+function isValidPhoneFormat(input) {
+    return VALID_PHONE_REGEX.test(input);
+}
+
+/**
+ * Strips a phone number string of the non digit characters
+ */
+ function stripNonDigits(phoneNumber) {
+    return phoneNumber.replace(/\D/g, '');
+}
 
 // send reset password link
 router.post("/", async (req, res) => {
     try {
-        // validate if user with email exists
-        const user = await User.findOne({ email: req.body.emailOrPhoneOrUsername });
-        if (!user) {
-            return res.status(409).send({ message: "User with the given email does not exist." });
+        let user;
+
+        if (isValidEmailFormat(req.body.emailOrPhoneOrUsername)) { // see if user entered email
+            user = await User.findOne({ email: req.body.emailOrPhoneOrUsername });
+            if (!user) {
+                return res.status(409).send({ message: "User with the given email does not exist." });
+            }
+        } else if (isValidPhoneFormat(stripNonDigits(req.body.emailOrPhoneOrUsername))) { // see if user entered phone (strip non digits first)
+            user = await User.findOne({ phone: stripNonDigits(req.body.emailOrPhoneOrUsername) });
+            if (!user) {
+                return res.status(409).send({ message: "User with the given email does not exist." });
+            }
+        } else {// user entered username
+            user = await User.findOne({ username: req.body.emailOrPhoneOrUsername });
+            if (!user) {
+                return res.status(409).send({ message: "User with the given email does not exist." });
+            }
         }
 
         // create reset password token for user
@@ -24,11 +67,23 @@ router.post("/", async (req, res) => {
             }).save();
         }
 
-        // send password reset url to user's email
         const url = `${process.env.BASE_URL}forgotPasswordReset/${user._id}/${token.token}/`;
-        await sendEmail(user.email, "Password Reset - Füdstops", url);
+        const message = "Your füdstops password reset link is: " + url;
 
-        // send url to email
+        /* send reset link */
+        if (isValidEmailFormat(req.body.emailOrPhoneOrUsername)) { // send to email only
+            await sendEmail(user.email, "Password Reset - Füdstops", message);
+        } else if (isValidPhoneFormat(stripNonDigits(req.body.emailOrPhoneOrUsername))) { // send to phone number
+            await sendText(user.phone, message);
+        } else { // send to both email and phone number
+            if (!user.email.includes(EMPTY_EMAIL_STRING)) { // if user has an existing email
+                await sendEmail(user.email, "Password Reset - Füdstops", message);
+            }
+            if (!user.phone.includes(EMPTY_PHONE_STRING)) { // if user has an existing phone number
+                await sendText(user.phone, message);
+            }
+        }
+
         res.status(200).send({ message: "password reset link sent to your email: " + user.email });
     } catch (err) {
         res.status(500).json(err);
