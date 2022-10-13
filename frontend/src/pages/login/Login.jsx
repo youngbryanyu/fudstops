@@ -5,28 +5,9 @@ import logo from "../../components/fudstops_white_logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../authContext/AuthContext";
 import { useEffect, useRef, useContext, useState } from "react";
+import { isValidPhoneFormat, stripNonDigits, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING } from "../../utils/regexAndStrings";
 
 const JUST_REGISTERED_MESSAGE = "Your registration was successful!"
-
-const EMPTY_PHONE_STRING = " has no phone." // empty phone number contains this
-const EMPTY_EMAIL_STRING = " has no email." // empty email contains this
-
-// Francis Gagnon: from https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
-const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
-
-/**
- * Returns whether input is a valid phone number format
- */
-function isValidPhoneFormat(input) {
-    return VALID_PHONE_REGEX.test(input);
-}
-
-/**
- * Strips a phone number string of the non digit characters
- */
-function stripNonDigits(phoneNumber) {
-    return phoneNumber.replace(/\D/g, '');
-}
 
 export default function Login() {
     const [emailOrPhoneOrUsername, setEmailOrPhoneOrUsername] = useState("");

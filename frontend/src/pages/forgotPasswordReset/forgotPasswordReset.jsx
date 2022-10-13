@@ -4,17 +4,10 @@ import logo from "../../components/fudstops_white_logo.png";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "./forgotPasswordReset.scss";
+import {MIN_PASSWORD_LENGTH, isValidPasswordFormat} from "../../utils/regexAndStrings";
 
 const INVALID_PASSWORD_ERROR = "The password length must be at least "
-const MIN_PASSWORD_LENGTH = 5;
 const INVALID_TOKEN_ERROR = "This password reset form has expired"
-
-/**
- *  Returns whether password is valid
- */
-function isValidPasswordFormat(password) {
-    return password.length >= MIN_PASSWORD_LENGTH;
-}
 
 const ForgotPasswordReset = () => {
     const [validUrl, setValidUrl] = useState(true);
