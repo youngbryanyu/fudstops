@@ -5,28 +5,9 @@ import logo from "../../components/fudstops_white_logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../authContext/AuthContext";
 import { useEffect, useRef, useContext, useState } from "react";
+import { isValidPhoneFormat, stripNonDigits, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING } from "../../utils/regexAndStrings";
 
 const JUST_REGISTERED_MESSAGE = "Your registration was successful!"
-
-const EMPTY_PHONE_STRING = " has no phone." // empty phone number contains this
-const EMPTY_EMAIL_STRING = " has no email." // empty email contains this
-
-// Francis Gagnon: from https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
-const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
-
-/**
- * Returns whether input is a valid phone number format
- */
-function isValidPhoneFormat(input) {
-    return VALID_PHONE_REGEX.test(input);
-}
-
-/**
- * Strips a phone number string of the non digit characters
- */
-function stripNonDigits(phoneNumber) {
-    return phoneNumber.replace(/\D/g, '');
-}
 
 export default function Login() {
     const [emailOrPhoneOrUsername, setEmailOrPhoneOrUsername] = useState("");
@@ -114,13 +95,13 @@ export default function Login() {
 
                 <form>
                     <h1>Sign In</h1>
-                    <input type="email" placeholder="Email, phone, or username" onChange={(e) => setEmailOrPhoneOrUsername(e.target.value)} />
+                    <input type="email" placeholder="Phone number, username, or email" onChange={(e) => setEmailOrPhoneOrUsername(e.target.value)} />
                     <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                     <button className="loginButton" onClick={handleLogin}>Sign In</button>
 
                     <div className="errorMessage"> {/* error message if invalid credentials (user == null) */}
                         <p style={{ visibility: isValidCredentials && "hidden" }}>
-                            Invalid email/phone or password.
+                            Invalid login credentials.
                         </p>
                     </div>
 
@@ -131,9 +112,12 @@ export default function Login() {
                         </b>
                     </span>
                     <small>
+                        <b className="forgotYourPassword"> <Link to="/forgotPassword" className="link">Forgot your password?</Link> </b>
+                    </small>
+                    {/* <small>
                         This page is protected by Google reCAPTCHA to ensure you're not a
                         bot. <b className="learnMore">Learn more</b>.
-                    </small>
+                    </small> */}
                 </form>
             </div>
         </div>

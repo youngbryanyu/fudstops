@@ -5,63 +5,16 @@ import logo from "../../components/fudstops_white_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef, useEffect } from "react";
-
-const VALID_EMAIL_REGEX = /.+@.+\.[A-Za-z]+$/;
-
-// Francis Gagnon: from https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
-const VALID_PHONE_REGEX = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+import {
+    isValidEmailFormat, isValidPhoneFormat, isValidEmailOrPhoneFormat, isValidUsernameFormat,
+    isValidPasswordFormat, stripNonDigits,
+    MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING
+} from "../../utils/regexAndStrings";
 
 const EXISTING_CREDENTIALS_ERROR = "Email, phone number, or username already taken."
-const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone format."
+const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone number format."
 const INVALID_USERNAME_ERROR = "Invalid username. Username cannot contain spaces and minimum length must be at least "
-const INVALID_PASSWORD_ERROR = "Invalid password. The minimum length must be at least "
-const MIN_PASSWORD_LENGTH = 5;
-const MIN_USERNAME_LENGTH = 1;
-
-const EMPTY_PHONE_STRING = " has no phone." // empty phone number contains this
-const EMPTY_EMAIL_STRING = " has no email." // empty email contains this
-
-/**
- *  Returns whether email address is in a valid format 
- */
-function isValidEmailFormat(input) {
-    return VALID_EMAIL_REGEX.test(input);
-}
-
-/**
- * Returns whether input is a valid phone number format
- */
-function isValidPhoneFormat(input) {
-    return VALID_PHONE_REGEX.test(input);
-}
-
-/**
- *  Returns whether input is in a valid email or phone number 
- */
-function isValidEmailOrPhoneFormat(input) {
-    return isValidEmailFormat(input) || isValidPhoneFormat(input);
-}
-
-/**
- *  Returns whether username is valid --> length >= 5 and no spaces
- */
-function isValidUsernameFormat(username) {
-    return (username.length >= MIN_USERNAME_LENGTH && !username.includes(" "));
-}
-
-/**
- *  Returns whether password is valid
- */
-function isValidPasswordFormat(password) {
-    return password.length >= MIN_PASSWORD_LENGTH;
-}
-
-/**
- * Strips a phone number string of the non digit characters
- */
-function stripNonDigits(phoneNumber) {
-    return phoneNumber.replace(/\D/g, '');
-}
+const INVALID_PASSWORD_ERROR = "Invalid password. The length must be at least "
 
 export default function Register() {
     const navigate = useNavigate(); // allows us to navigate to login page after signing up
@@ -135,7 +88,6 @@ export default function Register() {
             return;
         }
 
-        // TODO: determine whether input is email or phone
         if (isValidEmailFormat(emailOrPhone)) {
             setEmail(emailOrPhone);
             setPhone(username + EMPTY_PHONE_STRING); // to indicate empty phone
@@ -146,7 +98,7 @@ export default function Register() {
     };
 
     /**
-     * Try to register when email and phone are set
+     * Try to register when email and phone are set in handleRegister()
      */
     const isFirstRender = useRef(true); // don't do anything on first render
     useEffect(() => {
@@ -196,20 +148,20 @@ export default function Register() {
                 <h1>Find all your favorite foods at Purdue.</h1>
                 <h2>Sign up for free.</h2>
                 <p>
-                    Ready to eat good? Enter your email to create your account.
+                    Ready to eat good? Enter your phone number or email to create your account.
                 </p>
 
                 <div className="input">
                     <input
                         type="email"
-                        placeholder="email or phone number"
+                        placeholder="Phone number or email"
                         onChange={(e) => {
                             setEmailOrPhone(
                                 e.target.value
                             )
                         }}
                         ref={emailOrPhoneRef}
-                        // onKeyDown={(clickedGetStarted) ? handleRegister : handleSetEmailEnter} // if all forms are shown, hitting enter while cursor is on email should submit form --> TODO: need to fix this, email box freezes after clicking enter
+                        // onKeyDown={(clickedGetStarted) ? handleRegister : handleSetEmailEnter} // if all forms are shown, hitting enter while cursor is on email should submit form --> NIT: need to fix this, email box freezes after clicking enter
                         onKeyDown={handleGetStartedEnter}
                     />
                     {!clickedGetStarted && ( // hide this button when user clicks on next
@@ -250,3 +202,5 @@ export default function Register() {
         </div>
     );
 }
+
+// TODO: fix bug where hitting enter when cursor is on email box doesn't submit form
