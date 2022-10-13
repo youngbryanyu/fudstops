@@ -14,7 +14,8 @@ module.exports = async (toPhoneNumber, text) => {
             to: toPhoneNumber,
             from: fromPhoneNumber
             // }).then(message => console.log(message))
-        }).then(console.log("message sent to " + toPhoneNumber + " successfully."))
+        })
+        // .then(console.log("message sent to " + toPhoneNumber + " successfully."))
             // here you can implement your fallback code
             .catch(error => console.log(error))
     } catch (error) {

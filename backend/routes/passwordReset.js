@@ -6,7 +6,10 @@ const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
 const ResetPasswordToken = require("../models/ResetPasswordToken");
 const sendText = require("../utils/sendText");
-require("../utils/regexAndStrings");
+const { 
+    isValidEmailFormat, isValidPhoneFormat, stripNonDigits,
+    EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING
+} = require("../utils/regexAndStrings");
 
 // send reset password link
 router.post("/", async (req, res) => {
