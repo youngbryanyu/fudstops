@@ -6,9 +6,13 @@ import Login from "./pages/login/Login";
 import FoodInfo from "./pages/foodInfo/FoodInfo";
 import Menu from "./pages/menu/Menu";
 import Settings from "./pages/settings/Settings";
+
+import PersonalInfo from "./pages/personalInfo/PersonalInfo";
+
 import Favorites from "./pages/favorites/Favorites";
 import ForgotPassword from "./pages/forgotPassword/forgotPassword";
 import ForgotPasswordReset from "./pages/forgotPasswordReset/forgotPasswordReset";
+
 import {
     BrowserRouter as Router,
     Routes,
@@ -36,6 +40,7 @@ const App = () => {
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
+                            <Route path="/personalInfo" element={<PersonalInfo />} /> {/* Should go to this when user is in settings page*/}
                         </>
                     )
                 }
