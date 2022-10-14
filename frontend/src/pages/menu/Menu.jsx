@@ -45,6 +45,7 @@ const Menu = () => {
             <Footer />
         </div>
     );
+    
 };
 
 export default Menu;

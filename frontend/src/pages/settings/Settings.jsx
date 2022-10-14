@@ -28,7 +28,6 @@ const Settings = () => {
                             </div>
                         </Grid>
 
-
                         <Grid item xs={3}>
                             <div className="info2">
                                 <Box className="box">
@@ -37,7 +36,7 @@ const Settings = () => {
                                     </Link>
                                 </Box>
                                 <Box className="box">
-                                    <Link to="">
+                                    <Link to="/preferences">
                                         <button className="boxHeader">Preferences</button>
                                     </Link>
                                 </Box>

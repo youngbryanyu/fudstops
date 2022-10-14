@@ -35,7 +35,7 @@
 
         .boxHeader {
             display: inline-flex;
-            padding: 10px;
+            padding: 8px;
             font-size: 25px;
             background-color: #659DBD;
             border-radius: 20px;
@@ -46,6 +46,17 @@
                 background-color: rgb(32, 218, 218);
             }
 
+        }
+
+        .boxHeader2 {
+            display: inline-flex;
+            padding: 5px;
+            font-size: 5px;
+            background-color: #659DBD;
+            border-radius: 20px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            margin: -6px 0px;
         }
 
         .boxCaption {
@@ -236,5 +247,60 @@
                 }
             }
         }
+    }
+
+    .info2 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 35%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info3 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 60%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info3-1 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 55%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info4 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 70%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info5 {
+        width: 25%;
+        height: 60%;
+        left: 85%;
+        position: absolute;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
     }
 }
