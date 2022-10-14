@@ -1,5 +1,5 @@
 // unit tests for auth API endpoints
-const app = require("../testModule");
+const test_app = require("../testModule");
 const request = require("supertest");
 const crypto = require("crypto");
 // const assert = require("assert");
@@ -16,7 +16,7 @@ const isAdmin = false;
 describe("register: POST /auth/register", () => {
     describe("given a valid email and phone, username, and password combination", () => {
         test("should return a 201", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/register")
                 .send({
                     username: username,
@@ -32,7 +32,7 @@ describe("register: POST /auth/register", () => {
     // same credentials, user aleady exists
     describe("given an invalid/existing email or phone, username, and password combination", () => {
         test("should return a 500", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/register")
                 .send({
                     username: username,
@@ -50,7 +50,7 @@ describe("register: POST /auth/register", () => {
 describe("login: POST /auth/login", () => {
     describe("given a valid email and password", () => {
         test("should return a 200", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: email,
@@ -62,7 +62,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given an invalid email and password", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: email,
@@ -74,7 +74,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given a valid phone number and password", () => {
         test("should return a 200", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: phone,
@@ -86,7 +86,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given an invalid phone number and password", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: phone,
@@ -98,7 +98,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given a valid username and password", () => {
         test("should return a 200", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: username,
@@ -111,7 +111,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given an invalid username and password", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: username,
@@ -123,7 +123,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given a nonexistent username", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: crypto.randomBytes(32).toString("hex"),
@@ -135,7 +135,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given a nonexistent phone number", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: crypto.randomBytes(32).toString("hex"),
@@ -147,7 +147,7 @@ describe("login: POST /auth/login", () => {
 
     describe("given a nonexistent email", () => {
         test("should return a 401", async () => {
-            const response = await request(app)
+            const response = await request(test_app)
                 .post("/api/auth/login")
                 .send({
                     loginMethod: crypto.randomBytes(32).toString("hex"),
@@ -168,7 +168,7 @@ async function deleteUserAfterTest() {
     const userId = loginResponse._body._id;
     const JWTToken = loginResponse._body.accessToken;
 
-    await request(app)
+    await request(test_app)
         .delete("/api/users/" + userId)
         .set("token", "Bearer " + JWTToken)
         .send();
@@ -176,7 +176,7 @@ async function deleteUserAfterTest() {
 
 // delete the user after the test is run
 async function login() {
-    const loginResponse = await request(app)
+    const loginResponse = await request(test_app)
         .post("/api/auth/login")
         .send({
             loginMethod: username,

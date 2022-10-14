@@ -1,6 +1,6 @@
 // testing server module
 const express = require("express");
-const app = express();
+const test_app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/auth");
@@ -18,14 +18,14 @@ mongoose
     .then(() => console.log("DB connection successful"))
     .catch(err => console.log(err));
 
-app.use(express.json());
+test_app.use(express.json());
 
-app.use("/api/auth", authRoute); // endpoint for authentication
-app.use("/api/users", userRoute); // endpoint for users
-app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetting password if user forgot
+test_app.use("/api/auth", authRoute); // endpoint for authentication
+test_app.use("/api/users", userRoute); // endpoint for users
+test_app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetting password if user forgot
 
-app.listen(0, () => { // start server, find any available port, listen for connections
+test_app.listen(0, () => { // start server, find any available port, listen for connections
     console.log("backend is running");
 });
 
-module.exports = app;
+module.exports = test_app;

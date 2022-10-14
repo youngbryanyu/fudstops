@@ -46,7 +46,7 @@ router.delete("/:id", verify, async (req, res) => {
 });
 
 // GET - get 1 user
-router.get("/find/:id", verify, async (req, res) => {
+router.get("/find/:id", async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const { password, ...info } = user._doc; // split password from user data --> return everything but password in JSON response
