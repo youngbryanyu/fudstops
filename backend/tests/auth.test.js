@@ -1,18 +1,19 @@
 // unit tests for auth API endpoints
-const app = require("../index");
+const app = require("../testModule");
 const request = require("supertest");
 const crypto = require("crypto");
 // const assert = require("assert");
 
 // user info constants for tests
-const email = "test123@test.com";
-const username = "test123";
-const password = "test123";
-const phone = "1231231234";
+const email = "auth@test.com";
+const username = "auth123";
+const password = "auth123";
+// const phone = Math.floor(1000000000 + Math.random() * 900000000);
+const phone = "0000000000"
 const isAdmin = false;
 
 // test register API
-describe("POST /register", () => {
+describe("register: POST /auth/register", () => {
     describe("given a valid email and phone, username, and password combination", () => {
         test("should return a 201", async () => {
             const response = await request(app)
@@ -46,7 +47,7 @@ describe("POST /register", () => {
 });
 
 // test login API
-describe("POST /login", () => {
+describe("login: POST /auth/login", () => {
     describe("given a valid email and password", () => {
         test("should return a 200", async () => {
             const response = await request(app)
@@ -159,14 +160,10 @@ describe("POST /login", () => {
     });
 });
 
+
 // delete the user after the test is run
 async function deleteUserAfterTest() {
-    const loginResponse = await request(app)
-        .post("/api/auth/login")
-        .send({
-            loginMethod: username,
-            password: password,
-        });
+    const loginResponse = await login();
 
     const userId = loginResponse._body._id;
     const JWTToken = loginResponse._body.accessToken;
@@ -175,4 +172,16 @@ async function deleteUserAfterTest() {
         .delete("/api/users/" + userId)
         .set("token", "Bearer " + JWTToken)
         .send();
+}
+
+// delete the user after the test is run
+async function login() {
+    const loginResponse = await request(app)
+        .post("/api/auth/login")
+        .send({
+            loginMethod: username,
+            password: password,
+        });
+
+    return loginResponse;
 }

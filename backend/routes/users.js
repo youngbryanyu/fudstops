@@ -46,7 +46,7 @@ router.delete("/:id", verify, async (req, res) => {
 });
 
 // GET - get 1 user
-router.get("/find/:id", async (req, res) => {
+router.get("/find/:id", verify, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const { password, ...info } = user._doc; // split password from user data --> return everything but password in JSON response
@@ -74,42 +74,42 @@ router.get("/", verify, async (req, res) => {
 });
 
 // GET USER STATS - get user statistics (total users per month)
-router.get("/stats", async (req, res) => {
-    const today = new Date();
-    const lastYear = today.setFullYear(today.setFullYear() - 1); // 1 year ago
+// router.get("/stats", async (req, res) => {
+//     const today = new Date();
+//     const lastYear = today.setFullYear(today.setFullYear() - 1); // 1 year ago
 
-    const monthsArray = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    ];
+//     const monthsArray = [
+//         "January",
+//         "February",
+//         "March",
+//         "April",
+//         "May",
+//         "June",
+//         "July",
+//         "August",
+//         "September",
+//         "October",
+//         "November",
+//         "December"
+//     ];
 
-    try {
-        const data = await User.aggregate([ // aggregates users by month
-            {
-                $project: { // include these fields when aggregating
-                    month: { $month: "$createdAt" } // applies month to createdAt field --> returns int value representing month
-                }
-            }, {
-                $group: { // group documents by the group keys
-                    _id: "$month", // group key is month
-                    total: { $sum: 1 } // +1 for each doc in group (total number of users per month)
-                }
-            }
-        ])
-        res.status(200).json(data);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+//     try {
+//         const data = await User.aggregate([ // aggregates users by month
+//             {
+//                 $project: { // include these fields when aggregating
+//                     month: { $month: "$createdAt" } // applies month to createdAt field --> returns int value representing month
+//                 }
+//             }, {
+//                 $group: { // group documents by the group keys
+//                     _id: "$month", // group key is month
+//                     total: { $sum: 1 } // +1 for each doc in group (total number of users per month)
+//                 }
+//             }
+//         ])
+//         res.status(200).json(data);
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// });
 
 module.exports = router;

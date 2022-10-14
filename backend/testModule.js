@@ -1,4 +1,4 @@
-// index.js - entry point for all node apps, in react it's just what to render and where 
+// testing server module
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -24,7 +24,7 @@ app.use("/api/auth", authRoute); // endpoint for authentication
 app.use("/api/users", userRoute); // endpoint for users
 app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetting password if user forgot
 
-app.listen(8000, () => { // start server, listen for connections
+app.listen(0, () => { // start server, find any available port, listen for connections
     console.log("backend is running");
 });
 
