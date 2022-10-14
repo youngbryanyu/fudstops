@@ -6,6 +6,7 @@ import Login from "./pages/login/Login";
 import FoodInfo from "./pages/foodInfo/FoodInfo";
 import Menu from "./pages/menu/Menu";
 import Settings from "./pages/settings/Settings";
+import Preferences from "./pages/preferences/Preferences";
 
 import PersonalInfo from "./pages/personalInfo/PersonalInfo";
 
@@ -40,6 +41,7 @@ const App = () => {
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
+                            <Route path="/preferences" element={<Preferences />} />
                             <Route path="/personalInfo" element={<PersonalInfo />} /> {/* Should go to this when user is in settings page*/}
                         </>
                     )
@@ -55,6 +57,7 @@ const App = () => {
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
                             <Route path="/register" element={<Register />} />
+                            <Route path="/preferences" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
                         </>
                     )
