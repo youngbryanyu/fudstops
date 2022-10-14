@@ -17,13 +17,16 @@
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
+    "eyes": "^0.1.8",
     "joi": "^17.6.3",
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.3",
+    "node-fetch": "^2.6.7",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
     "twilio": "^3.82.2",
+    "xml2js": "^0.4.23",
     "xml2json": "^0.12.0"
   }
 }
