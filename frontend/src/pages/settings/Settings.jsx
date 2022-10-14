@@ -15,7 +15,6 @@ const Settings = () => {
         <div className="home">
             <Navbar />
             <div className="location"> 
-
                 <img
                     src={url}
                     alt=""
@@ -28,6 +27,7 @@ const Settings = () => {
                                 <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box> 
                             </div>
                         </Grid>
+
 
                         <Grid item xs={3}>
                             <div className="info2">
