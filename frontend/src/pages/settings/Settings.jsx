@@ -15,7 +15,6 @@ const Settings = () => {
         <div className="home">
             <Navbar />
             <div className="location"> 
-
                 <img
                     src={url}
                     alt=""

@@ -6,18 +6,19 @@ import axios from 'axios';
 import { AuthContext } from "../../authContext/AuthContext";
 import { useContext } from "react";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+
 
 const PersonalInfo = () => {
-    const [number, setNumber] = useState('')
-    const [email, setEmail] = useState('')
-    const [username, setUsername] = useState('')
-    const [picture, setPicture] = useState('')
-
-
     const { user } = useContext(AuthContext); // get user from auth context
     const url = 'users/find/' + user._id; //get the user id field from api
     // console.log(user._id);
     // console.log(user);
+    
+    const [number, setNumber] = useState('')
+    const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
+    const [picture, setPicture] = useState('')
 
     const getUserInfo = () => {
          axios.get(url) //put the entire url including the user
@@ -34,29 +35,25 @@ const PersonalInfo = () => {
 
     return (
         <div className="personalInfo">
+            {getUserInfo()}
             <Navbar />
             <div className="left">
                 <div className="personalDropdown">
-                    <button onClick={getUserInfo}>Get Your Information</button>
                     <div className="header">
                         <span>Personal Information</span>
                     </div>
                     <div className="personalItems">
                         <Link to="" className="link">
-                            <span className="highlight">Number: </span>
-                            {<p>{number}</p>}
+                            <span className="highlight">Number: {number} </span>
                         </Link>
                         <Link to="" className="link">
-                            <span className="highlight">Email: </span>
-                            {<p>{email}</p>}
+                            <span className="highlight">Email: {email} </span>
                         </Link>
                         <Link to="" className="link">
-                            <span className="highlight">Username: </span>
-                            {<p>{username}</p>}
+                            <span className="highlight">Username: {username} </span>
                         </Link>
                         <Link to="" className="link">
-                            <span className="highlight">Profile Pic: </span>
-                            {<p>{picture}</p>}
+                            <span className="highlight">Profile Pic: {picture} </span>
                         </Link>
                     </div>
                 </div>
