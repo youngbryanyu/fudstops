@@ -11,6 +11,9 @@
     background-size: cover;
     position: relative;
     .left {
+        .buttons {
+            transform: translate(0px, 300px);
+        }
         .personalDropdown {
             button {
                 transform: translate(250px, 22px);

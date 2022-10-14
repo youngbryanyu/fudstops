@@ -6,7 +6,6 @@ import axios from 'axios';
 import { AuthContext } from "../../authContext/AuthContext";
 import { useContext } from "react";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 
 
 const PersonalInfo = () => {
@@ -33,14 +32,36 @@ const PersonalInfo = () => {
         })
     }
 
+    const updateUserInfo = () => {
+        axios.put(url) //put the entire url including the user
+       .then(res => {
+           console.log(res);
+           setNumber(res.data.phone)
+           setEmail(res.data.email)
+           setUsername(res.data.username)
+           setPicture(res.data.profilePic)
+       }).catch(err => {
+           console.log(err)
+       })
+   }
+
     return (
         <div className="personalInfo">
             {getUserInfo()}
             <Navbar />
             <div className="left">
+                <div className= "buttons">
+                    <button onClick={updateUserInfo}> Change number </button>
+                    <button onClick={updateUserInfo}> Change email </button>
+                    <button onClick={updateUserInfo}> Change username </button>
+                    <button onClick={updateUserInfo}> Add picture</button>
+                    <button onClick={updateUserInfo}> Change picture</button>
+                    <button onClick={updateUserInfo}> Delete picture</button>
+                </div>
                 <div className="personalDropdown">
                     <div className="header">
                         <span>Personal Information</span>
+                        
                     </div>
                     <div className="personalItems">
                         <Link to="" className="link">
