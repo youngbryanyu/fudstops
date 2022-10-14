@@ -28,3 +28,4 @@ app.listen(8000, ()=>{ // start server, listen for connections
     console.log("backend is running");
 });
 
+module.exports = app;

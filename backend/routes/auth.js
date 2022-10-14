@@ -33,7 +33,7 @@ router.post("/login", async (req, res) => {
             ]
         });
         if (!user) {
-            res.status(401).json("Wrong email/phone/username, or password!"); // if no matching email in DB
+            res.status(401).json("Invalid email, phone, or username"); // if no matching email in DB
             return;
         }
 
@@ -60,3 +60,4 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router; 
+

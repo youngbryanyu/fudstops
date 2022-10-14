@@ -16,7 +16,7 @@ function verify(req, res, next) {
             next();
         })
     } else {
-        return res.status(401).json("You are not authenticated"); // 401 is not authenticated
+        return res.status(401).json("You are not authenticated " + req.headers.token); // 401 is not authenticated
     }
 }
 
