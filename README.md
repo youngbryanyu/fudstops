@@ -27,5 +27,5 @@ In the `backend` directory run:
 
 In the `backend` directory run:
 
-`yarn test`
+`yarn test --runInBand`
 

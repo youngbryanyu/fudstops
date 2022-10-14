@@ -1,27 +1,58 @@
 // JS for a menu list item
 import "./listItem.scss";
-import {
-    ThumbUpAltOutlined,
-    ThumbDownOutlined,
-    FavoriteBorder,
-    Info,
-} from "@material-ui/icons";
 import { useState, useEffect } from 'react';
+import { IconButton } from "@material-ui/core";
+import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import StarIcon from '@material-ui/icons/Star';
+import InfoIcon from '@material-ui/icons/Info';
 
 export default function ListItem({ index, isScrollingLeft, isScrollingRight }) {
     const { height, width } = useWindowDimensions();
     const [isHovered, setIsHovered] = useState(false);
-    const trailer =
-        "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761";
+    const trailer = "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761";
     
-    // const handleHoverRight = (isScrollingLeft, isScrollingRight) => {
-    //     if (isScrollingLeft || isScrollingRight) {
-    //         setIsHovered(false); // don't want to hover and expand items while scrolling
-    //     } else {
-    //         setIsHovered(true);
-    //     }
-    // }
-    
+    const [starClick1, setStarClick1] = useState(false);
+    const [starClick2, setStarClick2] = useState(false);
+    const [starClick3, setStarClick3] = useState(false);
+    const [starClick4, setStarClick4] = useState(false);
+    const [starClick5, setStarClick5] = useState(false);
+
+    const handleClick1 = () => {
+        setStarClick1(true);
+        setStarClick2(false);
+        setStarClick3(false);
+        setStarClick4(false);
+        setStarClick5(false);
+    }
+    const handleClick2 = () => {
+        setStarClick1(true);
+        setStarClick2(true);
+        setStarClick3(false);
+        setStarClick4(false);
+        setStarClick5(false);
+    }
+    const handleClick3 = () => {
+        setStarClick1(true);
+        setStarClick2(true);
+        setStarClick3(true);
+        setStarClick4(false);
+        setStarClick5(false);
+    }
+    const handleClick4 = () => {
+        setStarClick1(true);
+        setStarClick2(true);
+        setStarClick3(true);
+        setStarClick4(true);
+        setStarClick5(false);
+    }
+    const handleClick5 = () => {
+        setStarClick1(true);
+        setStarClick2(true);
+        setStarClick3(true);
+        setStarClick4(true);
+        setStarClick5(true);
+    }
+
     return (
         <div
             className="listItem"
@@ -38,10 +69,24 @@ export default function ListItem({ index, isScrollingLeft, isScrollingRight }) {
                     <video src={trailer} autoPlay={true} loop />
                     <div className="itemInfo">
                         <div className="icons">
-                            <Info className="icon" />
-                            <FavoriteBorder className="icon" />
-                            <ThumbUpAltOutlined className="icon" />
-                            <ThumbDownOutlined className="icon" />
+                            <IconButton color="inherit">
+                                <InfoIcon />
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleClick1}>
+                                {starClick1 ? <StarIcon /> : <StarOutlineIcon />}
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleClick2}>
+                                {starClick2 ? <StarIcon /> : <StarOutlineIcon />}
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleClick3}>
+                                {starClick3 ? <StarIcon /> : <StarOutlineIcon />}
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleClick4}>
+                                {starClick4 ? <StarIcon /> : <StarOutlineIcon />}
+                            </IconButton>
+                            <IconButton color="inherit" onClick={handleClick5}>
+                                {starClick5 ? <StarIcon /> : <StarOutlineIcon />}
+                            </IconButton>
                         </div>
                         <div className="itemInfoTop">
                             <span>Food Item Name</span>
