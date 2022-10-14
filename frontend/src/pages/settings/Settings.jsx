@@ -1,38 +1,86 @@
 // JS for settings page
 import Navbar from "../../components/navbar/Navbar";
-import Featured from "../home/featured/Featured";
-import "./settings.scss";
+import "../location/location.scss";
+import "../menu/menu.scss";
 import Footer from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
-
+import Box from "@material-ui/core/Box";
+import Grid from '@material-ui/core/Grid';
 
 const Settings = () => {
+
+    let url = "https://cff2.earth.com/uploads/2018/10/18192727/What-determines-our-food-preferences-and-decisions.jpg";
+
     return (
-        <div className="settings">
+        <div className="home">
             <Navbar />
-            <h1>Info & Settings</h1>
+            <div className="location"> 
 
-             <div className="container">
-                    <Link to="/personalInfo" className="link">
-                        <button className="">Number</button>
-                    </Link>
-                    <Link to="/personalInfo" className="link">
-                        <button className="">Email</button>
-                    </Link>
-                    <Link to="/personalInfo" className="link">
-                        <button className="">Profile Picture</button>
-                    </Link>
-                    <button className="">Preferences</button>
-                    <button className="">Location</button>
+                <img
+                    src={url}
+                    alt=""
+                />
+
+                <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
+                        <Grid item xs={6}>
+                            <div className="info">
+                                <Box className="box"><span className="boxHeader">{"Info & Settings"}</span></Box>
+                                <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box> 
+                            </div>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <div className="info2">
+                                <Box className="box">
+                                    <Link to="/personalInfo">
+                                        <button className="boxHeader">Personal Information</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Preferences</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Location</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Recommendations</button>
+                                    </Link>
+                                </Box>
+                            </div>
+                        </Grid>
+                        
+                        <Grid item xs={3}>
+                            <div className="info3">
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Report Error</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Notifications</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Delete Account</button>
+                                    </Link>
+                                </Box>
+                                <Box className="box">
+                                    <Link to="">
+                                        <button className="boxHeader">Logout</button>
+                                    </Link>
+                                </Box>
+                            </div>
+                        </Grid>
+                </Grid>
+                
             </div>
-
-            <div className="container2">
-                    <button className="">Reccomendations</button>
-                    <button className="">Report Error</button>
-                    <button className="">Notfications</button>
-                    <button className="">Delete Account</button>
-                    <button className="">Logout</button>
-            </div> 
             <Footer />
         </div>
     );
