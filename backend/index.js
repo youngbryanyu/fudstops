@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
 const passwordResetRoute = require("./routes/passwordReset");
+const menuInfoRoute = require("./routes/menuInfo");
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(express.json());
 app.use("/api/auth", authRoute); // endpoint for authentication
 app.use("/api/users", userRoute); // endpoint for users
 app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetting password if user forgot
+app.use("/api/menuInfo", menuInfoRoute); // endpoint for menu information
+
 
 app.listen(8000, () => { // start server, listen for connections
     console.log("backend is running");
