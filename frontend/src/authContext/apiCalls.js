@@ -16,3 +16,13 @@ export const login = async (user, dispatch) => {
 export const logout = async (dispatch) => {
     dispatch(logoutSuccess());
 }
+
+//on frontend page do updatePreferences({id: , other stuff})
+export const updatePreferences = async (user) => {
+    try {
+        const res = await axios.put(`users/${user.id}`, user);
+        return res.data; // return promise which is json of updated user 
+    } catch (err) {
+        console.log("updatePreferences Failed!")
+    }
+};
