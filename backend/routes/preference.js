@@ -8,20 +8,18 @@ router.post("/", async (req, res) => {
         const preferences = await Preference.findOne({
             username: req.body.username
         });
-        console.log(preferences);
         if (preferences) {
             const updatedPreferences = await Preference.findByIdAndUpdate(preferences._id, {
                 preferences: req.body.preferences
-            });
-            res.status(201).json("Preferences were updated.");
+            }, { new: true });
+            res.status(201).json("Preferences were updated." + updatedPreferences);
             return;
         } else {
             // save preferences to database
-            const newPreferences = new Preference({
+            const newPreferences = await new Preference({
                 username: req.body.username,
                 preferences: req.body.preferences
-            }, { new: true });
-            await newPreferences.save();
+            }).save();
 
             res.status(201).json("New preferences were saved: " + newPreferences);
             return;
@@ -33,25 +31,23 @@ router.post("/", async (req, res) => {
 });
 
 // get preferences from database
-router.get("/", async (req, res) => {
+router.get("/:username", async (req, res) => {
     try {
         const preferences = await Preference.findOne({
-            username: req.body.username
+            username: req.params.username
         });
 
         if (!preferences) {
-            res.status(500).json("Error retrieving preferences (username likely doesn't exist)");
-            console.log("Error retrieving preferences (username likely doesn't exist)");
+            res.status(500).json("Error retrieving preferences (user likely doesn't have any yet)");
+            // console.log("Error retrieving preferences (username likely doesn't exist)");
             return;
         }
 
-        res.status(200).json("Successfuly retrieved preferences: " + preferences);
-        console.log("Successfuly retrieved preferences: " + preferences);
-
-        return preferences;
+        res.status(200).json(preferences); // return preferences
+        // console.log("Successfully retrieved preferences: " + preferences);
     } catch (error) {
-        res.status(500).json(error);
-        console.log("Error retrieving preferences: " + error);
+        res.status(500).json("Error retriving preferences (user likely doesn't have any yet):" + error);
+        // console.log("Error retrieving preferences: " + error);
     }
 });
 

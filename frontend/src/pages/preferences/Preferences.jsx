@@ -8,19 +8,33 @@ import Grid from '@material-ui/core/Grid';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../../authContext/AuthContext";
-import Button from '@material-ui/core/Button';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import updatePreferences from "../../authContext/apiCalls";
+import axios from "axios";
+
+// preferences
+const VEGAN = "Vegan";
+const VEGETARIAN = "Vegetarian";
+
+// restrictions
+const COCONUT = "Coconut";
+const EGGS = "Eggs";
+const FISH = "Fish";
+const GLUTEN = "Gluten";
+const SESAME = "Sesame";
+const SHELLFISH = "Shellfish";
+const SOY = "Soy";
+const TREE_NUTS = "Tree Nuts";
+const WHEAT = "Wheat";
+const MILK = "Milk";
+const PEANUTS = "Peanuts";
 
 const Preferences = () => {
+    const { user } = useContext(AuthContext); // get user from auth context, can directly index into its fields
+    let username = user.username;
 
-    const { userPrev } = useContext(AuthContext); // get user from auth context
-    const [user, setUser] = useState({});
-    const [pref1, setPref1] = useState(false);
-    const [pref2, setPref2] = useState(false);
+    const [vegetarian, setVegetarian] = useState(false);
+    const [vegan, setVegan] = useState(false);
     const [rest1, setRest1] = useState(false);
     const [rest2, setRest2] = useState(false);
     const [rest3, setRest3] = useState(false);
@@ -32,11 +46,13 @@ const Preferences = () => {
     const [rest9, setRest9] = useState(false);
     const [rest10, setRest10] = useState(false);
     const [rest11, setRest11] = useState(false);
-    const [prefs, setPrefs] = useState([]);
-    const [rests, setRests] = useState([]);
 
-    const handlePref1 = () => setPref1(!pref1);
-    const handlePref2 = () => setPref2(!pref2);
+    const [prefs, setPrefs] = useState([]); // preferences
+    const [rests, setRests] = useState([]); // restrictions
+
+    // handlers for toggling checkboxes
+    const handleVegetarian = () => setVegetarian(!vegetarian);
+    const handleVegan = () => setVegan(!vegan);
     const handleRest1 = () => setRest1(!rest1);
     const handleRest2 = () => setRest2(!rest2);
     const handleRest3 = () => setRest3(!rest3);
@@ -49,41 +65,92 @@ const Preferences = () => {
     const handleRest10 = () => setRest10(!rest10);
     const handleRest11 = () => setRest11(!rest11);
 
-    const handleSubmit = () => {
-        
-        const preferences = [];
-        const restrictions = [];
+    /**
+     * Load initial preferences on page render
+     */
+    const isFirstRender = useRef(true); // don't do anything on first render
+    useEffect(() => {
+        if (isFirstRender.current) {
+            setInitialPreferences();
+        }
+        isFirstRender.current = false;
+    }, []);
 
-        if(pref1) preferences.push("Vegetarian");
-        if(pref2) preferences.push("Vegan");
-        if(rest1) restrictions.push("Coconut");
-        if(rest2) restrictions.push("Eggs");
-        if(rest3) restrictions.push("Fish");
-        if(rest4) restrictions.push("Gluten");
-        if(rest5) restrictions.push("Sesame");
-        if(rest6) restrictions.push("Shellfish");
-        if(rest7) restrictions.push("Soy");
-        if(rest8) restrictions.push("Tree Nuts");
-        if(rest9) restrictions.push("Wheat");
-        if(rest10) restrictions.push("Milk");
-        if(rest11) restrictions.push("Peanuts");
+    /**
+     * Get initial preferences then set local variables to those. Called from the useeffect above
+     */
+    const setInitialPreferences = async () => {
+        try {
+            const response = await axios.get('preference/' + username);
+            const initialPreferences = response.data.preferences;
+            if (initialPreferences.includes('Vegan')) {
+                // console.log("set vegan to true initially")
+                setVegan(true);
+            }
+            if (initialPreferences.includes('Vegetarian')) {
+                // console.log("set vegetarian to true initially")
+                setVegetarian(true);
+            }
 
-        console.log(restrictions);
-        console.log(preferences);
+            const preferences = []; // set preferences
+            if (vegetarian) preferences.push(VEGETARIAN);
+            if (vegan) preferences.push(VEGAN);
+            setPrefs(preferences);
 
-        setPrefs(preferences);
-        setRests(restrictions);
+            // console.log(initialPreferences);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-        //updatePreferences({userPrev, preferences, restrictions}).then(returnedUser => setUser(returnedUser));
+    /**
+     * Update preferences when any of the preferences changes
+     */
+    const isFirstRender_update = useRef(true); // don't do anything on first render
+    useEffect(() => {
+        if (isFirstRender_update.current) {
+            isFirstRender_update.current = false;
+            return; // don't update DB on initial render
+        }
 
-    }
+        const preferences = []; // set preferences
+        if (vegetarian) preferences.push(VEGETARIAN);
+        if (vegan) preferences.push(VEGAN);
+
+        setPrefs(preferences); // triggers useEffect below
+    }, [vegan, vegetarian]);
+
+    /**
+     * Update the preferences in the database when prefs changes, not on first render though.
+     */
+    const isFirstRender_updatePrefsDB = useRef(true); // don't do anything on first render
+    useEffect(() => {
+        if (isFirstRender_updatePrefsDB.current) {
+            isFirstRender_updatePrefsDB.current = false;
+            return; // don't update DB on initial render
+        }
+
+        const updatePreferencesInDB = async () => {
+            try {
+                await axios.post('preference', {
+                    username: username,
+                    preferences: prefs
+                });
+                // console.log("successfully updated preferences");
+            } catch (error) {
+                // console.log("failed to update preferences: " + error);
+            }
+        }
+
+        updatePreferencesInDB(); // update the preferences in the database
+    }, [prefs]);
 
     let url = "https://cff2.earth.com/uploads/2018/10/18192727/What-determines-our-food-preferences-and-decisions.jpg";
 
     return (
         <div className="home">
             <Navbar />
-            <div className="location"> 
+            <div className="location">
 
                 <img
                     src={url}
@@ -91,90 +158,89 @@ const Preferences = () => {
                 />
 
                 <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
-                        <Grid item xs={6}>
-                            <div className="info">
-                                <Box className="box"><span className="boxHeader">{"Preferences Page"}</span></Box>
-                                <Box className="box"><span className="boxCaption">{"Select Your Dietary Preferences & Restrictions!"}</span></Box>
-                                <Box className="box"><span className="boxDesc">{`Your Dietary Preferences: ${prefs.toString()}`}</span></Box>
-                                <Box className="box"><span className="boxDesc">{`Your Dietary Restrictions: ${rests.toString()}`}</span></Box>
+                    <Grid item xs={6}>
+                        <div className="info">
+                            <Box className="box"><span className="boxHeader">{"Preferences Page"}</span></Box>
+                            <Box className="box"><span className="boxCaption">{"Select Your Dietary Preferences & Restrictions!"}</span></Box>
+                            <Box className="box"><span className="boxDesc">{`Your Dietary Preferences: ${prefs.toString()}`}</span></Box>
+                            <Box className="box"><span className="boxDesc">{`Your Dietary Restrictions: ${rests.toString()}`}</span></Box>
 
+                            <Box className="box"><span className="boxHeader2">
+                            </span></Box>
+                        </div>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                        <div className="info2">
+                            <FormGroup>
+                                <Box className="box"><span className="boxHeader">{"Preferences"}</span></Box>
                                 <Box className="box"><span className="boxHeader2">
-                                        <Button variant="text" endIcon={<ArrowUpward />} onClick={handleSubmit}>Submit</Button>
-                                    </span></Box>
-                            </div>
-                        </Grid>
+                                    <FormControlLabel control={<Checkbox />} label={VEGETARIAN} checked={vegetarian} onChange={handleVegetarian} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={VEGAN} checked={vegan} onChange={handleVegan} />
+                                </span></Box>
+                            </FormGroup>
+                        </div>
+                    </Grid>
 
-                        <Grid item xs={3}>
-                            <div className="info2">
-                                <FormGroup>
-                                    <Box className="box"><span className="boxHeader">{"Preferences"}</span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Vegetarian" checked={pref1} onChange={handlePref1}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Vegan" checked={pref2} onChange={handlePref2}/>
-                                    </span></Box>
-                                </FormGroup>
-                            </div>
-                        </Grid>
-                        
-                        <Grid item xs={1}>
-                            <div className="info3-1">
-                                <FormGroup  >
-                                    <Box className="box"><span className="boxHeader">{"Restrictions"}</span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Coconut" checked={rest1} onChange={handleRest1}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Eggs" checked={rest2} onChange={handleRest2}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Fish" checked={rest3} onChange={handleRest3}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Gluten" checked={rest4} onChange={handleRest4}/>   
-                                    </span></Box>
-                                </FormGroup>
-                            </div>
-                        </Grid>
+                    <Grid item xs={1}>
+                        <div className="info3-1">
+                            <FormGroup  >
+                                <Box className="box"><span className="boxHeader">{"Restrictions"}</span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={COCONUT} checked={rest1} onChange={handleRest1} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={EGGS} checked={rest2} onChange={handleRest2} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={FISH} checked={rest3} onChange={handleRest3} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={GLUTEN} checked={rest4} onChange={handleRest4} />
+                                </span></Box>
+                            </FormGroup>
+                        </div>
+                    </Grid>
 
-                        <Grid item xs={1}>
-                            <div className="info4">
-                                <FormGroup  >
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Sesame" checked={rest5} onChange={handleRest5}/> 
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Shellfish" checked={rest6} onChange={handleRest6}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Soy" checked={rest7} onChange={handleRest7}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Tree Nuts" checked={rest8} onChange={handleRest8}/>
-                                    </span></Box>
-                                </FormGroup>
-                            </div>
-                        </Grid>
+                    <Grid item xs={1}>
+                        <div className="info4">
+                            <FormGroup  >
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={SESAME} checked={rest5} onChange={handleRest5} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={SHELLFISH} checked={rest6} onChange={handleRest6} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={SOY} checked={rest7} onChange={handleRest7} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={TREE_NUTS} checked={rest8} onChange={handleRest8} />
+                                </span></Box>
+                            </FormGroup>
+                        </div>
+                    </Grid>
 
-                        <Grid item xs={1} className="info5">
-                            <div className="pr-5">
-                                <FormGroup  >
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Wheat" checked={rest9} onChange={handleRest9}/>
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Milk" checked={rest10} onChange={handleRest10}/>   
-                                    </span></Box>
-                                    <Box className="box"><span className="boxHeader2">
-                                        <FormControlLabel control={<Checkbox />} label="Peanuts" checked={rest11} onChange={handleRest11}/>  
-                                    </span></Box>
-                                </FormGroup>
-                            </div>
-                        </Grid>
+                    <Grid item xs={1} className="info5">
+                        <div className="pr-5">
+                            <FormGroup  >
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={WHEAT} checked={rest9} onChange={handleRest9} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={MILK} checked={rest10} onChange={handleRest10} />
+                                </span></Box>
+                                <Box className="box"><span className="boxHeader2">
+                                    <FormControlLabel control={<Checkbox />} label={PEANUTS} checked={rest11} onChange={handleRest11} />
+                                </span></Box>
+                            </FormGroup>
+                        </div>
+                    </Grid>
 
                 </Grid>
-                
+
             </div>
             <Footer />
         </div>
