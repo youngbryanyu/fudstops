@@ -59,6 +59,7 @@ const App = () => {
                             <Route path="/register" element={<Register />} />
                             <Route path="/preferences" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
+                            <Route path="/personalInfo" element={<Register />} />
                         </>
                     )
                 }

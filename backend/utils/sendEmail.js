@@ -30,3 +30,6 @@ module.exports = async (email, subject, text) => {
 		return error;
 	}
 };
+
+// TODO: create new gmail for sending emails if needed for testing
+

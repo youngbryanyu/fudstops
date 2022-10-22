@@ -20,7 +20,7 @@ const mongoose = require("mongoose");
 
 const MenuItemSchema = new mongoose.Schema( // create schema for Item in DB
     {
-        ID: { type: String, required: true },
+        ID: { type: String, required: true, unique: true },
         name: { type: String, required: true },
         diningCourt: { type: String }, //dining court that this menu item belongs to
         dateServed: { type: Date }, //date that this item was served (tentative field)
