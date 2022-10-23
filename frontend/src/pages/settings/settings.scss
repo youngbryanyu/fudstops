@@ -2,62 +2,313 @@
 .settings {
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0,) 0%, 
-        rgba(0, 0, 0, 1) 100%
-        ), 
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0, ) 0%,
+            rgba(0, 0, 0, 1) 100%),
         url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
     position: relative;
-    h1 {
-        padding-left: 750px;
-        line-height: 2.5;
-        color: white
-    }
 
-   
-    .container {
-        button {
-            height: 30px;
-            border-radius: 5px;
-            background-color: black;
-            text-align: center;
-            color: white;
-            font-size: 15px;
-            font-weight: 200;
+    .category {
+        position: absolute;
+        top: 80px;
+        left: 50px;
+        font-size: 30px;
+        font-weight: 500;
+        color: black;
+        display: flex;
+        align-items: center;
+
+        select {
             cursor: pointer;
-            border: none;
-            display: flex;
-            margin: 10px;
-            margin-top: 50px;
-           transform: translate(1000px, 100px); 
-
-           &:hover {
-               background-color: goldenrod;
-           }
+            background-color: var(--main-color);
+            border: 1px solid white;
+            color: white;
+            margin-left: 20px;
+            padding: 5px;
         }
     }
 
-    .container2 {
-        button {
-            height: 30px;
-            border-radius: 5px;
+    .box {
+        margin: 10px;
+        width: auto;
+
+        .title {
+            display: inline-flex;
+            padding: 8px;
+            font-size: 24px;
             background-color: black;
-            text-align: center;
+            border-radius: 5px;
             color: white;
-            font-size: 15px;
-            font-weight: 200;
-            cursor: pointer;
             border: none;
-            display: flex;
-            margin: 10px;
-            margin-top: 50px;
-            transform: translate(250px, -200px); 
+        }
+
+        .header {
+            display: inline-flex;
+            padding: 8px;
+            font-size: 18px;
+            background-color: black;
+            border-radius: 5px;
+            color: white;
+            border: none;
 
             &:hover {
+                cursor: pointer;
                 background-color: goldenrod;
             }
         }
+
+        .boxHeader2 {
+            display: inline-flex;
+            padding: 5px;
+            font-size: 5px;
+            background-color: goldenrod;
+            border-radius: 5px;
+            margin: -6px 0px;
+        }
+
+        .boxCaption {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 16px;
+            background-color: black;
+            border-radius: 5px;
+            // font-family: 'Playfair Display', serif;
+
+        }
+
+        .boxDesc {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 12px;
+            background-color: black;
+            border-radius: 5px;
+            // font-family: 'Playfair Display', serif;
+
+        }
+
+    }
+
+    .about {
+        width: 50%;
+        height: 60%;
+        position: absolute;
+        left: 5%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+
+        .locationName {
+            margin: 20px 0px;
+            font-size: 28px;
+        }
+
+        .stationName {
+            margin: 10px 0px;
+            font-size: 18px;
+        }
+
+        .desc {
+            margin: 20px 0px;
+        }
+
+        .buttons {
+            display: flex;
+
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 500;
+                margin-right: 10px;
+                cursor: pointer;
+
+                &.more {
+                    background-color: goldenrod;
+                    color: white;
+                }
+
+                &.diningCourt {
+                    background-color: white;
+                    color: var(--main-color);
+                }
+
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+
+    .info2 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 35%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+
+        .locationName {
+            margin: 20px 0px;
+            font-size: 28px;
+        }
+
+        .stationName {
+            margin: 10px 0px;
+            font-size: 18px;
+        }
+
+        .desc {
+            margin: 20px 0px;
+        }
+
+        .buttons {
+            display: flex;
+
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 500;
+                margin-right: 10px;
+                cursor: pointer;
+
+                &.more {
+                    background-color: goldenrod;
+                    color: white;
+                }
+
+                &.diningCourt {
+                    background-color: white;
+                    color: var(--main-color);
+                }
+
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+
+    .info3 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 65%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+
+        .locationName {
+            margin: 20px 0px;
+            font-size: 28px;
+        }
+
+        .stationName {
+            margin: 10px 0px;
+            font-size: 18px;
+        }
+
+        .desc {
+            margin: 20px 0px;
+        }
+
+        .buttons {
+            display: flex;
+
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 500;
+                margin-right: 10px;
+                cursor: pointer;
+
+                &.more {
+                    background-color: goldenrod;
+                    color: white;
+                }
+
+                &.diningCourt {
+                    background-color: white;
+                    color: var(--main-color);
+                }
+
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+
+    .info2 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 35%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info3 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 60%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info3-1 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 55%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info4 {
+        width: 25%;
+        height: 60%;
+        position: absolute;
+        left: 70%;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .info5 {
+        width: 25%;
+        height: 60%;
+        left: 85%;
+        position: absolute;
+        bottom: 100px;
+        color: white;
+        display: inline-flex;
+        flex-direction: column;
     }
 }

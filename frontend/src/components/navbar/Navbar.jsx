@@ -3,7 +3,7 @@ import { ArrowDropDown, Notifications, Search } from "@material-ui/icons";
 import { useState } from "react";
 import "./navbar.scss";
 import logo from "../fudstops_white_logo.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { logout } from "../../authContext/apiCalls";
 import { AuthContext } from "../../authContext/AuthContext";
@@ -11,10 +11,12 @@ import { AuthContext } from "../../authContext/AuthContext";
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const { dispatch } = useContext(AuthContext); // get auth context
+    const navigate = useNavigate();
 
     const handleLogout = (e) => {
         e.preventDefault(); // need this to prevent default behavior or else login won't work
         logout(dispatch); // login and store the user in local storage (context)
+        navigate("/login");
     }
 
     window.onscroll = () => { // want to make nav bar black when we scroll past y=0
