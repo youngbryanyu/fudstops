@@ -10,7 +10,7 @@ import "./list.scss";
 
 export default function List(props) {
     const [slideNumber, setSlideNumber] = useState(0);
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const MAX_NUM_SCROLLS = 6; // 10 items, 4 on screen at a time
 
     const listRef = useRef();

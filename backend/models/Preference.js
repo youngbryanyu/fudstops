@@ -1,7 +1,7 @@
-// User.js - defines Schema model in DB for a user
+// defines Schema model in DB for a preference
 const mongoose = require("mongoose");
 
-const PreferenceSchema = new mongoose.Schema( // create schema for User in DB
+const PreferenceSchema = new mongoose.Schema( // create schema for preferneces in DB
     {
         username: { type: String, required: true, unique: true },
         preferences: { type: [], required: false },

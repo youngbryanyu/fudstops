@@ -1,5 +1,5 @@
 // Javascript for page displaying a user's favorite menu items
-import Footer from "../../components/footer/Footer";
+// import Footer from "../../components/footer/Footer";
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
 import "./favorites.scss";

@@ -37,7 +37,7 @@ const Settings = () => {
                                 </Box>
                                 <Box className="box">
                                     <Link to="/preferences">
-                                        <button className="boxHeader">Preferences</button>
+                                        <button className="boxHeader">Dietary Preferences</button>
                                     </Link>
                                 </Box>
                                 <Box className="box">

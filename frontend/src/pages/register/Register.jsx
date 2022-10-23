@@ -126,6 +126,7 @@ export default function Register() {
             }
         }
         handleLogin();
+    // eslint-disable-next-line
     }, [email, phone]);
 
     return (
