@@ -40,22 +40,22 @@ const Settings = () => {
                     <div className="info2">
                         <Box className="box">
                             <Link to="/personalInfo" className="link">
-                                <button className="header">Personal Information</button>
+                                <span className="header">Personal Information</span>
                             </Link>
                         </Box>
                         <Box className="box">
                             <Link to="/preferences" className="link">
-                                <button className="header">Dietary Preferences</button>
+                                <span className="header">Dietary Preferences</span>
                             </Link>
                         </Box>
                         <Box className="box">
                             <Link to="" className="link">
-                                <button className="header">Location</button>
+                                <span className="header">Location</span>
                             </Link>
                         </Box>
                         <Box className="box">
                             <Link to="" className="link">
-                                <button className="header">Recommendations</button>
+                                <span className="header">Recommendations</span>
                             </Link>
                         </Box>
                     </div>
@@ -64,18 +64,18 @@ const Settings = () => {
                 <Grid item xs={3}>
                     <div className="info3">
                         <Box className="box">
-                            <Link to="" className="link">
-                                <button className="header">Report Error</button>
+                            <Link to="/reportProblem" className="link">
+                                <span className="header">Report a Problem</span>
                             </Link>
                         </Box>
                         <Box className="box">
                             <Link to="" className="link">
-                                <button className="header">Notifications</button>
+                                <span className="header">Notifications</span>
                             </Link>
                         </Box>
                         <Box className="box">
                             <Link to="" className="link">
-                                <button className="header">Delete Account</button>
+                                <span className="header">Delete Account</span>
                             </Link>
                         </Box>
                         <Box className="box">

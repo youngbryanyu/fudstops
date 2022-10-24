@@ -27,7 +27,7 @@ const FoodInfo = () => {
                             <span className="highlight">Fat: </span>
                         </Link>
                         <Link to="" className="link">
-                            <span className="highlight">Protien: </span>
+                            <span className="highlight">Protein: </span>
                         </Link>
                     </div>
                 </div>

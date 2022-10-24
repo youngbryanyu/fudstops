@@ -87,7 +87,7 @@ export default function Login() {
             </div>
 
             <div className="container">
-                <div className="recentlyRegisteredMessage"> {/* error message if invalid credentials (user == null) */}
+                <div className="recentlyRegisteredMessage"> {/* message if brought to login after registering */}
                     <p style={{ visibility: !recentlyRegistered && "hidden" }}>
                         {JUST_REGISTERED_MESSAGE}
                     </p>

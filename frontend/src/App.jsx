@@ -21,6 +21,7 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
+import ReportProblem from "./pages/reportProblem/reportProblem";
 
 const App = () => {
     const { user } = useContext(AuthContext); // get user from auth context
@@ -39,10 +40,11 @@ const App = () => {
                             <Route path="/forgotPasswordReset/:id/:token" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/menu/:location" element={<Menu />} />
+                            <Route path="/personalInfo" element={<PersonalInfo />} />
+                            <Route path="/preferences" element={<Preferences />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
-                            <Route path="/preferences" element={<Preferences />} />
-                            <Route path="/personalInfo" element={<PersonalInfo />} /> {/* Should go to this when user is in settings page*/}
+                            <Route path="/reportProblem" element={<ReportProblem />} />
                         </>
                     )
                 }
@@ -57,9 +59,10 @@ const App = () => {
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
                             <Route path="/register" element={<Register />} />
+                            <Route path="/personalInfo" element={<Register />} />
                             <Route path="/preferences" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
-                            <Route path="/personalInfo" element={<Register />} />
+                            <Route path="/reportProblem" element={<Register />} />
                         </>
                     )
                 }

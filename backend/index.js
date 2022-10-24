@@ -11,6 +11,7 @@ const passwordResetRoute = require("./routes/passwordReset");
 const menuInfoRoute = require("./routes/menuInfo");
 const preferenceRoute = require("./routes/preference");
 const restrictionRoute = require("./routes/restriction");
+const problemRoute = require("./routes/problem");
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use("/api/forgotPasswordReset", passwordResetRoute); // endpoint for resetti
 app.use("/api/menuInfo", menuInfoRoute); // endpoint for menu information
 app.use("/api/preference", preferenceRoute); // endpoint for preferences
 app.use("/api/restriction", restrictionRoute); // endpoint for restrictions
+app.use("/api/problem", problemRoute); // endpoint for reporting problems
 
 
 app.listen(8000, () => { // start server, listen for connections
