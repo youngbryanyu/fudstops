@@ -115,7 +115,8 @@ router.post("/:id/:token", async (req, res) => {
             { password: newPassword },
             { new: true } // makes sure the updated user is returned in the JSON
         );
-        await ResetPasswordToken.findByIdAndDelete(token._id); // delete token after password is changed. // TODO: delete after testing 
+
+        const respo = await ResetPasswordToken.findByIdAndDelete(token._id); // delete token after password is changed. // TODO: delete after testing 
 
         res.status(200).send({ message: "Password reset successfully" });
     } catch (error) {

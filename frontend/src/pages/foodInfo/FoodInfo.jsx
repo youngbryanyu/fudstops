@@ -9,7 +9,7 @@ const FoodInfo = () => {
         <div className="foodInfo">
             <Navbar />
             <div className="nutrition">
-                <div className="nutrtionFacts">
+                <div className="nutritionFacts">
                     <div className="header">
                     <span>Nutrtion Facts for: Specific Menu Item</span>
                     </div>

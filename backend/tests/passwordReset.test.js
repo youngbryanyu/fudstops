@@ -33,12 +33,62 @@ describe("send password reset link: POST /forgotPasswordReset", () => {
                     userId: userId
                 });
             expect(response.statusCode).toBe(200);
-
-            deleteUserAfterTest();
         });
     });
 });
 
+// test verify token and user id
+describe("verify token and user: GET /forgotPasswordReset/:id/:token", () => {
+    describe("given an invalid user id and/or token", () => {
+        test("should return a 400", async () => {
+            const response = await request(test_app)
+                .get("/api/forgotPasswordReset/invalid_user/invalid_token")
+                .send();
+            expect(response.statusCode).toBe(400);
+        });
+    });
+
+    describe("given a valid user id and/or token", () => {
+        test("should return a 200", async () => {
+            const loginResponse = await login();
+            const userId = loginResponse._body._id; // get user id
+
+            const link = "/api/forgotPasswordReset/" + userId + "/" + resetTokenValue;
+            const response = await request(test_app)
+                .get(link)
+                .send();
+            expect(response.statusCode).toBe(200);
+        });
+    });
+});
+
+// test reset password
+describe("reset password: POST /forgotPasswordReset/:id/:token", () => {
+    describe("given an invalid user id and/or token", () => {
+        test("should return a 400", async () => {
+            const response = await request(test_app)
+                .post("/api/forgotPasswordReset/invalid_user/invalid_token")
+                .send();
+            expect(response.statusCode).toBe(400);
+        });
+    });
+
+    describe("given a valid user id and/or token", () => {
+        test("should return a 200", async () => {
+            const loginResponse = await login();
+            const userId = loginResponse._body._id; // get user id
+
+            const link = "/api/forgotPasswordReset/" + userId + "/" + resetTokenValue;
+            const response = await request(test_app)
+                .post(link)
+                .send({
+                    password: "new_password"
+                });
+            expect(response.statusCode).toBe(200);
+            deleteUserAfterTest(); // delete temp user after last test
+        });
+    });
+});
 
 // delete the user after the test is run
 async function deleteUserAfterTest() {

@@ -35,14 +35,12 @@ export default function ReportProblem() {
         } else {
             setIsValidProblemMessage(true);
             try {
-                // TODO: axios call for backend to store problem message
                 await axios.post('problem', {
                     username: username,
                     problem: problemMessage
                 });
                 setSubmittedForm(true);
-                errRef.current.value = '';
-                // console.log("Problem successfully sent to DB.")
+                errRef.current.value = ''; // set text box to empty
             } catch (error) {
                 console.log(error);
             }

@@ -11,9 +11,12 @@
     background-size: cover;
     position: relative;
     color: white;
+    overflow: hidden;
 
     .nutrition {
-        .nutrtionFacts {
+        margin: 0px 40px;
+
+        .nutritionFacts {
             color: white;
             transform: translate(0px, 100px);
             .header {
@@ -134,6 +137,7 @@
     }
     .ingredients {
         transform: translate(0px, 450px);
+        margin: 0px 40px;
         .ingredientHeader{
             font-weight: bold;
             background-color: none;
