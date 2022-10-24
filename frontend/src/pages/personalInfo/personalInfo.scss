@@ -11,6 +11,37 @@
     background-size: cover;
     position: relative;
     .left {
+        .formName {
+            transform: translate(0px, 400px);
+
+            label {
+                color: white;
+            }
+        }
+
+        .formEmail {
+            transform: translate(0px, 450px);
+
+            label {
+                color: white;
+            }
+        }
+
+        .formPhone{
+            transform: translate(0px, 500px);
+
+            label {
+                color: white;
+            }
+        }
+
+        .formPic {
+            transform: translate(0px, 550px);
+
+            label {
+                color: white;
+            }
+        }
         .buttons {
             transform: translate(0px, 300px);
         }
