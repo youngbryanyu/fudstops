@@ -1,51 +1,39 @@
-// unit tests for restrictions API endpoints
+// unit tests for problems API endpoints
 const test_app = require("../testModule");
 const request = require("supertest");
 
 // user info constants for tests
-const email = "restriction@test.com";
-const username = "restriction";
-const password = "restriction";
+const email = "problem@test.com";
+const username = "problem";
+const password = "problem";
 const phone = "1231231234";
 const isAdmin = false;
-const initial_rests = ["Soy"];
-const after_rests = ["Soy", "Milk"];
+const problem_message = "problem_message";
 
-// save/update restrictions to/in DB
-describe("send restrictions to DB: POST /restriction", () => {
-    describe("given a user with no restrictions", () => {
+// send problem message to DB
+describe("send problem message from user to DB: POST /problem", () => {
+    describe("given problem message and valid user", () => {
         test("should return a 201", async () => {
             await createUser();
             await login();
 
             const response = await request(test_app)
-                .post("/api/restriction")
+                .post("/api/problem")
                 .send({
                     username: username,
-                    restrictions: initial_rests
-                });
-            expect(response.statusCode).toBe(201);
-        });
-    });
-    describe("given a user with existing restrictions", () => {
-        test("should return a 201", async () => {
-            const response = await request(test_app)
-                .post("/api/restriction")
-                .send({
-                    username: username,
-                    restrictions: after_rests
+                    problem: problem_message
                 });
             expect(response.statusCode).toBe(201);
         });
     });
 });
 
-// test get restrictions
-describe("get restrictions from DB: GET /restriction/:username", () => {
-    describe("given a user with restrictions", () => {
+// test get problems
+describe("get problems submitted from DB for a user: GET /problem", () => {
+    describe("given a valid user", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
-                .get("/api/restriction/" + username)
+                .get("/api/problem/" + username)
                 .send();
 
             expect(response.statusCode).toBe(200);
@@ -54,7 +42,7 @@ describe("get restrictions from DB: GET /restriction/:username", () => {
     describe("given an invalid username", () => {
         test("should return a 500", async () => {
             const response = await request(test_app)
-                .get("/api/restriction/INVALID_USER")
+                .get("/api/problem/INVALID_USER")
                 .send();
 
             expect(response.statusCode).toBe(500);
@@ -62,28 +50,31 @@ describe("get restrictions from DB: GET /restriction/:username", () => {
     });
 });
 
-// test deleting restrictions
-describe("delete restrictions from DB: DELETE /restriction", () => {
-    describe("given a user with restrictions", () => {
+// test deleting preferences
+describe("delete problems submitted from DB for a user: DELETE /problem", () => {
+    describe("given a user with problems submitted", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
-                .delete("/api/restriction")
+                .delete("/api/problem")
                 .send({
                     username: username
                 });
 
+                console.log(response.body)
+
             expect(response.statusCode).toBe(200);
 
+
             await deleteUserAfterTest();
-            await deleteRestrictionsAfterTest();
+            await deleteProblemsAfterTest();
         });
     });
 });
 
-// delete the user's restrictions
-async function deleteRestrictionsAfterTest() {
+// delete the user's problems
+async function deleteProblemsAfterTest() {
     await request(test_app)
-        .delete("/api/restriction")
+        .delete("/api/problem")
         .send({
             username: username
         });

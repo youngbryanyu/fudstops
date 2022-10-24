@@ -51,6 +51,15 @@ describe("get preferences from DB: GET /preference/:username", () => {
             expect(response.statusCode).toBe(200);
         });
     });
+    describe("given an invalid username", () => {
+        test("should return a 500", async () => {
+            const response = await request(test_app)
+                .get("/api/preference/INVALID_USER")
+                .send();
+
+            expect(response.statusCode).toBe(500);
+        });
+    });
 });
 
 // test deleting preferences
