@@ -27,5 +27,6 @@ In the `backend` directory run:
 
 In the `backend` directory run:
 
-`yarn test --runInBand`
+ - `yarn test` to run tests asynchronously
+ - `yarn test --runInBand` to run them one by one
 
