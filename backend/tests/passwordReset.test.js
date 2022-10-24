@@ -5,9 +5,9 @@ const ResetPasswordToken = require("../models/ResetPasswordToken");
 // const assert = require("assert");
 
 // user info constants for tests
-const email = "vsahani007@test.com";
+const email = "forgotPasswordReset@test.com";
 const username = "forgotPasswordReset";
-const password = "forgotPasswordReset";
+let password = "forgotPasswordReset";
 const phone = "5104888108";
 const isAdmin = false;
 
@@ -19,8 +19,8 @@ describe("send password reset link: POST /forgotPasswordReset", () => {
         test("should return a 200", async () => {
             await createUser();
             const loginResponse = await login();
-
             const userId = loginResponse._body._id;
+
             token = await new ResetPasswordToken({ // store a custom reset token
                 userId: userId,
                 token: resetTokenValue
@@ -84,8 +84,9 @@ describe("reset password: POST /forgotPasswordReset/:id/:token", () => {
                 .send({
                     password: "new_password"
                 });
+                password = "new_password"; // reset global password var
             expect(response.statusCode).toBe(200);
-            deleteUserAfterTest(); // delete temp user after last test
+            await deleteUserAfterTest(); // delete temp user after last test
         });
     });
 });

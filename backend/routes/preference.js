@@ -44,9 +44,24 @@ router.get("/:username", async (req, res) => {
         }
 
         res.status(200).json(preferences); // return preferences
-        // console.log("Successfully retrieved preferences: " + preferences);
+        console.log("Successfully retrieved preferences: " + preferences);
     } catch (error) {
         res.status(500).json("Error retriving preferences (user likely doesn't have any yet):" + error);
+        // console.log("Error retrieving preferences: " + error);
+    }
+});
+
+// delete preferences from database
+router.delete("/", async (req, res) => {
+    try {
+        await Preference.deleteOne({
+            username: req.body.username
+        });
+
+        res.status(200).json("Successfully deleted preferences for user: " + req.body.username); 
+        // console.log("Successfully deleted preferences for user: " + req.body.username);
+    } catch (error) {
+        res.status(500).json("Error deleting preferences (user likely doesn't have any yet): " + error);
         // console.log("Error retrieving preferences: " + error);
     }
 });

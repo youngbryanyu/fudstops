@@ -59,7 +59,6 @@ describe("update user: PUT /users/:id", () => {
                 .send({
                     isAdmin: !isAdmin
                 });
-            console.log(response.body);
             expect(response.statusCode).toBe(401);
         });
     });
@@ -166,22 +165,23 @@ describe("delete user: DELETE /users/:id", () => {
                 .set("token", "Bearer " + JWTToken)
                 .send();
             expect(response.statusCode).toBe(200);
+            await deleteUserAfterTest(); // delete user after test
         });
     });
 });
 
 // delete the user after the test is run
-// async function deleteUserAfterTest() {
-//     const loginResponse = await login();
+async function deleteUserAfterTest() {
+    const loginResponse = await login();
 
-//     const userId = loginResponse._body._id;
-//     const JWTToken = loginResponse._body.accessToken;
+    const userId = loginResponse._body._id;
+    const JWTToken = loginResponse._body.accessToken;
 
-//     await request(test_app)
-//         .delete("/api/users/" + userId)
-//         .set("token", "Bearer " + JWTToken)
-//         .send();
-// }
+    await request(test_app)
+        .delete("/api/users/" + userId)
+        .set("token", "Bearer " + JWTToken)
+        .send();
+}
 
 // delete the user after the test is run
 async function login() {
