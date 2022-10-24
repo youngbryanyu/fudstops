@@ -51,4 +51,19 @@ router.get("/:username", async (req, res) => {
     }
 });
 
+// delete restrictions from database
+router.delete("/", async (req, res) => {
+    try {
+        await Restriction.deleteOne({
+            username: req.body.username
+        });
+
+        res.status(200).json("Successfully deleted restrictions for user: " + req.body.username); 
+        // console.log("Successfully deleted restrictions for user: " + req.body.username);
+    } catch (error) {
+        res.status(500).json("Error deleting restrictions (user likely doesn't have any yet): " + error);
+        // console.log("Error retrieving restrictions: " + error);
+    }
+});
+
 module.exports = router;

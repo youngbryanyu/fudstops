@@ -1,51 +1,51 @@
-// unit tests for preferences API endpoints
+// unit tests for restrictions API endpoints
 const test_app = require("../testModule");
 const request = require("supertest");
 
 // user info constants for tests
-const email = "preference@test.com";
-const username = "preference";
-const password = "preference";
+const email = "restriction@test.com";
+const username = "restriction";
+const password = "restriction";
 const phone = "1231231234";
 const isAdmin = false;
-const initial_prefs = ["Vegan"];
-const after_prefs = ["Vegan", "Vegetarian"];
+const initial_rests = ["Soy"];
+const after_rests = ["Soy", "Milk"];
 
-// save/update preferences to/in DB
-describe("send preferences to DB: POST /preference", () => {
-    describe("given a user with no preferences", () => {
+// save/update restrictions to/in DB
+describe("send restrictions to DB: POST /restriction", () => {
+    describe("given a user with no restrictions", () => {
         test("should return a 201", async () => {
             await createUser();
             await login();
 
             const response = await request(test_app)
-                .post("/api/preference")
+                .post("/api/restriction")
                 .send({
                     username: username,
-                    preferences: initial_prefs
+                    restrictions: initial_rests
                 });
             expect(response.statusCode).toBe(201);
         });
     });
-    describe("given a user with existing preferences", () => {
+    describe("given a user with existing restrictions", () => {
         test("should return a 201", async () => {
             const response = await request(test_app)
-                .post("/api/preference")
+                .post("/api/restriction")
                 .send({
                     username: username,
-                    preferences: after_prefs
+                    restrictions: after_rests
                 });
             expect(response.statusCode).toBe(201);
         });
     });
 });
 
-// test get preferences
-describe("get preferences from DB: GET /preference/:username", () => {
-    describe("given a user with preferences", () => {
+// test get restrictions
+describe("get restrictions from DB: GET /restriction/:username", () => {
+    describe("given a user with restrictions", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
-                .get("/api/preference/" + username)
+                .get("/api/restriction/" + username)
                 .send();
 
             expect(response.statusCode).toBe(200);
@@ -53,12 +53,12 @@ describe("get preferences from DB: GET /preference/:username", () => {
     });
 });
 
-// test deleting preferences
-describe("delete preferences from DB: DELETE /preference", () => {
-    describe("given a user with preferences", () => {
+// test deleting restrictions
+describe("delete restrictions from DB: DELETE /restriction", () => {
+    describe("given a user with restrictions", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
-                .delete("/api/preference")
+                .delete("/api/restriction")
                 .send({
                     username: username
                 });
@@ -66,15 +66,15 @@ describe("delete preferences from DB: DELETE /preference", () => {
             expect(response.statusCode).toBe(200);
 
             await deleteUserAfterTest();
-            await deletePreferencesAfterTest();
+            await deleteRestrictionsAfterTest();
         });
     });
 });
 
-// delete the user's preferences
-async function deletePreferencesAfterTest() {
+// delete the user's restrictions
+async function deleteRestrictionsAfterTest() {
     await request(test_app)
-        .delete("/api/preference")
+        .delete("/api/restriction")
         .send({
             username: username
         });
