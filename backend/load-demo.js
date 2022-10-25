@@ -46,8 +46,6 @@
 // }
 // load()
 
-const cheerio = require("cheerio")
-const afterLoad  = require("after-load")
 const fetch = require('node-fetch')
 
 /*
@@ -64,7 +62,7 @@ async function load() {
     for (const name of names) {
         //=========SCRAPING==========
         const outerUrl = "https://api.hfs.purdue.edu/menus/v2/locations/" + name + "/" + today
-        console.log(outerUrl)
+        // debug: console.log(outerUrl)
         try { //parse outer xml
             const outerResponse = await fetch(outerUrl);
             if (!outerResponse.ok) {
