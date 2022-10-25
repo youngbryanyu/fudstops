@@ -7,7 +7,7 @@ AARON KIM DEMO FILE -- NOT TO BE INCLUDED IN FINAL PRODUCT
 -- Demonstrates scraping and parsing of purdue menus API XML files
 -- Prints items and names for each Dining Court
 */
-
+//NO LONGER IN USE
 var d = new Date();
 var today = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + "/"
 const names = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"]

@@ -25,9 +25,11 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
             // debug: console.log(outerJson);    
             //iterate through keys and parse
             for (const meal of outerJson.Meals) {
+				const type = meal.Type;
                 for (const station of meal.Stations){
+					const stationname = station.Name;
                     for (const item of station.Items) {
-                        const parseUrl = PURDUE_DINING_API_URL_MENU_ITEMS + key.slice(12);
+                        const parseUrl = PURDUE_DINING_API_URL_MENU_ITEMS + item.ID;
 
 						// console.log(parseUrl)
 						const response = await fetch(parseUrl);
@@ -37,29 +39,14 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
 
 						const json = await response.json();
 
-						// console.log(json);
-
-						// create new MenuItem for current menu item
-						const newMenuItem = new MenuItem({
-							ID: json.ID,
-							name: json.Name,
-							diningCourt: diningCourt,
-							dateServed: today,
-							isVegetarian: json.IsVegetarian,
-							allergens: json.Allergens,
-							nutritionFacts: json.Nutrition,
-							ingredients: json.Ingredients
-						});
-
 						try {
 							const menuItem = await MenuItem.findOne({
 								ID: json.ID
 							});
 							if (menuItem) { // if menu item already exists, update it with possibly new information
-								await MenuItem.findByIdAndUpdate(menuItem._id, {
+								await MenuItem.findByIdAndUpdate(menuItem._id, {$addToSet: {diningCourt: diningCourt, station: stationname, mealType: type}}, {
 									ID: json.ID,
 									name: json.Name,
-									diningCourt: diningCourt,
 									dateServed: today,
 									isVegetarian: json.IsVegetarian,
 									allergens: json.Allergens,
@@ -67,7 +54,20 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
 									ingredients: json.Ingredients
 								});
 								console.log("Updated menu item - " + diningCourt + ": " + json.Name);
-							} else {
+							} else {// create new MenuItem for current menu item
+								const newMenuItem = new MenuItem({
+									ID: json.ID,
+									name: json.Name,
+									diningCourt: diningCourt,
+									station: stationname,
+									mealType: type,
+									dateServed: today,
+									isVegetarian: json.IsVegetarian,
+									allergens: json.Allergens,
+									nutritionFacts: json.Nutrition,
+									ingredients: json.Ingredients
+								});
+								
 								const item = await newMenuItem.save();
 								//menuItems.push(item) // push to menu (taken out for now)
 								// res.status(201).json(item); //return item in DB response to JSON
