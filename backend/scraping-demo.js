@@ -14,6 +14,7 @@ const names = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"]
 //iterate through all dining court URLS
 async function scrape() {
     for (const name of names) {
+        //=========SCRAPING==========
         const url = "https://dining.purdue.edu/menus/" + name + "/" + today
         try { //scrape and parse URL
             // fetch html of url
@@ -27,6 +28,8 @@ async function scrape() {
             });
             //debug: console.dir(itemKeys)
             var menuItems = []
+
+            //=========PARSING=========
             //iterate through keys, slice url and append key, parse xml to json
             for(const key of itemKeys) {
                 const parseUrl = "https://api.hfs.purdue.edu/menus/v2/items/" + key.slice(12)
@@ -65,12 +68,3 @@ async function scrape() {
 }
 scrape()
 
-
-/* 
-FUDSTOPS
-
-M - MongoDB -- database Sequence Query Language -- GET .. 
-E - Express
-R
-N
-*/
