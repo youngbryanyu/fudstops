@@ -50,8 +50,8 @@ export default function List(props) {
                     className="sliderArrow left under"
                 />
                 <div className="listItems" ref={listRef}>
-                    <ListItem index={0} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight}/>
-                    <ListItem index={1} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight}/>
+                    <ListItem index={0} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight} menuItemIdParam={"8a9377a3-d26e-4a03-8d1a-d693f425e94f"}/>
+                    <ListItem index={1} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight} menuItemIdParam={"e833bd17-2fba-4cbe-888b-727a4cbf26d7"}/>
                     <ListItem index={2} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight}/>
                     <ListItem index={3} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight}/>
                     <ListItem index={4} isScrollingLeft={isScrollingLeft} isScrollingRight={isScrollingRight}/>

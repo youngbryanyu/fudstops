@@ -2,8 +2,9 @@ const router = require("express").Router();
 const Rating = require("../models/Rating");
 
 //send user's rating to DB, if it exists alr then update
+//this function requires the req body to contain {username, menuItemID, and rating}
 router.post("/", async (req, res) => {
-
+    
     try {
 
         const findRating = await Rating.findOne({ //findOne returns null if no matching doc found
@@ -23,7 +24,6 @@ router.post("/", async (req, res) => {
 
         } else {  //if not then make a new document in the DB
 
-            console.log("new rating");
             console.log(req.body);
 
             const newRating = await new Rating({
@@ -57,7 +57,7 @@ router.get("/:username/:menuItemId", async (req, res) => {
 
         if(!findRating) { //this means a rating doc was not found
 
-            res.status(500).json("No doc found ");
+            res.status(500).json("No doc found");
             return;
 
         } 
@@ -92,8 +92,9 @@ router.get("/:menuItemId", async (req, res) => {
             let numRatings = ratingObjs.length;
 
             ratingObjs.forEach( ratingObj => total += ratingObj.rating );
+            console.log(total, numRatings);
 
-            let avg = total/numRatings;
+            let avg = Math.ceil(total/numRatings);
 
             res.status(200).json({"avgRating": avg});
             return;
