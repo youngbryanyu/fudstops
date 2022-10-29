@@ -83,7 +83,7 @@ export default function ListItem({ index, isScrollingLeft, isScrollingRight, men
     /**
     * Load initial ratings on page render
     */
-    const isFirstRender = useRef(true); // don't do anything on first render
+    const isFirstRenderRatings = useRef(true); // don't do anything on first render
     useEffect(() => {
         // Get initial rating then set rating of this item to that
         const setInitialRating = async () => {
@@ -139,23 +139,23 @@ export default function ListItem({ index, isScrollingLeft, isScrollingRight, men
 
         };
 
-        if (isFirstRender.current) {
+        if (isFirstRenderRatings.current) {
             if(menuItemIdParam != null) {
                 setInitialRating();
                 getIntialAvgRating();
             }
         }
-        isFirstRender.current = false;
+        isFirstRenderRatings.current = false;
         // eslint-disable-next-line
     }, []);
 
     /**
      * Update the rating in the database when rating changes, not on first render though. Triggered by useEffect above
      */
-    const isFirstRender_updatePrefsDB = useRef(true); // don't do anything on first render
+    const isFirstRender_updateRatingsDB = useRef(true); // don't do anything on first render
     useEffect(() => {
-        if (isFirstRender_updatePrefsDB.current) {
-            isFirstRender_updatePrefsDB.current = false;
+        if (isFirstRender_updateRatingsDB.current) {
+            isFirstRender_updateRatingsDB.current = false;
             return; // don't update DB on initial render
         }
 
