@@ -36,7 +36,6 @@ app.use("/api/restriction", restrictionRoute); // endpoint for restrictions
 app.use("/api/problem", problemRoute); // endpoint for reporting problems
 app.use("/api/ratings", ratingsRoute); // endpoint for restrictions
 
-
 app.listen(8000, () => { // start server, listen for connections
     console.log("backend is running");
 });
