@@ -10,7 +10,7 @@
         url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
     position: relative;
-    color: white;
+    color: white; 
     overflow: hidden;
 
     .nutrition {
@@ -74,6 +74,43 @@
                 border-radius: 5px;
                 display: flex;
                 flex-direction: column;
+                position: absolute;
+                width: 400px;
+            }
+    
+            .link {
+                padding: 10px 0px;
+                margin-right: 0px;
+                cursor: pointer;
+            }
+            
+            span {
+                padding: 10px;
+                cursor: pointer;
+            }
+    
+            .link {
+                &:hover {
+                    background-color: goldenrod;
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+    .ratings {
+        .tags {
+            color: white;
+            transform: translate(500px, 200px);
+            .header {
+                font-weight: bold;
+                background-color: none;
+                border: solid goldenrod;
+                width:fit-content;
+            }
+            .tagNames {
+                background-color: var(--main-color);
+                border-radius: 5px;
+                display: flex;
                 position: absolute;
                 width: 400px;
             }

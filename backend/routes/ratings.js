@@ -92,7 +92,6 @@ router.get("/:menuItemId", async (req, res) => {
             let numRatings = ratingObjs.length;
 
             ratingObjs.forEach( ratingObj => total += ratingObj.rating );
-            console.log(total, numRatings);
 
             let avg = Math.ceil(total/numRatings);
 
