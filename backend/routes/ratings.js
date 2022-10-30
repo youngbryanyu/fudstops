@@ -24,8 +24,6 @@ router.post("/", async (req, res) => {
 
         } else {  //if not then make a new document in the DB
 
-            console.log(req.body);
-
             const newRating = await new Rating({
                 username:   req.body.username,
                 menuItemID: req.body.menuItemID,
