@@ -38,13 +38,15 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
 						}
 
 						const json = await response.json();
+						
+						const courtdata = [diningCourt, stationname, type]
 
 						try {
 							const menuItem = await MenuItem.findOne({
 								ID: json.ID
 							});
 							if (menuItem) { // if menu item already exists, update it with possibly new information
-								await MenuItem.findByIdAndUpdate(menuItem._id, {$addToSet: {diningCourt: diningCourt, station: stationname, mealType: type}}, {
+								await MenuItem.findByIdAndUpdate(menuItem._id, {$push: {courtData: courtdata}}, {
 									ID: json.ID,
 									name: json.Name,
 									dateServed: today,
@@ -58,9 +60,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
 								const newMenuItem = new MenuItem({
 									ID: json.ID,
 									name: json.Name,
-									diningCourt: diningCourt,
-									station: stationname,
-									mealType: type,
+									courtData: [courtdata],
 									dateServed: today,
 									isVegetarian: json.IsVegetarian,
 									allergens: json.Allergens,
