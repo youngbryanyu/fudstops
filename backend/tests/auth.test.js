@@ -172,7 +172,7 @@ async function deleteUserAfterTest() {
         .delete("/api/users/" + userId)
         .set("token", "Bearer " + JWTToken)
         .send();
-}
+} 
 
 // delete the user after the test is run
 async function login() {
