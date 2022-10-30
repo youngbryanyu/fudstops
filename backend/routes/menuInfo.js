@@ -90,4 +90,45 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
     console.log("Dining data was parsed successfully for " + today);
 });
 
+//this endpoint returns all menu items of the provided dining court
+router.get("/:diningCourt", async (req, res) => { 
+
+	try {
+
+		const menuItems = await MenuItem.find( {} );
+
+		if(!menuItems) { //this means items were not found
+
+            res.status(500).json("No items found");
+            return;
+
+        }
+
+		let courtsItems = [];
+
+		menuItems.forEach( (item) => {
+
+			let courtsArray = item.courtData;
+			let skip = false;
+
+			if(courtsArray == null) return;
+
+			courtsArray.forEach( (court) => {
+
+				if(!skip && court.includes(req.params.diningCourt)) {
+					courtsItems.push(item);
+					skip = true;
+				}
+
+			});
+
+		});
+
+        res.status(200).json(courtsItems);
+		
+
+	} catch(error) { console.log(error); }
+
+});
+
 module.exports = router;
