@@ -23,9 +23,6 @@ const Menu = () => {
                         <Link to="" className="link">
                             <span className="highlight">Item 3</span>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
                     </div>
                 </div>
             </div>
@@ -79,7 +76,7 @@ const Menu = () => {
             </div>
             <div className="section5">
                 <div className="menuSection5">
-                    <span>Section 5</span>
+                     <span>Section 5</span>
                     <div className="menuItems5">
                         <Link to="" className="link">
                             <span className="highlight">Item 1</span>
@@ -196,7 +193,7 @@ const Menu = () => {
             {/* <Footer /> */}
         </div>
     );
-
+    
 };
 
 export default Menu;
