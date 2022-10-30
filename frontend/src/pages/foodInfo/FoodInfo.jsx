@@ -3,7 +3,7 @@
 import Navbar from "../../components/navbar/Navbar";
 import "./foodInfo.scss";
 import { useContext, useState, useEffect, useRef } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IconButton, Tooltip } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
@@ -19,9 +19,10 @@ const FoodInfo = () => {
     const [starClick4, setStarClick4] = useState(false);
     const [starClick5, setStarClick5] = useState(false);
     const [score, setScore] = useState(0);
-    const [avg, setAvg] = useState(0);
+    const [avg, setAvg] = useState("N/A");
     const { user } = useContext(AuthContext);
     const menuItemIdParam = "bruh"; //to change
+    let { menuItemID } = useParams(); //this will be undefined if no params
 
     const handleClick0 = () => {
         setStarClick1(false);
@@ -80,7 +81,7 @@ const FoodInfo = () => {
         // Get initial rating then set rating of this item to that
         const setInitialRating = async () => {
             try {
-                const response = await axios.get('/ratings/' + user.username + '/' + menuItemIdParam);
+                const response = await axios.get('/ratings/' + user.username + '/' + menuItemID);
                 let rating = response.data;
 
                 if(rating === "No doc found") { //means no rating for this item
@@ -123,7 +124,7 @@ const FoodInfo = () => {
 
             try {
 
-                const response = await axios.get(`/ratings/${menuItemIdParam}`);
+                const response = await axios.get(`/ratings/${menuItemID}`);
                 const rating = response.data.avgRating;
                 setAvg(rating);
 
@@ -132,7 +133,7 @@ const FoodInfo = () => {
         };
 
         if (isFirstRenderRatings.current) {
-            if(menuItemIdParam != null) {
+            if(menuItemID != null) {
                 setInitialRating();
                 getIntialAvgRating();
             }
@@ -153,10 +154,9 @@ const FoodInfo = () => {
 
         const updateRatingInDB = async () => {
             try {
-                console.log(menuItemIdParam);
                 await axios.post('/ratings', {
                     username: user.username,
-                    menuItemID: menuItemIdParam,
+                    menuItemID: menuItemID,
                     rating: score
                 });
                 console.log("successfully updated rating of menuItemId: " + menuItemIdParam);
@@ -165,7 +165,7 @@ const FoodInfo = () => {
             }
         }
 
-        if(menuItemIdParam != null) updateRatingInDB(); // update the preferences in the database
+        if(menuItemID != null) updateRatingInDB(); // update the preferences in the database
         // eslint-disable-next-line
 
     }, [score]);
@@ -224,7 +224,7 @@ const FoodInfo = () => {
                         <span>Rate This Item!</span>
                     </div>
                     <div className="tagNames">
-                        <Tooltip title={`Average Rating: `} placement="bottom">
+                        <Tooltip title={`Average Rating: ${avg}`} placement="bottom">
                             <IconButton color="inherit">
                                 <InfoIcon />
                             </IconButton>

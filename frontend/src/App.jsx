@@ -35,6 +35,7 @@ const App = () => {
                         <>
                             <Route path="/" element={<Home />} />
                             <Route path="/favorites" element={<Favorites />} />
+                            <Route path="/foodInfo/:menuItemID" element={<FoodInfo />} /> {/* This route will be utilized later to lead user to the specific menu item page for a selected menuItemId*/}
                             <Route path="/foodInfo" element={<FoodInfo />} />
                             <Route path="/forgotPassword" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/forgotPasswordReset/:id/:token" element={<Home />} /> {/* Should go to home when logged in */}
