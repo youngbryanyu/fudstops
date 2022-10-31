@@ -176,11 +176,11 @@ router.get("/prefs/:diningCourt", async (req, res) => {
 
                     /* if doesn't match all restrictions then continue */
                     if (restrictions.length > 0) {
-                        if (allergens.length === 0) {
+                        if (allergens.length === 0) { /* edge case for when item has no allergen info */
                             matchesPrefs = false;
                         }
                         for (const allergen of allergens) {
-                            if (restrictions.includes(allergen.Name) && allergen.Value === false) {
+                            if (restrictions.includes(allergen.Name) && allergen.Value === true) {
                                 matchesPrefs = false;
                                 break;
                             }
@@ -189,7 +189,7 @@ router.get("/prefs/:diningCourt", async (req, res) => {
 
                     /* if doesn't match all preferences then continue */
                     if (preferences.length > 0) {
-                        if (allergens.length === 0) {
+                        if (allergens.length === 0) { /* edge case for when item has no allergen info */
                             matchesPrefs = false;
                         }
                         for (const allergen of allergens) {
