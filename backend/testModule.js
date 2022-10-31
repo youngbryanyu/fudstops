@@ -12,7 +12,7 @@ const menuInfoRoute = require("./routes/menuInfo");
 const preferenceRoute = require("./routes/preference");
 const restrictionRoute = require("./routes/restriction");
 const problemRoute = require("./routes/problem");
-
+const ratingsRoute = require("./routes/ratings");
 
 dotenv.config();
 
@@ -34,6 +34,7 @@ test_app.use("/api/menuInfo", menuInfoRoute); // endpoint for menu information
 test_app.use("/api/preference", preferenceRoute); // endpoint for preferences
 test_app.use("/api/restriction", restrictionRoute); // endpoint for restrictions
 test_app.use("/api/problem", problemRoute); // endpoint for reporting problems
+test_app.use("/api/ratings", ratingsRoute); // endpoint for ratings
 
 let server = test_app.listen(0, () => { // start server, find any available port, listen for connections
     // console.log("backend is running");

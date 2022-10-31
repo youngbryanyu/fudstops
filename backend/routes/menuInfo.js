@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const MenuItem = require('../models/MenuItem');
 const Preference = require("../models/Preference");
 const Restriction = require("../models/Restriction");
+const User = require("../models/User");
 
 
 const DINING_COURTS = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"];
@@ -110,25 +111,25 @@ Example req body below
 */
 router.get("/prefs", async (req, res) => {
 
-	try {
+    try {
 
-		const prefs = req.body.preferences; //for example could be - "Vegan", "Vegetarian"
-		const menuItems = await MenuItem.find({}); //all menu items
+        const prefs = req.body.preferences; //for example could be - "Vegan", "Vegetarian"
+        const menuItems = await MenuItem.find({}); //all menu items
 
-		if (!menuItems) { //this means items were not found
+        if (!menuItems) { //this means items were not found
 
             res.status(500).json("No items found");
             return;
 
         }
 
-		if(prefs.length == 0) { //no preferences provided, so all items work
-			console.log("0 lenght");
-			res.status(200).json(menuItems);
-			return;
-		}
+        if (prefs.length == 0) { //no preferences provided, so all items work
+            console.log("0 lenght");
+            res.status(200).json(menuItems);
+            return;
+        }
 
-		let prefItems = [];
+        let prefItems = [];
 
         menuItems.forEach((item) => { //for each item we check if it matches all preferences
 
@@ -137,24 +138,26 @@ router.get("/prefs", async (req, res) => {
 
             if (allergens == null || allergens.length == 0) skipPrefs = true;
 
-			allergens.forEach( (allergen) => {
+            allergens.forEach((allergen) => {
 
-				if(!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
+                if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
 
-					skipPrefs = true;
+                    skipPrefs = true;
 
-				}
+                }
 
-			});
+            });
 
-			if(!skipPrefs) prefItems.push(item); //if we found that the item aligned with req prefs
+            if (!skipPrefs) prefItems.push(item); //if we found that the item aligned with req prefs
 
         });
 
         res.status(200).json(prefItems);
 
-	} catch (error) { console.log(error); }
-
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
 });
 
 /*
@@ -173,24 +176,24 @@ Example req body below
 */
 router.get("/rests", async (req, res) => {
 
-	try {
+    try {
 
-		const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
-		const menuItems = await MenuItem.find({}); //all menu items
+        const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
+        const menuItems = await MenuItem.find({}); //all menu items
 
-		if (!menuItems) { //this means items were not found
+        if (!menuItems) { //this means items were not found
 
             res.status(500).json("No items found");
             return;
 
         }
 
-		if(rests.length == 0) { //no preferences provided, so all items work
-			res.status(200).json(menuItems);
-			return;
-		}
+        if (rests.length == 0) { //no preferences provided, so all items work
+            res.status(200).json(menuItems);
+            return;
+        }
 
-		let restsItems = [];
+        let restsItems = [];
 
         menuItems.forEach((item) => { //for each item we check if it matches all preferences
 
@@ -199,23 +202,26 @@ router.get("/rests", async (req, res) => {
 
             if (allergens == null || allergens.length == 0) skipRests = true;
 
-			allergens.forEach( (allergen) => {
+            allergens.forEach((allergen) => {
 
-				if(!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
+                if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
 
-					skipRests = true;
+                    skipRests = true;
 
-				}
+                }
 
-			});
+            });
 
-			if(!skipRests) restsItems.push(item); //if we found that the item aligned with req prefs
+            if (!skipRests) restsItems.push(item); //if we found that the item aligned with req prefs
 
         });
 
         res.status(200).json(restsItems);
 
-	} catch (error) { console.log(error); }
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
 
 });
 
@@ -228,7 +234,7 @@ req url -> http://localhost:8000/api/menuInfo/prefsAndRests
 Example req body below
 
 {
-	"preferences": ["Vegan"],
+    "preferences": ["Vegan"],
     "restrictions": ["Coconut", "Tree Nuts"]
 }
 
@@ -237,25 +243,25 @@ Example req body below
 */
 router.get("/prefsAndRests", async (req, res) => {
 
-	try {
+    try {
 
-		const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
-		const prefs = req.body.preferences; //for example could be - "Vegan"
-		const menuItems = await MenuItem.find({}); //all menu items
+        const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
+        const prefs = req.body.preferences; //for example could be - "Vegan"
+        const menuItems = await MenuItem.find({}); //all menu items
 
-		if (!menuItems) { //this means items were not found
+        if (!menuItems) { //this means items were not found
 
             res.status(500).json("No items found");
             return;
 
         }
 
-		if(rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
-			res.status(200).json(menuItems);
-			return;
-		}
+        if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
+            res.status(200).json(menuItems);
+            return;
+        }
 
-		let matchingItems = [];
+        let matchingItems = [];
 
         menuItems.forEach((item) => { //for each item we check if it matches all preferences
 
@@ -263,48 +269,51 @@ router.get("/prefsAndRests", async (req, res) => {
             let skipRests = false;
             let skipPrefs = false;
 
-			//these if-checks below are testing edge cases
-            if (allergens == null) { 
-				skipRests = true; 
-				skipPrefs = true; 
-			}
-			if(allergens.length == 0 && (prefs.length != 0 || rests.length != 0)) { 
-				skipRests = true; 
-				skipPrefs = true; 
-			}
+            //these if-checks below are testing edge cases
+            if (allergens == null) {
+                skipRests = true;
+                skipPrefs = true;
+            }
+            if (allergens.length == 0 && (prefs.length != 0 || rests.length != 0)) {
+                skipRests = true;
+                skipPrefs = true;
+            }
 
-			allergens.forEach( (allergen) => { //first check rests criteria
+            allergens.forEach((allergen) => { //first check rests criteria
 
-				if(!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
+                if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
 
-					skipRests = true;
+                    skipRests = true;
 
-				}
+                }
 
-			});
+            });
 
-			if(!skipRests) { //if the item passes all the requested rests
+            if (!skipRests) { //if the item passes all the requested rests
 
-				allergens.forEach( (allergen) => { //then we check if it passes the requested prefs
+                allergens.forEach((allergen) => { //then we check if it passes the requested prefs
 
-					if(!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
-	
-						skipPrefs = true;
-	
-					}
-	
-				});
+                    if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
 
-				if(!skipPrefs) matchingItems.push(item); //this item matches both prefs & rests
+                        skipPrefs = true;
 
-			}
-			
+                    }
+
+                });
+
+                if (!skipPrefs) matchingItems.push(item); //this item matches both prefs & rests
+
+            }
+
 
         });
 
         res.status(200).json(matchingItems);
 
-	} catch (error) { console.log(error); }
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
 
 });
 
@@ -354,6 +363,14 @@ router.get("/:diningCourt", async (req, res) => {
 router.get("/prefs/:diningCourt", async (req, res) => {
 
     try {
+        const user = await User.findOne({
+            username: req.body.username
+        });
+
+        if (!user) {
+            res.status(500).json("User doesn't exist");
+            return;
+        }
 
         const prefResponse = await Preference.findOne({
             username: req.body.username
@@ -362,12 +379,26 @@ router.get("/prefs/:diningCourt", async (req, res) => {
             username: req.body.username
         });
 
-        const preferences = prefResponse.preferences;
-        const restrictions = restResponse.restrictions;
+        // get preferences from response
+        let preferences;
+        if (!prefResponse) {
+            preferences = [];
+        }
+        else {
+            preferences = prefResponse.preferences;
+        }
+
+        // get restrictions from response
+        let restrictions;
+        if (!restResponse) {
+            restrictions = [];
+        }
+        else {
+            restrictions = restResponse.restrictions;
+        }
 
         const menuItems = await MenuItem.find();
-
-        if (!menuItems) { //this means items were not found
+        if (!menuItems || menuItems.length == 0) { //this means items were not found
 
             res.status(500).json("No items found");
             return;

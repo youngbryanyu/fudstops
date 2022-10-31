@@ -6,7 +6,7 @@ const request = require("supertest");
 const email = "problem@test.com";
 const username = "problem";
 const password = "problem";
-const phone = "1231231234";
+const phone = "0000000003";
 const isAdmin = false;
 const problem_message = "problem_message";
 

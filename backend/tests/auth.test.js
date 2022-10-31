@@ -9,7 +9,7 @@ const email = "auth@test.com";
 const username = "auth123";
 const password = "auth123";
 // const phone = Math.floor(1000000000 + Math.random() * 900000000);
-const phone = "0000000000"
+const phone = "0000000007"
 const isAdmin = false;
 
 // test register API

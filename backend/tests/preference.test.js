@@ -6,7 +6,7 @@ const request = require("supertest");
 const email = "preference@test.com";
 const username = "preference";
 const password = "preference";
-const phone = "1231231234";
+const phone = "0000000004";
 const isAdmin = false;
 const initial_prefs = ["Vegan"];
 const after_prefs = ["Vegan", "Vegetarian"];
@@ -102,7 +102,7 @@ async function deleteUserAfterTest() {
         .send();
 }
 
-// delete the user after the test is run
+// login
 async function login() {
     const loginResponse = await request(test_app)
         .post("/api/auth/login")

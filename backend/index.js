@@ -34,7 +34,7 @@ app.use("/api/menuInfo", menuInfoRoute); // endpoint for menu information
 app.use("/api/preference", preferenceRoute); // endpoint for preferences
 app.use("/api/restriction", restrictionRoute); // endpoint for restrictions
 app.use("/api/problem", problemRoute); // endpoint for reporting problems
-app.use("/api/ratings", ratingsRoute); // endpoint for restrictions
+app.use("/api/ratings", ratingsRoute); // endpoint for ratings
 
 app.listen(8000, () => { // start server, listen for connections
     console.log("backend is running");
