@@ -110,9 +110,10 @@ Example req body below
 
 */
 router.get("/prefs", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
-
         const prefs = req.body.preferences; //for example could be - "Vegan", "Vegetarian"
         const menuItems = await MenuItem.find({}); //all menu items
 
@@ -148,7 +149,7 @@ router.get("/prefs", async (req, res) => {
 
             });
 
-            if (!skipPrefs) prefItems.push(item); //if we found that the item aligned with req prefs
+            if (!skipPrefs && item.dateServed.getTime() === today.getTime()) prefItems.push(item); //if we found that the item aligned with req prefs
 
         });
 
@@ -161,7 +162,7 @@ router.get("/prefs", async (req, res) => {
 });
 
 /*
-//this endpoint returns all items that align with the requested restrictions
+//this endpoint returns all of today's items that align with the requested restrictions
 //the request body must include the requested restrictions
 
 req url -> http://localhost:8000/api/menuInfo/rests
@@ -175,6 +176,8 @@ Example req body below
 
 */
 router.get("/rests", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
 
@@ -212,7 +215,7 @@ router.get("/rests", async (req, res) => {
 
             });
 
-            if (!skipRests) restsItems.push(item); //if we found that the item aligned with req prefs
+            if (!skipRests && item.dateServed.getTime() === today.getTime()) restsItems.push(item); //if we found that the item aligned with req prefs
 
         });
 
@@ -242,6 +245,8 @@ Example req body below
 
 */
 router.get("/prefsAndRests", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
 
@@ -301,7 +306,7 @@ router.get("/prefsAndRests", async (req, res) => {
 
                 });
 
-                if (!skipPrefs) matchingItems.push(item); //this item matches both prefs & rests
+                if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
 
             }
 
@@ -319,6 +324,8 @@ router.get("/prefsAndRests", async (req, res) => {
 
 // this endpoint returns all menu items of the provided dining court
 router.get("/:diningCourt", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
 
@@ -342,7 +349,7 @@ router.get("/:diningCourt", async (req, res) => {
 
             courtsArray.forEach((court) => {
 
-                if (!skip && court.includes(req.params.diningCourt)) {
+                if (!skip && court.includes(req.params.diningCourt) && item.dateServed.getTime() === today.getTime()) {
                     courtsItems.push(item);
                     skip = true;
                 }
@@ -361,7 +368,10 @@ router.get("/:diningCourt", async (req, res) => {
 // this endpoint returns all menu items of the provided dining court that aligns 
 // with a user's dietary preferences
 router.get("/prefs/:diningCourt", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
+    console.log("today is " + d);
     try {
         const user = await User.findOne({
             username: req.body.username
@@ -445,8 +455,7 @@ router.get("/prefs/:diningCourt", async (req, res) => {
                             }
                         }
                     }
-
-                    if (matchesPrefs) {
+                    if (matchesPrefs && item.dateServed.getTime() === today.getTime()) {
                         courtsItems.push(item);
                         skip = true;
                     }
