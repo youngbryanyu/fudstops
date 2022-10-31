@@ -5,12 +5,10 @@ const Preference = require("../models/Preference");
 const Restriction = require("../models/Restriction");
 const User = require("../models/User");
 
-
 const DINING_COURTS = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"];
 const PURDUE_DINING_URL = "https://dining.purdue.edu/menus/"; //unused
 const PURDUE_DINING_API_URL_MENU_ITEMS = "https://api.hfs.purdue.edu/menus/v2/items/";
 const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2/locations/";
-
 
 //LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
@@ -471,5 +469,48 @@ router.get("/prefs/:diningCourt", async (req, res) => {
     } catch (error) { console.log(error); }
 
 });
+
+/*
+
+Returns a menu item based on the provided item ID
+
+Example Call: http://localhost:8000/api/menuInfo/item/76f9d158-d45d-42e0-8e37-8bd3c2c45986
+Returns this object: 
+{
+
+    ...
+    "ID": "76f9d158-d45d-42e0-8e37-8bd3c2c45986",
+    "name": "Scrambled Eggs With Bacon And Cheese"
+    ...
+
+}
+
+*/
+router.get("/item/:menuItemID", async (req, res) => {
+
+    try{
+
+        const menuItemID = req.params.menuItemID;
+        
+        const item = await MenuItem.findOne({
+            ID: menuItemID
+        });
+
+        if(item == null) {
+            res.status(500).json("No item found");
+            return;
+        }
+
+        res.status(200).json(item);
+        return;
+
+    } catch(error) {
+
+        res.status(500).json("Error: " + error);
+        console.log("Error: " + error);
+
+    }
+
+})
 
 module.exports = router;
