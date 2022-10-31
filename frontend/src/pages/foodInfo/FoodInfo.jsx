@@ -21,8 +21,8 @@ const FoodInfo = () => {
     const [score, setScore] = useState(0);
     const [avg, setAvg] = useState("N/A");
     const { user } = useContext(AuthContext);
-    const menuItemIdParam = "bruh"; //to change
     let { menuItemID } = useParams(); //this will be undefined if no params
+    const [menuItem, setMenuItem] = useState({});
 
     const handleClick0 = () => {
         setStarClick1(false);
@@ -74,7 +74,7 @@ const FoodInfo = () => {
     }
 
     /**
-    * Load initial ratings on page render
+    * Load initial ratings & get item on page render
     */
     const isFirstRenderRatings = useRef(true); // don't do anything on first render
     useEffect(() => {
@@ -126,7 +126,19 @@ const FoodInfo = () => {
 
                 const response = await axios.get(`/ratings/${menuItemID}`);
                 const rating = response.data.avgRating;
-                setAvg(rating);
+                if(rating != null) setAvg(rating);
+
+            } catch ( error) { console.log(error) };
+
+        };
+
+        const getMenuItemInfo = async () => {
+
+            try {
+
+                const response = await axios.get(`/menuInfo/item/${menuItemID}`);
+                const item = response.data;
+                setMenuItem(item);
 
             } catch ( error) { console.log(error) };
 
@@ -136,6 +148,7 @@ const FoodInfo = () => {
             if(menuItemID != null) {
                 setInitialRating();
                 getIntialAvgRating();
+                getMenuItemInfo();
             }
         }
         isFirstRenderRatings.current = false;
@@ -159,7 +172,7 @@ const FoodInfo = () => {
                     menuItemID: menuItemID,
                     rating: score
                 });
-                console.log("successfully updated rating of menuItemId: " + menuItemIdParam);
+                console.log("successfully updated rating of menuItemId: " + menuItemID);
             } catch (error) {
                 console.log("failed to update rating: " + error);
             }
@@ -176,7 +189,7 @@ const FoodInfo = () => {
             <div className="nutrition">
                 <div className="nutritionFacts">
                     <div className="header">
-                    <span>Nutrtion Facts for: Specific Menu Item</span>
+                    <span>{`Nutrtion Facts for: ${menuItem.name}`}</span>
                     </div>
                     <div className="nutritionItems">
                         <Link to="" className="link">

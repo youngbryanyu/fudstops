@@ -1,199 +1,73 @@
 // Javascript for page displaying menu items for a dining court
 import Footer from "../../components/footer/Footer";
 import Navbar from "../../components/navbar/Navbar";
-import { Link } from "react-router-dom";
 import "./menu.scss";
+import Box from "@material-ui/core/Box";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
+import { useParams, Link } from "react-router-dom";
+import {useState, useEffect, useRef} from 'react';
+import axios from "axios";
 
 const Menu = () => {
+
+    let { location } = useParams();
+    const [courtsMenu, setCourtsMenu] = useState([]);
+
+    /**
+    * Load dining courts items on page load and alters anytime the location changes
+    */
+    useEffect(() => {
+
+        const getCourtsItems = async () => {
+
+            try {
+                const response = await axios.get(`/menuInfo/${location}`);
+                const courtsItems = response.data;
+                setCourtsMenu(courtsItems);
+
+            } catch (error) { console.log(error) };
+
+        };
+
+        if (location != null) {
+            getCourtsItems();
+        }
+
+        // eslint-disable-next-line
+    }, [location]);
+
+    function listItem(item) {
+        const name = item.name;
+        const id = item.ID
+
+        return (
+            <ListItem component="div" disablePadding button={true}>
+                <Link to={`/foodInfo/${id}`} className="link">
+                    <span className="header">{`${name}`}</span>
+                </Link>
+            </ListItem>
+        );
+    }
 
     return (
         <div className="menu">
             <Navbar />
+            <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
+                <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
+                    <h4>{`View ${location}'s Items!`}</h4>
+                    <List>
+                        {courtsMenu.map((item) => listItem(item))}
+                    </List>
+                </Paper>
+            </Box>
 
-            <div className="section1">
-                <div className="menuSection">
-                    <span>Section 1</span>
-                    <div className="menuItems">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section2">
-                <div className="menuSection2">
-                    <span>Section 2</span>
-                    <div className="menuItems2">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section3">
-                <div className="menuSection3">
-                    <span>Section 3</span>
-                    <div className="menuItems3">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section4">
-                <div className="menuSection4">
-                    <span>Section 4</span>
-                    <div className="menuItems4">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section5">
-                <div className="menuSection5">
-                     <span>Section 5</span>
-                    <div className="menuItems5">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section6">
-                <div className="menuSection6">
-                    <span>Section 6</span>
-                    <div className="menuItems6">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section7">
-                <div className="menuSection7">
-                    <span>Section 7</span>
-                    <div className="menuItems7">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section8">
-                <div className="menuSection8">
-                    <span>Section 8</span>
-                    <div className="menuItems8">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="section9">
-                <div className="menuSection9">
-                    <span>Section 9</span>
-                    <div className="menuItems9">
-                        <Link to="" className="link">
-                            <span className="highlight">Item 1</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 2</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Item 3</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="days">
-                <div className="left">
-                    <div className="daysDropdown">
-                        <span>Menu Days ▾</span>
-                        <div className="daysDropdownOptions">
-                            <Link to="/menu" className="link">
-                                <span className="highlight">October 1</span>
-                            </Link>
-                            <Link to="/menu" className="link">
-                                <span className="highlight">October 2</span>
-                            </Link>
-                            <Link to="/menu" className="link">
-                                <span className="highlight">October 3</span>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="timing">
-                <div className="left">
-                    <div className="timingDropdown">
-                        <span>Times ▾</span>
-                        <div className="timingDropdownOptions">
-                            <Link to="/menu" className="link">
-                                <span className="highlight">Breakfast</span>
-                            </Link>
-                            <Link to="/menu" className="link">
-                                <span className="highlight">Lunch</span>
-                            </Link>
-                            <Link to="/menu" className="link">
-                                <span className="highlight">Dinner</span>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
             {/* <Footer /> */}
         </div>
     );
-    
+
 };
 
 export default Menu;
