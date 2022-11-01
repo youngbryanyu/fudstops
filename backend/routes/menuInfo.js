@@ -116,10 +116,8 @@ router.get("/prefs", async (req, res) => {
         const menuItems = await MenuItem.find({}); //all menu items
 
         if (!menuItems) { //this means items were not found
-
             res.status(500).json("No items found");
             return;
-
         }
 
         if (prefs.length == 0) { //no preferences provided, so all items work
@@ -138,17 +136,11 @@ router.get("/prefs", async (req, res) => {
             if (allergens == null || allergens.length == 0) skipPrefs = true;
 
             allergens.forEach((allergen) => {
-
                 if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
-
                     skipPrefs = true;
-
                 }
-
             });
-
             if (!skipPrefs && item.dateServed.getTime() === today.getTime()) prefItems.push(item); //if we found that the item aligned with req prefs
-
         });
 
         res.status(200).json(prefItems);
@@ -183,10 +175,8 @@ router.get("/rests", async (req, res) => {
         const menuItems = await MenuItem.find({}); //all menu items
 
         if (!menuItems) { //this means items were not found
-
             res.status(500).json("No items found");
             return;
-
         }
 
         if (rests.length == 0) { //no preferences provided, so all items work
@@ -204,21 +194,13 @@ router.get("/rests", async (req, res) => {
             if (allergens == null || allergens.length == 0) skipRests = true;
 
             allergens.forEach((allergen) => {
-
                 if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
-
                     skipRests = true;
-
                 }
-
             });
-
             if (!skipRests && item.dateServed.getTime() === today.getTime()) restsItems.push(item); //if we found that the item aligned with req prefs
-
         });
-
         res.status(200).json(restsItems);
-
     } catch (error) {
         res.status(500).json(error);
         console.log(error);
@@ -253,10 +235,8 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
         const menuItems = await MenuItem.find({}); //all menu items
 
         if (!menuItems) { //this means items were not found
-
             res.status(500).json("No items found");
             return;
-
         }
 
         if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
@@ -305,17 +285,12 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
             }
 
             allergens.forEach((allergen) => { //first check rests criteria
-
                 if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
-
                     skipRests = true;
-
                 }
-
             });
 
             if (!skipRests) { //if the item passes all the requested rests
-
                 allergens.forEach((allergen) => { //then we check if it passes the requested prefs
 
                     if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
@@ -325,16 +300,10 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
                     }
 
                 });
-
                 if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
-
             }
-
-
         });
-
         res.status(200).json(matchingItems);
-
     } catch (error) {
         res.status(500).json(error);
         console.log(error);
@@ -348,14 +317,11 @@ router.get("/:diningCourt", async (req, res) => {
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
-
         const menuItems = await MenuItem.find({});
 
         if (!menuItems) { //this means items were not found
-
             res.status(500).json("No items found");
             return;
-
         }
 
         let courtsItems = [];
@@ -377,10 +343,7 @@ router.get("/:diningCourt", async (req, res) => {
             });
 
         });
-
         res.status(200).json(courtsItems);
-
-
     } catch (error) { console.log(error); }
 
 });

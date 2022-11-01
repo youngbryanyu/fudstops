@@ -46,7 +46,7 @@ const Favorites = () => {
 
         };
 
-        if (location != null) {
+        if (username != null) {
             getSavedItems();
         }
 
