@@ -192,11 +192,11 @@ const Menu = () => {
         const id = item.ID
 
         return (
-            <ListItem component="div" disablePadding button={true}>
-                <Link to={`/foodInfo/${id}`} className="link">
+            <Link to={`/foodInfo/${id}`} className="link">
+                <ListItem component="div" disablePadding button={true}>
                     <span className="header">{`${name}`}</span>
-                </Link>
-            </ListItem>
+                </ListItem>
+            </Link>
         );
     }
 
