@@ -10,4 +10,4 @@ const RatingSchema = new mongoose.Schema( // create schema for ratings in DB
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Rating", RatingSchema); 
+module.exports = mongoose.model("Rating", RatingSchema);

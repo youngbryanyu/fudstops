@@ -13,7 +13,8 @@ const preferenceRoute = require("./routes/preference");
 const restrictionRoute = require("./routes/restriction");
 const problemRoute = require("./routes/problem");
 const ratingsRoute = require("./routes/ratings");
-const savedRouted = require("./routes/saved");
+const savedRoute = require("./routes/saved");
+const recommendationsRoute = require("./routes/recommendations");
 
 dotenv.config();
 
@@ -36,7 +37,8 @@ app.use("/api/preference", preferenceRoute); // endpoint for preferences
 app.use("/api/restriction", restrictionRoute); // endpoint for restrictions
 app.use("/api/problem", problemRoute); // endpoint for reporting problems
 app.use("/api/ratings", ratingsRoute); // endpoint for ratings
-app.use("/api/saved", savedRouted); // endpoint for saved items
+app.use("/api/saved", savedRoute); // endpoint for saved items
+app.use("/api/recommendations", recommendationsRoute); // endpoint for recommended items
     
 app.listen(8000, () => { // start server, listen for connections
     console.log("backend is running");

@@ -7,18 +7,12 @@ import FoodInfo from "./pages/foodInfo/FoodInfo";
 import Menu from "./pages/menu/Menu";
 import Settings from "./pages/settings/Settings";
 import Preferences from "./pages/preferences/Preferences";
-
+import Recommendations from "./pages/recommendations/Recommendations";
 import PersonalInfo from "./pages/personalInfo/PersonalInfo";
-
 import Favorites from "./pages/favorites/Favorites";
 import ForgotPassword from "./pages/forgotPassword/forgotPassword";
 import ForgotPasswordReset from "./pages/forgotPasswordReset/forgotPasswordReset";
-
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
@@ -43,6 +37,7 @@ const App = () => {
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/personalInfo" element={<PersonalInfo />} />
                             <Route path="/preferences" element={<Preferences />} />
+                            <Route path="/recommendations" element={<Recommendations />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/reportProblem" element={<ReportProblem />} />
