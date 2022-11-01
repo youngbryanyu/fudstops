@@ -1,5 +1,5 @@
 // Stying for page displaying a user's favorite menu items
-.favorites {
+.menu {
     width: 100vw;
     height: 100vh;
     background: linear-gradient(
@@ -10,62 +10,36 @@
         url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
     position: relative;
-    .left {
-        .favoriteDropdown {
-            color: white;
-            transform: translate(0px, 100px);
-            .favoritedItems {
-                transform: translate(12.5%, 5%); // translate X and Y to fix centering of dropdown
-                background-color: var(--main-color);
-                border-radius: 5px;
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                width: 400px;
-            }
-    
-            .link {
-                padding: 10px 0px;
-                margin-right: 0px;
-                cursor: pointer;
-            }
-            
-            span {
-                padding: 10px;
-                cursor: pointer;
-            }
-    
-            .link {
-                &:hover {
-                    background-color: goldenrod;
-                    border-radius: 5px;
-                }
-            }
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-            &:hover +.right {
-                display: flex;
-            }
-        }
-    }
-    .right {
-        display: none;
-        .displayFacts {
-            color: white;
-            transform: translate(700px, 110px);
-            .facts {
-                transform: translate(12.5%, 5%); // translate X and Y to fix centering of dropdown
-                background-color: var(--main-color);
-                border-radius: 5px;
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                width: 400px;
-                height: 300px;
-            }     
-            span {
-                padding: 10px;
-                cursor: pointer;
-            }
-        }
-    }
+.header {
+    font-weight: bold;
+}
+
+.text {
+    color: white;
+}
+
+.space {
+    margin-top: 5px;
+}
+
+.filter {
+
+    margin-left: 50px;
+
+}
+
+.filter2 {
+
+    margin-left: 10px;
+
+}
+
+.moreSpace {
+    margin-top: 25px;
 }

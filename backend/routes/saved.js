@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Saved = require("../models/Saved");
+const MenuItem = require('../models/MenuItem');
 
 //send user's saved item to DB, if it exists alr then update
 //this function requires the req body to contain {username, menuItemID, and saved}
@@ -38,6 +39,49 @@ router.post("/", async (req, res) => {
     } catch(error) {
         res.status(500).json(error);
         console.log("Error: " + error);
+    }
+
+});
+
+//get all of a user's saved items (first gets all user's items, then checks if saved == true)
+router.get("/allSaved/:username", async (req, res) => {
+
+    try{
+
+        const response = await Saved.find({username: req.params.username});
+
+        if(response == null) {
+            res.status(500).json("No user found");
+            return;
+        }
+
+        let allUsersSavedItems = [];
+        let index = 0;
+
+        response.forEach( async (savedItem) => {
+
+            if(savedItem.saved == true) {
+
+                const item = await MenuItem.findOne( {ID: savedItem.menuItemID} );
+
+                allUsersSavedItems.push(item);
+
+            }
+
+            if(index == response.length - 1) {
+                res.status(200).json(allUsersSavedItems);
+                return;        
+            }
+
+            index += 1;
+
+        });
+
+    } catch(error) {
+
+        res.status(500).json(error);
+        console.log(error);
+
     }
 
 });
