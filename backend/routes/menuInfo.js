@@ -242,7 +242,7 @@ Example req body below
 ^ that call + body will give all items that don't have Coconut or Tree Nuts in it and that are Vegan
 
 */
-router.get("/prefsAndRests", async (req, res) => {
+router.post("/prefsAndRests/:diningCourt", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
@@ -264,9 +264,31 @@ router.get("/prefsAndRests", async (req, res) => {
             return;
         }
 
+        let courtsItems = [];
+
+        menuItems.forEach((item) => { //first get all the diningCourts items
+
+            let courtsArray = item.courtData;
+            let skip = false;
+
+            if (courtsArray == null) return;
+
+            courtsArray.forEach((court) => {
+
+                if (!skip && court.includes(req.params.diningCourt) && item.dateServed.getTime() === today.getTime()) {
+                    courtsItems.push(item);
+                    skip = true;
+                }
+
+            });
+
+        }); 
+
+        //then find out the rests & prefs
+
         let matchingItems = [];
 
-        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+        courtsItems.forEach((item) => { //for each item we check if it matches all preferences
 
             let allergens = item.allergens;
             let skipRests = false;
@@ -365,14 +387,14 @@ router.get("/:diningCourt", async (req, res) => {
 
 // this endpoint returns all menu items of the provided dining court that aligns 
 // with a user's dietary preferences
-router.get("/prefs/:diningCourt", async (req, res) => {
+router.get("/prefs/:diningCourt/:username", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     console.log("today is " + d);
     try {
         const user = await User.findOne({
-            username: req.body.username
+            username: req.params.username
         });
 
         if (!user) {
@@ -381,10 +403,10 @@ router.get("/prefs/:diningCourt", async (req, res) => {
         }
 
         const prefResponse = await Preference.findOne({
-            username: req.body.username
+            username: req.params.username
         });
         const restResponse = await Restriction.findOne({
-            username: req.body.username
+            username: req.params.username
         });
 
         // get preferences from response
