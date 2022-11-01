@@ -40,9 +40,9 @@ const Navbar = () => {
                     <Link to="/favorites" className="link">
                         <span>Favorites</span>
                     </Link>
-                    <Link to="/foodInfo" className="link">
+                    {/* <Link to="/foodInfo" className="link">
                         <span>Food Info</span>
-                    </Link>
+                    </Link> */}
                     <div className="diningDropdown">
                         <span>Dining courts ▾</span>
                         <div className="diningDropdownOptions">
