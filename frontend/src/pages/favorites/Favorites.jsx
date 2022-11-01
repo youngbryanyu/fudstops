@@ -3,62 +3,68 @@
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
 import "./favorites.scss";
+import Box from "@material-ui/core/Box";
+import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from "../../authContext/AuthContext";
+import axios from "axios";
 
 const Favorites = () => {
+
+    const [courtsMenu, setCourtsMenu] = useState([]); //the current items displayed in list
+    const { user } = useContext(AuthContext);
+    const username = user.username;
+
+    function listItem(item) { //display a menu item
+        const name = item.name;
+        const id = item.ID
+
+        return (
+            <ListItem component="div" disablePadding button={true}>
+                <Link to={`/foodInfo/${id}`} className="link">
+                    <span className="header">{`${name}`}</span>
+                </Link>
+            </ListItem>
+        );
+    }
+
+    /**
+    * Load dining courts items on page load and alters anytime the location changes
+    */
+    useEffect(() => {
+
+        const getSavedItems = async () => {
+
+            try {
+                const response = await axios.get(`/saved/allSaved/${username}`);
+                const courtsItems = response.data;
+                setCourtsMenu(courtsItems);
+
+            } catch (error) { console.log(error) };
+
+        };
+
+        if (location != null) {
+            getSavedItems();
+        }
+
+        // eslint-disable-next-line
+    }, []);
+
     return (
-        <div className="favorites">
+        <div className="menu">
             <Navbar />
-            <div className="left">
-                <div className="favoriteDropdown">
-                    <div className="favoritedItems">
-                        <Link to="" className="link">
-                            <span className="highlight">Bread</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Eggs</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Cake</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Cookie</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Ketchup</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Mustard</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Pizza</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Pasta</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Burgers</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Steak</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Turkey</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Butter Chicken</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">General Tsos</span>
-                        </Link>
-                    </div>
-                </div>
-                <div className="right">
-                    <div className="displayFacts">
-                         <div className="facts">
-                            <span className="highlight">Display food information</span>
-                         </div>
-                    </div>
-                </div>
+            <div>
+                <h4 className="moreSpace">{`View Your Saved Items!`}</h4><h6>(click an item to see its info)</h6>
+                <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
+                    <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
+                        <List>
+                            {courtsMenu.map((item) => listItem(item))}
+                        </List>
+                    </Paper>
+                </Box>
             </div>
         </div>
     );

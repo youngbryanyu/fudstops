@@ -8,6 +8,8 @@ import { IconButton, Tooltip } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import StarIcon from '@material-ui/icons/Star';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { AuthContext } from "../../authContext/AuthContext";
 import axios from "axios";
 
@@ -18,11 +20,13 @@ const FoodInfo = () => {
     const [starClick3, setStarClick3] = useState(false);
     const [starClick4, setStarClick4] = useState(false);
     const [starClick5, setStarClick5] = useState(false);
-    const [score, setScore] = useState(0);
-    const [avg, setAvg] = useState("N/A");
+    const [savedClick, setSavedClick] = useState(false);
+    const [score, setScore] = useState(0); //tracks users rating of item
+    const [avg, setAvg] = useState("N/A"); //tracks avg rating
+    const [saved, setSaved] = useState(false); //whether or not item is saved
     const { user } = useContext(AuthContext);
     let { menuItemID } = useParams(); //this will be undefined if no params
-    const [menuItem, setMenuItem] = useState({});
+    const [menuItem, setMenuItem] = useState({}); //tracks menu item
 
     const handleClick0 = () => {
         setStarClick1(false);
@@ -72,9 +76,14 @@ const FoodInfo = () => {
         setStarClick5(true);
         setScore(5);
     }
+    const handleSavedClick = () => {
+
+        setSavedClick(!savedClick);
+
+    }
 
     /**
-    * Load initial ratings & get item on page render
+    * Load initial ratings & get item & get saved item on page render
     */
     const isFirstRenderRatings = useRef(true); // don't do anything on first render
     useEffect(() => {
@@ -84,7 +93,7 @@ const FoodInfo = () => {
                 const response = await axios.get('/ratings/' + user.username + '/' + menuItemID);
                 let rating = response.data;
 
-                if(rating === "No doc found") { //means no rating for this item
+                if (rating === "No doc found") { //means no rating for this item
 
                     //leave all stars blank
                     handleClick0();
@@ -93,7 +102,7 @@ const FoodInfo = () => {
 
                     rating = response.data.rating;
 
-                    switch(rating) {
+                    switch (rating) {
 
                         case 1:
                             handleClick1();
@@ -126,9 +135,9 @@ const FoodInfo = () => {
 
                 const response = await axios.get(`/ratings/${menuItemID}`);
                 const rating = response.data.avgRating;
-                if(rating != null) setAvg(rating);
+                if (rating != null) setAvg(rating);
 
-            } catch ( error) { console.log(error) };
+            } catch (error) { console.log(error) };
 
         };
 
@@ -140,15 +149,31 @@ const FoodInfo = () => {
                 const item = response.data;
                 setMenuItem(item);
 
-            } catch ( error) { console.log(error) };
+            } catch (error) { console.log(error) };
+
+        };
+
+        const getSavedStatus = async () => {
+
+            try {
+
+                const response = await axios.get(`/saved/${user.username}/${menuItemID}`);
+                const savedStatus = response.data.saved;
+                if (savedStatus != null) {
+                    setSaved(savedStatus);
+                    setSavedClick(!savedClick);
+                }
+
+            } catch (error) { console.log(error) };
 
         };
 
         if (isFirstRenderRatings.current) {
-            if(menuItemID != null) {
+            if (menuItemID != null) {
                 setInitialRating();
                 getIntialAvgRating();
                 getMenuItemInfo();
+                getSavedStatus();
             }
         }
         isFirstRenderRatings.current = false;
@@ -178,10 +203,40 @@ const FoodInfo = () => {
             }
         }
 
-        if(menuItemID != null) updateRatingInDB(); // update the preferences in the database
-        // eslint-disable-next-line
+        if (menuItemID != null) {
+            updateRatingInDB(); // update the preferences in the database
+        }// eslint-disable-next-line
 
     }, [score]);
+
+    /**
+     * Update the savedStatus in the database when saved changes, not on first render though.
+     */
+    const isFirstRender_updateSavedDB = useRef(true); // don't do anything on first render
+    useEffect(() => {
+        if (isFirstRender_updateSavedDB.current) {
+            isFirstRender_updateSavedDB.current = false;
+            return; // don't update DB on initial render
+        }
+
+        const updateSavedStatusInDB = async () => {
+            try {
+                await axios.post('/saved', {
+                    username: user.username,
+                    menuItemID: menuItemID,
+                    saved: savedClick
+                });
+                console.log("successfully updated savedStatus of menuItemId: " + menuItemID);
+            } catch (error) {
+                console.log("failed to update savedStatus: " + error);
+            }
+        }
+
+        if (menuItemID != null) {
+            updateSavedStatusInDB(); //update savedStatus of item in DB
+        }// eslint-disable-next-line
+
+    }, [savedClick]);
 
     return (
         <div className="foodInfo">
@@ -189,7 +244,7 @@ const FoodInfo = () => {
             <div className="nutrition">
                 <div className="nutritionFacts">
                     <div className="header">
-                    <span>{`Nutrtion Facts for: ${menuItem.name}`}</span>
+                        <span>{`Nutrtion Facts for: ${menuItem.name}`}</span>
                     </div>
                     <div className="nutritionItems">
                         <Link to="" className="link">
@@ -234,7 +289,7 @@ const FoodInfo = () => {
             <div className="ratings">
                 <div className="tags">
                     <div className="header">
-                        <span>Rate This Item!</span>
+                        <span>Rate Or Save This Item!</span>
                     </div>
                     <div className="tagNames">
                         <Tooltip title={`Average Rating: ${avg}`} placement="bottom">
@@ -256,6 +311,9 @@ const FoodInfo = () => {
                         </IconButton>
                         <IconButton color="inherit" onClick={handleClick5}>
                             {starClick5 ? <StarIcon /> : <StarOutlineIcon />}
+                        </IconButton>
+                        <IconButton color="inherit" onClick={handleSavedClick}>
+                            {savedClick ? <BookmarkIcon /> : <BookmarkBorderIcon />}
                         </IconButton>
                     </div>
                 </div>
@@ -288,21 +346,21 @@ const FoodInfo = () => {
                 <div className="ingredientHeader">
                     <span>Ingredients</span>
                 </div>
-                    <span> Enriched Flour (Unbleached Wheat Flour, Malted Barley Flour, Reduced Iron, Thiamine Mononitrate (Vitamin B1),
-                     Riboflavin (Vitamin B2), Niacin (Vitamin B3), Folic Acid), Water, High Fructose Corn Syrup, 
-                     Yeast, Soybean Oil, Wheat Gluten, Salt, Calcium Propionate (A Preservative), Monoglycerides, Vinegar,
-                      Sodium Stearoyl Lactylate, Calcium Sulfate, Citric Acid, Ascorbic Acid.
-                    </span>
-           </div>
-           <div className="disclaimer">
+                <span> Enriched Flour (Unbleached Wheat Flour, Malted Barley Flour, Reduced Iron, Thiamine Mononitrate (Vitamin B1),
+                    Riboflavin (Vitamin B2), Niacin (Vitamin B3), Folic Acid), Water, High Fructose Corn Syrup,
+                    Yeast, Soybean Oil, Wheat Gluten, Salt, Calcium Propionate (A Preservative), Monoglycerides, Vinegar,
+                    Sodium Stearoyl Lactylate, Calcium Sulfate, Citric Acid, Ascorbic Acid.
+                </span>
+            </div>
+            <div className="disclaimer">
                 <div className="disclaimerHeader">
                     <span>Disclaimer</span>
                 </div>
-                    <span> 
-                        Menus subject to change. All nutritional information is based on the listed menu items. 
-                        Any additions to ingredients or condiments will change the nutritional value. All information provided is believed to be accurate and reliable as of the date of posting.
-                        Nutritional information may vary by location due to product substitutions or product availability.
-                    </span>
+                <span>
+                    Menus subject to change. All nutritional information is based on the listed menu items.
+                    Any additions to ingredients or condiments will change the nutritional value. All information provided is believed to be accurate and reliable as of the date of posting.
+                    Nutritional information may vary by location due to product substitutions or product availability.
+                </span>
             </div>
         </div>
     );
