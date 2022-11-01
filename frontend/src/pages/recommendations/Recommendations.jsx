@@ -112,16 +112,16 @@ const Recommendations = () => {
 
         };
 
-        const getRecommendationsBasedOnPrefsRests = async () => {
+        // const getRecommendationsBasedOnPrefsRests = async () => {
 
-            try {
-                const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
-                const courtsItems = response.data;
-                setRecsPrefsRests(courtsItems);
+        //     try {
+        //         const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
+        //         const courtsItems = response.data;
+        //         setRecsPrefsRests(courtsItems);
 
-            } catch (error) { console.log(error) };
+        //     } catch (error) { console.log(error) };
 
-        };
+        // };
 
         if (username != null) {
             getRecommendationsBasedOnSavedItems();
