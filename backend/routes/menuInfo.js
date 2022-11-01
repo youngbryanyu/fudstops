@@ -208,6 +208,74 @@ router.get("/rests", async (req, res) => {
 
 });
 
+//this gets all items regardless of dining court given the prefs and rests
+router.post("/prefsAndRests", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+
+    try {
+
+        const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
+        const prefs = req.body.preferences; //for example could be - "Vegan"
+        const menuItems = await MenuItem.find({}); //all menu items
+
+        if (!menuItems) { //this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
+
+        if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
+            res.status(200).json(menuItems);
+            return;
+        }
+
+        //then find out the rests & prefs
+        
+        let matchingItems = [];
+
+        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+
+            let allergens = item.allergens;
+            let skipRests = false;
+            let skipPrefs = false;
+
+            //these if-checks below are testing edge cases
+            if (allergens == null) {
+                skipRests = true;
+                skipPrefs = true;
+            }
+            if (allergens.length == 0 && (prefs.length != 0 || rests.length != 0)) {
+                skipRests = true;
+                skipPrefs = true;
+            }
+
+            allergens.forEach((allergen) => { //first check rests criteria
+                if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
+                    skipRests = true;
+                }
+            });
+
+            if (!skipRests) { //if the item passes all the requested rests
+                allergens.forEach((allergen) => { //then we check if it passes the requested prefs
+
+                    if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
+
+                        skipPrefs = true;
+
+                    }
+
+                });
+                if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
+            }
+        });
+        res.status(200).json(matchingItems);
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
+
+});
+
 /*
 //this endpoint returns all items that align with the requested restrictions and preferences
 //the request body must include the requested restrictions & preferences

@@ -40,6 +40,9 @@ const Navbar = () => {
                     <Link to="/favorites" className="link">
                         <span>Favorites</span>
                     </Link>
+                    <Link to="/recommendations" className="link">
+                        <span>Recommendations</span>
+                    </Link>
                     {/* <Link to="/foodInfo" className="link">
                         <span>Food Info</span>
                     </Link> */}
