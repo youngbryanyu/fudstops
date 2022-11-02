@@ -167,7 +167,7 @@ const PersonalInfo = () => {
                        <label>Add/Change/Delete profile picture:
                          <input 
                             type="text" 
-                            value={newPicture}
+                            value={newPicture} 
                             onChange={(e) => setNewPicture(e.target.value)}
                         />
                       </label>
@@ -176,12 +176,6 @@ const PersonalInfo = () => {
                 </div>
 
                 <div className="buttons">
-                    {/* <button onClick={updateUserInfo}> Change number </button>
-                    <button onClick={updateUserInfo}> Change email </button>
-                    <button onClick={updateUserInfo}> Change username </button>
-                    <button onClick={updateUserInfo}> Add picture</button>
-                    <button onClick={updateUserInfo}> Change picture</button>
-                    <button onClick={updateUserInfo}> Delete picture</button> */}
                 </div>
                 <div className="personalDropdown">
                     <div className="header">

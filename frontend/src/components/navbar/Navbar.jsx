@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { logout } from "../../authContext/apiCalls";
 import { AuthContext } from "../../authContext/AuthContext";
+import axios from 'axios';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -23,6 +24,18 @@ const Navbar = () => {
         setIsScrolled(window.pageYOffset === 0 ? false : true);
         return () => (window.onscroll = null);
     };
+
+    const [picture, setPicture] = useState('')
+    const { user } = useContext(AuthContext); // get user from auth context
+    const url = 'users/find/' + user._id; //get the user id field from api
+    const getUserInfo = () => {
+        axios.get(url) //put the entire url including the user
+            .then(res => {
+                setPicture(res.data.profilePic)
+            }).catch(err => {
+                console.log(err)
+            })
+    }
 
     return (
         <div className={isScrolled ? "navbar scrolled" : "navbar"}>
@@ -68,10 +81,11 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="right">
+                    {getUserInfo()}
                     <Search className="icon" />
                     <Notifications className="icon" />
                     <img
-                        src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                        src={picture} //new pic
                         alt=""
                     />
                     <div className="profile">
