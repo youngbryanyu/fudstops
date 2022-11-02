@@ -419,7 +419,7 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
-    console.log("today is " + d);
+    // console.log("today is " + d);
     try {
         const user = await User.findOne({
             username: req.params.username
