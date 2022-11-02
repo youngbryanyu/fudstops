@@ -17,12 +17,13 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import Button from '@material-ui/core/Button';
 import Navbar from "../../components/navbar/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./home.scss";
 import axios from "axios";
 
 const DINING_COURTS = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"];
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -95,6 +96,31 @@ const Home = () => {
     const handleMilk = () => setMilk(!milk);
     const handlePeanuts = () => setPeanuts(!peanuts);
 
+
+    const [shouldSort, setShouldSort] = useState(false);
+    const [menuBeforeSort, setMenuBeforeSort] = useState([]);
+
+
+    const handleSortClick = () => {
+        setShouldSort(!shouldSort);
+
+    }
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current === true) {
+            isFirstRender.current = false;
+            return;
+        }
+        if (shouldSort) {
+            setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
+            courtsMenu.sort();
+        } else {
+            setCourtsMenu(menuBeforeSort);
+        }
+    }, [shouldSort]);
+
+
+
     const handleSelectPrefsClick = () => { //this is for handling the submit button of preferences
 
         prefs = [];
@@ -126,7 +152,7 @@ const Home = () => {
                     const courtsItems = response.data;
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
-                        console.log("Length of " + diningCourt + " is " + courtsItems.length)
+                        console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
                     }
                 }
 
@@ -174,7 +200,7 @@ const Home = () => {
                     const courtsItems = response.data;
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
-                        console.log("Length of " + diningCourt + " is " + courtsItems.length)
+                        console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
                     }
                 }
                 setMatchingItems(matchingCourts);
@@ -226,6 +252,9 @@ const Home = () => {
                             <MenuItem value={3}>{`All Dining Courts`}</MenuItem>
                         </Select>
                     </FormControl>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort Alphabetically"} checked={shouldSort} onChange={handleSortClick} />
+                    </FormGroup>
                 </Box>
             </div>
             <div className="filter">

@@ -225,7 +225,7 @@ router.get("/saved/:username", async (req, res) => {
                     message: "All Good!"
                 };
 
-                console.log("" + weights);
+                // console.log("recommendation weights: " + weights);
 
                 res.status(200).json(toReturn);
                 return;

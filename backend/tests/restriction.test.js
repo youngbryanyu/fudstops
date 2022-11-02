@@ -12,7 +12,7 @@ const initial_rests = ["Soy"];
 const after_rests = ["Soy", "Milk"];
 
 // save/update restrictions to/in DB
-describe("send restrictions to DB: POST /restriction", () => {
+describe("POST /restriction", () => {
     describe("given a user with no restrictions", () => {
         test("should return a 201", async () => {
             await createUser();
@@ -26,6 +26,12 @@ describe("send restrictions to DB: POST /restriction", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should create new DB entry", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
     describe("given a user with existing restrictions", () => {
         test("should return a 201", async () => {
@@ -37,11 +43,17 @@ describe("send restrictions to DB: POST /restriction", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should update existing DB entry", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
 // test get restrictions
-describe("get restrictions from DB: GET /restriction/:username", () => {
+describe("GET /restriction/:username", () => {
     describe("given a user with restrictions", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -49,6 +61,9 @@ describe("get restrictions from DB: GET /restriction/:username", () => {
                 .send();
 
             expect(response.statusCode).toBe(200);
+        });
+        test("should return user's restrictions", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
     describe("given an invalid username", () => {
@@ -59,11 +74,14 @@ describe("get restrictions from DB: GET /restriction/:username", () => {
 
             expect(response.statusCode).toBe(500);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
 // test deleting restrictions
-describe("delete restrictions from DB: DELETE /restriction", () => {
+describe("DELETE /restriction", () => {
     describe("given a user with restrictions", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -76,6 +94,9 @@ describe("delete restrictions from DB: DELETE /restriction", () => {
 
             await deleteUserAfterTest();
             await deleteRestrictionsAfterTest();
+        });
+        test("user's preferences should be deleted from DB", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });
