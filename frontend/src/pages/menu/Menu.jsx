@@ -263,7 +263,7 @@ const Menu = () => {
                             classes={{ root: classes.root, select: classes.selected }}
                         >
                             <MenuItem value={1}>Items Matching My Prefs & Rests</MenuItem>
-                            <MenuItem value={2}>Choose Prefs & Rests</MenuItem>
+                            <MenuItem value={2}>Choose Custom Preferences & Restrictions</MenuItem>
                             <MenuItem value={3}>{`All ${location}'s Items`}</MenuItem>
                         </Select>
                     </FormControl>
@@ -278,11 +278,19 @@ const Menu = () => {
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGETARIAN} checked={vegetarian} onChange={handleVegetarian} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGAN} checked={vegan} onChange={handleVegan} />
+
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={COCONUT} checked={coconut} onChange={handleCoconut} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={EGGS} checked={eggs} onChange={handleEggs} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={FISH} checked={fish} onChange={handleFish} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={GLUTEN} checked={gluten} onChange={handleGluten} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SESAME} checked={sesame} onChange={handleSesame} />
+
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={COCONUT + " free"} checked={coconut} onChange={handleCoconut} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={EGGS + " free"} checked={eggs} onChange={handleEggs} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={FISH + " free"} checked={fish} onChange={handleFish} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={GLUTEN + " free"} checked={gluten} onChange={handleGluten} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SESAME + " free"} checked={sesame} onChange={handleSesame} />
+
                             </FormGroup>
 
                         </>
@@ -293,18 +301,25 @@ const Menu = () => {
             <div className="filter2">
                 {
                     view == "SelectPrefs" && (
-
                         <>
                             <FormGroup>
+
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SHELLFISH} checked={shellfish} onChange={handleShellfish} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SOY} checked={soy} onChange={handleSoy} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={TREE_NUTS} checked={treeNuts} onChange={handleTreeNuts} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={WHEAT} checked={wheat} onChange={handleWheat} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={MILK} checked={milk} onChange={handleMilk} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={PEANUTS} checked={peanuts} onChange={handlePeanuts} />
+
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SHELLFISH + " free"} checked={shellfish} onChange={handleShellfish} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SOY + " free"} checked={soy} onChange={handleSoy} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={TREE_NUTS + " free"} checked={treeNuts} onChange={handleTreeNuts} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={WHEAT + " free"} checked={wheat} onChange={handleWheat} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={MILK + " free"} checked={milk} onChange={handleMilk} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={PEANUTS + " free"} checked={peanuts} onChange={handlePeanuts} />
+
                             </FormGroup>
                             <Button onClick={handleSelectPrefsClick} variant="contained" endIcon={<ArrowUpwardIcon />} className="moreSpace">Submit</Button>
-
                         </>
 
                     )

@@ -277,16 +277,16 @@ const Preferences = () => {
                         <FormGroup  >
                             <Box className="box"><span className="header">Restrictions</span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={COCONUT} checked={coconut} onChange={handleCoconut} />
+                                <FormControlLabel control={<Checkbox />} label={COCONUT + " free"} checked={coconut} onChange={handleCoconut} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={EGGS} checked={eggs} onChange={handleEggs} />
+                                <FormControlLabel control={<Checkbox />} label={EGGS + " free"} checked={eggs} onChange={handleEggs} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={FISH} checked={fish} onChange={handleFish} />
+                                <FormControlLabel control={<Checkbox />} label={FISH + " free"} checked={fish} onChange={handleFish} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={GLUTEN} checked={gluten} onChange={handleGluten} />
+                                <FormControlLabel control={<Checkbox />} label={GLUTEN + " free"} checked={gluten} onChange={handleGluten} />
                             </span></Box>
                         </FormGroup>
                     </div>
@@ -296,16 +296,16 @@ const Preferences = () => {
                     <div className="info4">
                         <FormGroup  >
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={SESAME} checked={sesame} onChange={handleSesame} />
+                                <FormControlLabel control={<Checkbox />} label={SESAME + " free"} checked={sesame} onChange={handleSesame} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={SHELLFISH} checked={shellfish} onChange={handleShellfish} />
+                                <FormControlLabel control={<Checkbox />} label={SHELLFISH + " free"} checked={shellfish} onChange={handleShellfish} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={SOY} checked={soy} onChange={handleSoy} />
+                                <FormControlLabel control={<Checkbox />} label={SOY + " free"} checked={soy} onChange={handleSoy} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={TREE_NUTS} checked={treeNuts} onChange={handleTreeNuts} />
+                                <FormControlLabel control={<Checkbox />} label={TREE_NUTS + " free"} checked={treeNuts} onChange={handleTreeNuts} />
                             </span></Box>
                         </FormGroup>
                     </div>
@@ -315,13 +315,13 @@ const Preferences = () => {
                     <div className="pr-5">
                         <FormGroup  >
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={WHEAT} checked={wheat} onChange={handleWheat} />
+                                <FormControlLabel control={<Checkbox />} label={WHEAT + " free"} checked={wheat} onChange={handleWheat} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={MILK} checked={milk} onChange={handleMilk} />
+                                <FormControlLabel control={<Checkbox />} label={MILK + " free"} checked={milk} onChange={handleMilk} />
                             </span></Box>
                             <Box className="box"><span className="boxHeader2">
-                                <FormControlLabel control={<Checkbox />} label={PEANUTS} checked={peanuts} onChange={handlePeanuts} />
+                                <FormControlLabel control={<Checkbox />} label={PEANUTS + " free"} checked={peanuts} onChange={handlePeanuts} />
                             </span></Box>
                         </FormGroup>
                     </div>
