@@ -3,7 +3,7 @@
 import Navbar from "../../components/navbar/Navbar";
 import "./foodInfo.scss";
 import { useContext, useState, useEffect, useRef } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { json, Link, useParams } from "react-router-dom";
 import { IconButton, Tooltip } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
@@ -26,7 +26,18 @@ const FoodInfo = () => {
     const [saved, setSaved] = useState(false); //whether or not item is saved
     const { user } = useContext(AuthContext);
     let { menuItemID } = useParams(); //this will be undefined if no params
-    const [menuItem, setMenuItem] = useState({}); //tracks menu item
+    const [menuItem, setMenuItem] = useState({
+        _id: "",
+        ID: "",
+        name: "",
+        courtData: [],
+        dateServed: "",
+        isVegetarian: false,
+        allergens: [],
+        nutritionFacts: [],
+        ingredients: "",
+        __v: 0
+    }); //tracks menu item
 
     const handleClick0 = () => {
         setStarClick1(false);
@@ -144,10 +155,22 @@ const FoodInfo = () => {
         const getMenuItemInfo = async () => {
 
             try {
-
                 const response = await axios.get(`/menuInfo/item/${menuItemID}`);
                 const item = response.data;
-                setMenuItem(item);
+
+                //
+                menuItem["_id"] = item._id;
+                menuItem["ID"] = item.ID;
+                menuItem["name"] = item.name;
+                menuItem["courtData"] = item.courtData;
+                menuItem["dateServed"] = item.dateServed;
+                menuItem["isVegetarian"] = item.isVegetarian;
+                menuItem["allergens"] = item.allergens;
+                menuItem["nutritionFacts"] = item.nutritionFacts;
+                menuItem["ingredients"] = item.ingredients;
+                menuItem["__v"] = item.__v;
+
+                console.log(menuItem);
 
             } catch (error) { console.log(error) };
 
