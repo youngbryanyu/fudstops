@@ -85,7 +85,7 @@ const Navbar = () => {
                     <Search className="icon" />
                     <Notifications className="icon" />
                     <img
-                        src={picture} //new pic
+                        src={picture} //new picgi
                         alt=""
                     />
                     <div className="profile">
