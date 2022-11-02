@@ -8,7 +8,7 @@ import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 
 const SUBMIT_MESSAGE = "The problem was reported successfully!";
-const ERROR_MESSAGE = "Cannot submit an empty error message!"
+const ERROR_MESSAGE = "Cannot submit an empty problem message!"
 
 function isValidErrorMessageChecker(errorMessage) {
     return errorMessage.length > 0;
