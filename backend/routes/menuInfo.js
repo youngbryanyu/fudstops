@@ -307,11 +307,6 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
             return;
         }
 
-        if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
-            res.status(200).json(menuItems);
-            return;
-        }
-
         let courtsItems = [];
 
         menuItems.forEach((item) => { //first get all the diningCourts items
@@ -322,15 +317,17 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
             if (courtsArray == null) return;
 
             courtsArray.forEach((court) => {
-
                 if (!skip && court.includes(req.params.diningCourt) && item.dateServed.getTime() === today.getTime()) {
                     courtsItems.push(item);
                     skip = true;
                 }
-
             });
-
         }); 
+
+        if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
+            res.status(200).json(courtsItems);
+            return;
+        }
 
         //then find out the rests & prefs
 
@@ -564,6 +561,6 @@ router.get("/item/:menuItemID", async (req, res) => {
 
     }
 
-})
+});
 
 module.exports = router;
