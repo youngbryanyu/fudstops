@@ -43,7 +43,6 @@ const Menu = () => {
     const { user } = useContext(AuthContext);
     const [shouldSort, setShouldSort] = useState(false);
     const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
-    const [unsorted, setUnsorted] = useState(true);
 
     let username = user.username;
 
@@ -134,7 +133,7 @@ const Menu = () => {
         setShouldSort(!shouldSort);
     }
 
-    /* */
+    /* Sorting useEffect */
     const isFirstRender = useRef(true);
     useEffect(() => {
         if (isFirstRender.current === true) {
@@ -144,22 +143,24 @@ const Menu = () => {
 
         // sort courts menu then set it to the sorted
         if (shouldSort) {
-            console.log("sorting");
+
+            //this does a copy of the prior menu
+            setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu))); //unsorted items now stored in menuBeforeSort
+
+            //now we sort the item (this is an inline function that compares two objects names)
+            //this means (if a's name > b's name) then return 1
+            //            else return (if b's name > a's name) then 1 
+            //                         else return 0 which means both names are equal
+            courtsMenu.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+
         } else {
-            console.log("unsorting");
+
+            //set courtsMenu back to the way it was originally
+            setCourtsMenu(menuBeforeSort);
+
         }
         // eslint-disable-next-line
     }, [shouldSort]);
-
-    /* compare operator for sorting */
-    function compare(a, b) {
-        if (a.name < b.name) {
-            return -1;
-        } if (a.name > b.name) {
-            return 1;
-        }
-        return 0;
-    }
 
     /* selecting preferences and restrictions from checkbox */
     const handleSelectPrefsClick = () => { //this is for handling the submit button of preferences
@@ -234,6 +235,7 @@ const Menu = () => {
         };
 
         if (location != null) {
+            setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
             getCourtsItems();
             getItemsMatchingUser();
         }

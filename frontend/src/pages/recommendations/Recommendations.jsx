@@ -23,20 +23,16 @@ import axios from "axios";
 //the layout will be new recommendation page that has a 
 //list component on left, a filter component on right
 //1st filter option is "Give Me Recommendations Based On Saved Items"
-    //this needs to first get all saved items
-    //have a weightage for attributes (For example, Vegan - 4, Vegetarian - 1, Eggs - 6, Peanuts - 0 ...)
-    //go through each saved item and add +1 to weightage if attribute is true in that item
-    //at end select the attributes that are greater than or equal to 3
-        //(if no attributes greater than 3, return all items)
-        //(also indicate to user to save more items to get more personalized recommendations)
-    //then return menu items that fit those more heavily weighted attributes
-
+//this needs to first get all saved items
+//have a weightage for attributes (For example, Vegan - 4, Vegetarian - 1, Eggs - 6, Peanuts - 0 ...)
+//go through each saved item and add +1 to weightage if attribute is true in that item
+//at end select the attributes that are greater than or equal to 3
+//(if no attributes greater than 3, return all items)
+//(also indicate to user to save more items to get more personalized recommendations)
+//then return menu items that fit those more heavily weighted attributes
 //2nd filter option is "Give Me Recommendations Based On My Prefs/Rests"
-    //just get all items that fit the users prefs & rests
-
+//just get all items that fit the users prefs & rests
 //limit results to 15 items
-
-//TODO: Make backend endpoint to do filter 2
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,7 +50,8 @@ const Recommendations = () => {
     const [courtsMenu, setCourtsMenu] = useState([]); //the current items displayed in list
     const [recsPrefsRests, setRecsPrefsRests] = useState([]); //keep track of recs of prefs and rests
     const [view, setView] = useState(""); //keep track of which filter option is currently chosen
-    const { user } = useContext(AuthContext); 
+    const [message, setMessage] = useState("");
+    const { user } = useContext(AuthContext);
     let username = user.username;
 
     const handleChange = (event) => { //this is for handling the filters options
@@ -84,12 +81,11 @@ const Recommendations = () => {
                 const response = await axios.get(`/recommendations/saved/${username}`);
                 const prefsRestsObj = response.data;
 
-                if(prefsRestsObj.message != "All Good!") {
+                if (prefsRestsObj.message != "All Good!") {
 
                     setCourtsMenu(prefsRestsObj.items);
                     setRecsSaved(prefsRestsObj.items);
-
-                    //TODO: set message to indicate to user
+                    setMessage(prefsRestsObj.message);
 
                 } else {
 
@@ -99,33 +95,54 @@ const Recommendations = () => {
                         preferences: prefsRestsObj.preferences,
                         restrictions: prefsRestsObj.restrictions
                     });
-                    
+
                     const items = res.data;
                     setCourtsMenu(items);
                     setRecsSaved(items);
+                    setMessage(prefsRestsObj.message);
 
                 }
 
-                
+
 
             } catch (error) { console.log(error) };
 
         };
 
-        // const getRecommendationsBasedOnPrefsRests = async () => {
+        const getRecommendationsBasedOnPrefsRests = async () => {
 
-        //     try {
-        //         const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
-        //         const courtsItems = response.data;
-        //         setRecsPrefsRests(courtsItems);
+            try {
 
-        //     } catch (error) { console.log(error) };
+                //first do two get calls to get the users prefs and rests
+                //then do a third call to get the items matching those prefs and rests
 
-        // };
+                const prefsResponse = await axios.get(`/preference/${username}`);
+                let prefs = [];
+                if(prefsResponse != "Error retrieving preferences (user likely doesn't have any yet)") {
+                    prefs = prefsResponse.data.preferences;
+                }
+
+                const restsResponse = await axios.get(`/restriction/${username}`);
+                let rests = [];
+                if(restsResponse != "Error retrieving restrictions (user likely doesn't have any yet)") {
+                    rests = restsResponse.data.restrictions;
+                }
+                
+                const response = await axios.post(`/menuInfo/prefsAndRests`, {
+                    preferences: prefs,
+                    restrictions: rests
+                });
+
+                const courtsItems = response.data;
+                setRecsPrefsRests(courtsItems);
+
+            } catch (error) { console.log(error) };
+
+        };
 
         if (username != null) {
             getRecommendationsBasedOnSavedItems();
-            //getRecommendationsBasedOnPrefsRests();
+            getRecommendationsBasedOnPrefsRests();
         }
 
         // eslint-disable-next-line
@@ -171,6 +188,19 @@ const Recommendations = () => {
                         </Select>
                     </FormControl>
                 </Box>
+                <div>
+                    {
+                        message != "All Good!" && (
+
+                            <>
+
+                                <h4>{`${message}`}</h4>
+
+                            </>
+
+                        )
+                    }
+                </div>
             </div>
             {/* <Footer /> */}
         </div>

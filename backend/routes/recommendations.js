@@ -7,18 +7,30 @@ router.get("/saved/:username", async (req, res) => {
 
     try {
 
+        var d = new Date();
+        var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+
         //find all the user's saved items
         const savedItems = await Saved.find({ username: req.params.username });
 
-        if (!savedItems) { //this means no saved items were found
+        if (!savedItems || savedItems.length == 0) { //this means no saved items were found
 
             //we will return all menu items, with a boolean to indicate that the mesage
             //"save more items to have better recommendations"
 
             const allItems = await MenuItem.find({});
+            let todaysItems = [];
+
+            allItems.forEach((item) => {
+
+                if (item.dateServed.getTime() === today.getTime()) {
+                    todaysItems.push(item);
+                }
+
+            });
 
             const toReturn = {
-                items: allItems,
+                items: todaysItems,
                 message: "Save more items to have more personalized recommendations!"
             }
 
@@ -184,12 +196,19 @@ router.get("/saved/:username", async (req, res) => {
                     //we will return all menu items, with a boolean to indicate that the mesage
                     //"save more items to have better recommendations"
 
-
-
                     const allItems = await MenuItem.find({});
+                    let todaysItems = [];
+
+                    allItems.forEach((item) => {
+
+                        if (item.dateServed.getTime() === today.getTime()) {
+                            todaysItems.push(item);
+                        }
+
+                    });
 
                     const toReturn = {
-                        items: allItems,
+                        items: todaysItems,
                         message: "Save more items to have more personalized recommendations!"
                     }
 
