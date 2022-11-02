@@ -167,7 +167,7 @@ const PersonalInfo = () => {
                        <label>Add/Change/Delete profile picture:
                          <input 
                             type="text" 
-                            value={newPicture}
+                            value={newPicture} 
                             onChange={(e) => setNewPicture(e.target.value)}
                         />
                       </label>
