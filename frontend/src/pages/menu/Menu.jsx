@@ -15,7 +15,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import Button from '@material-ui/core/Button';
 import Navbar from "../../components/navbar/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./menu.scss";
 import axios from "axios";
@@ -37,10 +37,14 @@ const Menu = () => {
     let { location } = useParams();
     const [allItems, setAllItems] = useState([]); //keep track of all menu items
     const [selectedItems, setSelectedItems] = useState([]); //keep track of the selected checkbox items
-    const [courtsMenu, setCourtsMenu] = useState([]); //the current items displayed in list
+    const [courtsMenu, setCourtsMenu] = useState([]); // the current items displayed in list
     const [matchingItems, setMatchingItems] = useState([]); //keep track of matching user's prefs items
     const [view, setView] = useState(""); //keep track of which filter option is currently chosen
     const { user } = useContext(AuthContext);
+    const [shouldSort, setShouldSort] = useState(false);
+    const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
+    const [unsorted, setUnsorted] = useState(true);
+
     let username = user.username;
 
     // preferences
@@ -123,15 +127,41 @@ const Menu = () => {
             setEmail("nmputubw@purdue.edu")
             setLoc("1301 3rd Street West Lafayette, IN 47906")
         }
-        console.log(number);
-        console.log(email);
-        console.log(location);
     });
 
+    /* sorting */
+    const handleSortClick = () => {
+        setShouldSort(!shouldSort);
+    }
 
+    /* */
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current === true) {
+            isFirstRender.current = false;
+            return;
+        }
 
+        // sort courts menu then set it to the sorted
+        if (shouldSort) {
+            console.log("sorting");
+        } else {
+            console.log("unsorting");
+        }
+        // eslint-disable-next-line
+    }, [shouldSort]);
 
+    /* compare operator for sorting */
+    function compare(a, b) {
+        if (a.name < b.name) {
+            return -1;
+        } if (a.name > b.name) {
+            return 1;
+        }
+        return 0;
+    }
 
+    /* selecting preferences and restrictions from checkbox */
     const handleSelectPrefsClick = () => { //this is for handling the submit button of preferences
 
         prefs = [];
@@ -161,7 +191,6 @@ const Menu = () => {
                 const courtsItems = response.data;
                 setSelectedItems(courtsItems);
                 setCourtsMenu(courtsItems);
-
             } catch (error) { console.log(error) };
 
         };
@@ -171,52 +200,37 @@ const Menu = () => {
     }
 
     const handleChange = (event) => { //this is for handling the filters options
-
         if (event.target.value == 1) { //this means the user selected Items Matching My Prefs & Rests
-
             setView("MatchingItems");
             setCourtsMenu(matchingItems);
-
         } else if (event.target.value == 2) { //this means user wants to select from checkbox
-
             setView("SelectPrefs");
             setCourtsMenu(selectedItems);
-
         } else if (event.target.value == 3) { //this means the user wants to view all items
-
             setView("AllItems");
             setCourtsMenu(allItems);
-
         }
-
     };
 
     /**
-    * Load dining courts items on page load and alters anytime the location changes
+    * Load dining courts items on page load and alters anytime the location changes (when user first enters the page)
     */
     useEffect(() => {
-
         const getCourtsItems = async () => {
-
             try {
                 const response = await axios.get(`/menuInfo/${location}`);
                 const courtsItems = response.data;
                 setCourtsMenu(courtsItems);
                 setAllItems(courtsItems);
-
             } catch (error) { console.log(error) };
-
         };
 
         const getItemsMatchingUser = async () => {
-
             try {
                 const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
                 const courtsItems = response.data;
                 setMatchingItems(courtsItems);
-
             } catch (error) { console.log(error) };
-
         };
 
         if (location != null) {
@@ -267,6 +281,10 @@ const Menu = () => {
                             <MenuItem value={3}>{`All ${location}'s Items`}</MenuItem>
                         </Select>
                     </FormControl>
+
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort Alphabetically"} checked={shouldSort} onChange={handleSortClick} />
+                    </FormGroup>
                 </Box>
             </div>
             <div className="filter">
