@@ -111,9 +111,9 @@ const Home = () => {
             isFirstRender.current = false;
             return;
         }
-        if(shouldSort){
+        if (shouldSort) {
             setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
-            courtsMenu.sort();            
+            courtsMenu.sort();
         } else {
             setCourtsMenu(menuBeforeSort);
         }
@@ -152,7 +152,7 @@ const Home = () => {
                     const courtsItems = response.data;
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
-                        //console.log("Length of " + diningCourt + " is " + courtsItems.length)
+                        console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
                     }
                 }
 
@@ -200,7 +200,7 @@ const Home = () => {
                     const courtsItems = response.data;
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
-                        //console.log("Length of " + diningCourt + " is " + courtsItems.length)
+                        console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
                     }
                 }
                 setMatchingItems(matchingCourts);

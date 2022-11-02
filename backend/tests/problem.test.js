@@ -11,7 +11,7 @@ const isAdmin = false;
 const problem_message = "problem_message";
 
 // send problem message to DB
-describe("send problem message from user to DB: POST /problem", () => {
+describe("POST /problem", () => {
     describe("given problem message and valid user", () => {
         test("should return a 201", async () => {
             await createUser();
@@ -25,11 +25,14 @@ describe("send problem message from user to DB: POST /problem", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
-// test get problems
-describe("get problems submitted from DB for a user: GET /problem", () => {
+// test get problems submitted from DB for a user
+describe("GET /problem/:username", () => {
     describe("given a valid user", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -37,6 +40,9 @@ describe("get problems submitted from DB for a user: GET /problem", () => {
                 .send();
 
             expect(response.statusCode).toBe(200);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
     describe("given an invalid username", () => {
@@ -47,11 +53,14 @@ describe("get problems submitted from DB for a user: GET /problem", () => {
 
             expect(response.statusCode).toBe(500);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
 // test deleting preferences
-describe("delete problems submitted from DB for a user: DELETE /problem", () => {
+describe("DELETE /problem", () => {
     describe("given a user with problems submitted", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -59,14 +68,16 @@ describe("delete problems submitted from DB for a user: DELETE /problem", () => 
                 .send({
                     username: username
                 });
-
-                console.log(response.body)
-
             expect(response.statusCode).toBe(200);
-
 
             await deleteUserAfterTest();
             await deleteProblemsAfterTest();
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("all user's problems should be deleted from DB", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });

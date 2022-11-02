@@ -27,6 +27,9 @@ describe("register: POST /auth/register", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     // same credentials, user aleady exists
@@ -43,6 +46,9 @@ describe("register: POST /auth/register", () => {
                 });
             expect(response.statusCode).toBe(500);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
@@ -58,6 +64,9 @@ describe("login: POST /auth/login", () => {
                 });
             expect(response.statusCode).toBe(200);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given an invalid email and password", () => {
@@ -69,6 +78,9 @@ describe("login: POST /auth/login", () => {
                     password: "invalid"
                 });
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -82,6 +94,9 @@ describe("login: POST /auth/login", () => {
                 });
             expect(response.statusCode).toBe(200);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given an invalid phone number and password", () => {
@@ -93,6 +108,9 @@ describe("login: POST /auth/login", () => {
                     password: "invalid"
                 });
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -107,6 +125,9 @@ describe("login: POST /auth/login", () => {
 
             expect(response.statusCode).toBe(200);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given an invalid username and password", () => {
@@ -118,6 +139,9 @@ describe("login: POST /auth/login", () => {
                     password: "invalid"
                 });
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -131,6 +155,9 @@ describe("login: POST /auth/login", () => {
                 });
             expect(response.statusCode).toBe(401);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given a nonexistent phone number", () => {
@@ -142,6 +169,9 @@ describe("login: POST /auth/login", () => {
                     password: "invalid"
                 });
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -156,6 +186,9 @@ describe("login: POST /auth/login", () => {
             expect(response.statusCode).toBe(401);
 
             await deleteUserAfterTest();
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });

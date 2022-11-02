@@ -44,7 +44,7 @@ router.get("/:username", async (req, res) => {
         }
 
         res.status(200).json(preferences); // return preferences
-        console.log("Successfully retrieved preferences: " + preferences);
+        // console.log("Successfully retrieved preferences: " + preferences);
     } catch (error) {
         res.status(500).json("Error retriving preferences (user likely doesn't have any yet):" + error);
         // console.log("Error retrieving preferences: " + error);
