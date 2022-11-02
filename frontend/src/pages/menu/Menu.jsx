@@ -19,6 +19,8 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./menu.scss";
 import axios from "axios";
+import { Mail, Phone, NearMe } from "@material-ui/icons";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -90,6 +92,45 @@ const Menu = () => {
     const handleWheat = () => setWheat(!wheat);
     const handleMilk = () => setMilk(!milk);
     const handlePeanuts = () => setPeanuts(!peanuts);
+
+    //states for number, email, and loc
+    const [number, setNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [loc, setLoc] = useState("");
+    useEffect(() => {
+        if (location == "Windsor") {
+            setNumber("(765) 496-3905")
+            setEmail("kbinge@purdue.edu")
+            setLoc("205 North Russell Street West Lafayette, IN 47906")
+        }
+        if (location == "Wiley") {
+            setNumber("(765) 494-2264")
+            setEmail("cavanare@purdue.edu")
+            setLoc("498 S Martin Jischke Drive West Lafayette, IN 47906")
+        }
+        if (location == "Ford") {
+            setNumber("(765) 494-2482")
+            setEmail("ahallmen@purdue.edu")
+            setLoc("1122 West Stadium Avenue West Lafayette, IN 47906")
+        }
+        if (location == "Earhart") {
+            setNumber("(765) 496-6925")
+            setEmail("coryb@purdue.edu")
+            setLoc("1275 1st Street West Lafayette, IN 47906")
+        }
+        if (location == "Hillenbrand") {
+            setNumber("(765) 496-0461")
+            setEmail("nmputubw@purdue.edu")
+            setLoc("1301 3rd Street West Lafayette, IN 47906")
+        }
+        console.log(number);
+        console.log(email);
+        console.log(location);
+    });
+
+
+
+
 
     const handleSelectPrefsClick = () => { //this is for handling the submit button of preferences
 
@@ -237,11 +278,19 @@ const Menu = () => {
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGETARIAN} checked={vegetarian} onChange={handleVegetarian} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGAN} checked={vegan} onChange={handleVegan} />
+
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={COCONUT} checked={coconut} onChange={handleCoconut} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={EGGS} checked={eggs} onChange={handleEggs} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={FISH} checked={fish} onChange={handleFish} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={GLUTEN} checked={gluten} onChange={handleGluten} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SESAME} checked={sesame} onChange={handleSesame} />
+
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={COCONUT + " free"} checked={coconut} onChange={handleCoconut} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={EGGS + " free"} checked={eggs} onChange={handleEggs} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={FISH + " free"} checked={fish} onChange={handleFish} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={GLUTEN + " free"} checked={gluten} onChange={handleGluten} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SESAME + " free"} checked={sesame} onChange={handleSesame} />
+
                             </FormGroup>
 
                         </>
@@ -254,12 +303,21 @@ const Menu = () => {
                     view == "SelectPrefs" && (
                         <>
                             <FormGroup>
+
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SHELLFISH} checked={shellfish} onChange={handleShellfish} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SOY} checked={soy} onChange={handleSoy} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={TREE_NUTS} checked={treeNuts} onChange={handleTreeNuts} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={WHEAT} checked={wheat} onChange={handleWheat} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={MILK} checked={milk} onChange={handleMilk} />
+                                <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={PEANUTS} checked={peanuts} onChange={handlePeanuts} />
+
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SHELLFISH + " free"} checked={shellfish} onChange={handleShellfish} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SOY + " free"} checked={soy} onChange={handleSoy} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={TREE_NUTS + " free"} checked={treeNuts} onChange={handleTreeNuts} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={WHEAT + " free"} checked={wheat} onChange={handleWheat} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={MILK + " free"} checked={milk} onChange={handleMilk} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={PEANUTS + " free"} checked={peanuts} onChange={handlePeanuts} />
+
                             </FormGroup>
                             <Button onClick={handleSelectPrefsClick} variant="contained" endIcon={<ArrowUpwardIcon />} className="moreSpace">Submit</Button>
                         </>
@@ -267,8 +325,13 @@ const Menu = () => {
                     )
                 }
             </div>
-            {/* <Footer /> */}
+            <span className="contactInfo">
+                    <span className="number"> <Phone className="icon" />  {number} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                    <span className="email"> <Mail className="icon" /> {email} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                    <span className="location"> <NearMe className="icon" /> {loc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+            </span>
         </div>
+        
     );
 
 };

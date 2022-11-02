@@ -42,3 +42,12 @@
 .moreSpace {
     margin-top: 25px;
 }
+.contactInfo {
+   font-weight:bold;
+   transform: translate(0px, 340px);
+   position: absolute;
+   .icon{
+        transform: translate(0px, 5px);
+
+   }
+}
