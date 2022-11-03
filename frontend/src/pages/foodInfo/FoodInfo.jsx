@@ -19,10 +19,7 @@ import Sheet from '@mui/joy/Sheet';
 import Box from '@mui/material/Box';
 import axios from "axios";
 
-
-
 const FoodInfo = () => {
-
     const [starClick1, setStarClick1] = useState(false);
     const [starClick2, setStarClick2] = useState(false);
     const [starClick3, setStarClick3] = useState(false);
@@ -151,24 +148,18 @@ const FoodInfo = () => {
         };
 
         const getIntialAvgRating = async () => {
-
             try {
-
                 const response = await axios.get(`/ratings/${menuItemID}`);
                 const rating = response.data.avgRating;
                 if (rating != null) setAvg(rating);
-
             } catch (error) { console.log(error) };
-
         };
 
         const getMenuItemInfo = async () => {
-
             try {
                 const response = await axios.get(`/menuInfo/item/${menuItemID}`);
                 const item = response.data;
                 
-                //
                 menuItem["_id"] = item._id;
                 menuItem["ID"] = item.ID;
                 menuItem["name"] = item.name;
@@ -186,18 +177,14 @@ const FoodInfo = () => {
         };
 
         const getSavedStatus = async () => {
-
             try {
-
                 const response = await axios.get(`/saved/${user.username}/${menuItemID}`);
                 const savedStatus = response.data.saved;
                 if (savedStatus != null) {
                     setSaved(savedStatus);
                     setSavedClick(!savedClick);
                 }
-
             } catch (error) { console.log(error) };
-
         };
 
         if (isFirstRenderRatings.current) {

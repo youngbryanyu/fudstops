@@ -97,11 +97,14 @@ router.get("/:username/:menuItemId", async (req, res) => {
             menuItemID: req.params.menuItemId
         });
 
-        if(!findSaved) { //this means a rating doc was not found
-
-            res.status(500).json("No doc found");
+        if(!findSaved) { // this means a rating doc was not found
+            const newSaved = await new Saved({
+                username:   req.params.username,
+                menuItemID: req.params.menuItemID,
+                saved: false
+            }).save();
+            res.status(200).json(newSaved);
             return;
-
         } 
 
         res.status(200).json(findSaved);

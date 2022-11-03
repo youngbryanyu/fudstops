@@ -13,8 +13,6 @@ router.post("/", async (req, res) => {
         });
 
         if(findRating) { //first see if there is already a rating in the DB for this user + menu item
-
-
             const updatedRating = await Rating.findByIdAndUpdate(findRating._id, {
                 rating: req.body.rating
             }, {new: true}); // this will return the modified document after updating the rating
@@ -53,11 +51,14 @@ router.get("/:username/:menuItemId", async (req, res) => {
             menuItemID: req.params.menuItemId
         });
 
-        if(!findRating) { //this means a rating doc was not found
-
-            res.status(500).json("No doc found");
+        if(!findRating) { // this means a rating doc was not found so create one with rating 0
+            const newRating = await new Rating({
+                username:   req.params.username,
+                menuItemID: req.params.menuItemId,
+                rating: 0
+            }).save();
+            res.status(200).json(newRating);
             return;
-
         } 
 
         res.status(200).json(findRating);
