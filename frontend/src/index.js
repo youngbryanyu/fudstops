@@ -4,6 +4,8 @@ import App from './App';
 import '@fontsource/public-sans';
 import { AuthContextProvider } from './authContext/AuthContext';
 
+console.warn = () => {};
+
 ReactDOM.render(
     <React.StrictMode>
         <AuthContextProvider> {/* for authentication context */}
