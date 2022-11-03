@@ -180,7 +180,7 @@ const FoodInfo = () => {
                 const savedStatus = response.data.saved;
                 if (savedStatus != null) {
                     setSaved(savedStatus);
-                    setSavedClick(!savedClick);
+                    setSavedClick(savedStatus);
                 }
             } catch (error) { console.log(error) };
         };
@@ -263,6 +263,14 @@ const FoodInfo = () => {
             {fact.LabelValue}
         </ListItem>
     );
+
+    // function tagDescription(tag) {
+    //     if(tag.Name === "Vegan" || tag.Name === "Vegetarian") {
+    //         if(tag.Value === true) {
+
+    //         }
+    //     }
+    // }
     
     const tags = menuItem.allergens.map((tag) => 
         <ListItem key="{tag.Name}">
