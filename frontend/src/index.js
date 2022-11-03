@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import '@fontsource/public-sans';
 import { AuthContextProvider } from './authContext/AuthContext';
 
 ReactDOM.render(
