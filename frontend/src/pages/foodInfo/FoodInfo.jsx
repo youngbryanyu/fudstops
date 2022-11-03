@@ -234,13 +234,46 @@ const FoodInfo = () => {
         </ListItem>
     );
 
-    const tags = menuItem.allergens.map((tag) =>
-        <ListItem key="{tag.Name}">
-            <Typography fontWeight="bold">
-                {tag.Name}: &nbsp;
-            </Typography>
-            {String(tag.Value)}
-        </ListItem>
+    function vegTags(tag) {
+        if(tag.Name === "Vegan" || tag.Name === "Vegetarian") {
+            if(tag.Value) {
+                return (
+                    <ListItem key="{tag.Name}">
+                        Is&nbsp;{tag.Name}
+                    </ListItem>
+                )
+            } else {
+                return (
+                    <ListItem key="{tag.Name}">
+                        Is not&nbsp;{tag.Name}
+                    </ListItem>
+                )
+            }
+        } 
+    }
+    function nonVegTags(tag) {
+        if (tag.Name === "Vegan" || tag.Name === "Vegetarian") {
+            return
+        }
+        if(tag.Value) {
+            return (
+                <ListItem key="{tag.Name}">
+                    Contains&nbsp;{tag.Name}
+                </ListItem>
+            )
+        } else {
+            return (
+                <ListItem key="{tag.Name}">
+                    Does not contain&nbsp;{tag.Name}
+                </ListItem>
+            )
+        }
+    }
+    const tags1 = menuItem.allergens.map((tag) =>
+        vegTags(tag)
+    );
+    const tags2 = menuItem.allergens.map((tag) =>
+        nonVegTags(tag)
     );
 
     /**
@@ -271,11 +304,11 @@ const FoodInfo = () => {
         }// eslint-disable-next-line
 
     }, [savedClick]);
-    
+
     return (
         <div className="foodInfo">
             <Navbar />
-            <Sheet sx={{
+            <Sheet sx={{ //sx provides inline style information for this component
                 background: '#0b0b0b',
                 width: .4,
                 maxHeight: 400,
@@ -324,7 +357,8 @@ const FoodInfo = () => {
                             Tags:
                         </Typography>
                     </ListItem>
-                    {tags}
+                    {tags1}
+                    {tags2}
 
                 </List>
             </Sheet>
