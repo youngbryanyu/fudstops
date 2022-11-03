@@ -179,7 +179,7 @@ const FoodInfo = () => {
                 const savedStatus = response.data.saved;
                 if (savedStatus != null) {
                     setSaved(savedStatus);
-                    setSavedClick(savedStatus);
+                    setSavedClick(savedStatus); //this is a test comment
                 }
             } catch (error) { console.log(error) };
         };
