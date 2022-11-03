@@ -11,7 +11,15 @@ import StarIcon from '@material-ui/icons/Star';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { AuthContext } from "../../authContext/AuthContext";
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemButton from '@mui/joy/ListItemButton';
+import Typography from '@mui/joy/Typography';
+import Sheet from '@mui/joy/Sheet';
+import Box from '@mui/material/Box';
 import axios from "axios";
+
+
 
 const FoodInfo = () => {
 
@@ -114,7 +122,9 @@ const FoodInfo = () => {
                     rating = response.data.rating;
 
                     switch (rating) {
-
+                        default:
+                            handleClick0();
+                            break;
                         case 1:
                             handleClick1();
                             break;
@@ -157,7 +167,7 @@ const FoodInfo = () => {
             try {
                 const response = await axios.get(`/menuInfo/item/${menuItemID}`);
                 const item = response.data;
-
+                
                 //
                 menuItem["_id"] = item._id;
                 menuItem["ID"] = item.ID;
@@ -171,7 +181,6 @@ const FoodInfo = () => {
                 menuItem["__v"] = item.__v;
 
                 console.log(menuItem);
-
             } catch (error) { console.log(error) };
 
         };
@@ -261,132 +270,149 @@ const FoodInfo = () => {
 
     }, [savedClick]);
 
+    const nutrition = menuItem.nutritionFacts.map((fact) => 
+        <ListItem key="{fact.Name}">
+            <Typography fontWeight="bold">
+                {fact.Name}: &nbsp;
+            </Typography>
+            {fact.LabelValue}
+        </ListItem>
+    );
+    
+    const tags = menuItem.allergens.map((tag) => 
+        <ListItem key="{tag.Name}">
+            <Typography fontWeight="bold">
+                {tag.Name}: &nbsp;
+            </Typography>
+            {String(tag.Value)}
+        </ListItem>
+    );
+
     return (
         <div className="foodInfo">
             <Navbar />
-            <div className="nutrition">
-                <div className="nutritionFacts">
-                    <div className="header">
-                        <span>{`Nutrtion Facts for: ${menuItem.name}`}</span>
-                    </div>
-                    <div className="nutritionItems">
-                        <Link to="" className="link">
-                            <span className="highlight">Serving Size: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Calories: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Carbs: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Fat: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Protein: </span>
-                        </Link>
-                    </div>
-                </div>
-                <div className="percent">
-                    <span>* Percent Daily Values are based on a 2,000 calorie diet.</span>
-                </div>
-            </div>
-            <div className="dietaryTags">
-                <div className="tags">
-                    <div className="header">
-                        <span>Dietary Tags</span>
-                    </div>
-                    <div className="tagNames">
-                        <Link to="" className="link">
-                            <span className="highlight">Gluten</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Soy</span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Vegan</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="ratings">
-                <div className="tags">
-                    <div className="header">
-                        <span>Rate Or Save This Item!</span>
-                    </div>
-                    <div className="tagNames">
-                        <Tooltip title={`Average Rating: ${avg}`} placement="bottom">
-                            <IconButton color="inherit">
-                                <InfoIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <IconButton color="inherit" onClick={handleClick1}>
-                            {starClick1 ? <StarIcon /> : <StarOutlineIcon />}
-                        </IconButton>
-                        <IconButton color="inherit" onClick={handleClick2}>
-                            {starClick2 ? <StarIcon /> : <StarOutlineIcon />}
-                        </IconButton>
-                        <IconButton color="inherit" onClick={handleClick3}>
-                            {starClick3 ? <StarIcon /> : <StarOutlineIcon />}
-                        </IconButton>
-                        <IconButton color="inherit" onClick={handleClick4}>
-                            {starClick4 ? <StarIcon /> : <StarOutlineIcon />}
-                        </IconButton>
-                        <IconButton color="inherit" onClick={handleClick5}>
-                            {starClick5 ? <StarIcon /> : <StarOutlineIcon />}
-                        </IconButton>
-                        <IconButton color="inherit" onClick={handleSavedClick}>
-                            {savedClick ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-                        </IconButton>
-                    </div>
-                </div>
-            </div>
-            <div className="upcomingMeals">
-                <div className="meals">
-                    <div className="header">
-                        <span>Upcoming Meals</span>
-                    </div>
-                    <div className="mealLocation">
-                        <Link to="" className="link">
-                            <span className="highlight">Date & Location: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Date & Location: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Date & Location: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Date & Location: </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Date & Location: </span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <div className="ingredients">
-                <div className="ingredientHeader">
-                    <span>Ingredients</span>
-                </div>
-                <span> Enriched Flour (Unbleached Wheat Flour, Malted Barley Flour, Reduced Iron, Thiamine Mononitrate (Vitamin B1),
-                    Riboflavin (Vitamin B2), Niacin (Vitamin B3), Folic Acid), Water, High Fructose Corn Syrup,
-                    Yeast, Soybean Oil, Wheat Gluten, Salt, Calcium Propionate (A Preservative), Monoglycerides, Vinegar,
-                    Sodium Stearoyl Lactylate, Calcium Sulfate, Citric Acid, Ascorbic Acid.
-                </span>
-            </div>
-            <div className="disclaimer">
-                <div className="disclaimerHeader">
-                    <span>Disclaimer</span>
-                </div>
-                <span>
-                    Menus subject to change. All nutritional information is based on the listed menu items.
-                    Any additions to ingredients or condiments will change the nutritional value. All information provided is believed to be accurate and reliable as of the date of posting.
-                    Nutritional information may vary by location due to product substitutions or product availability.
-                </span>
-            </div>
+            <Sheet sx={{
+                background: '#0b0b0b',
+                width: .4,
+                maxHeight: 400,
+                position: 'relative',
+                float: 'left',
+                display: 'inline',
+                ml: 6,
+                top: 85,
+                borderRadius: 10,
+                overflow: 'auto',
+            }}>
+                <List>
+                    <ListItem sx={{
+                        background: '#242424',
+                        width: .98,
+                        mx: 'auto',
+                        borderRadius: 8,
+                    }}>
+                        <Typography style={{color:"#ebc034"}} fontWeight="bold">
+                            Nutrition Facts for: &nbsp; {menuItem.name}
+                        </Typography>
+                    </ListItem>
+                    {nutrition}
+                </List>
+            </Sheet>
+            <Sheet sx={{
+                background: '#0b0b0b',
+                width: .2,
+                maxHeight: 400,
+                position: 'relative',
+                float: 'left',
+                display: 'inline',
+                ml: 6,
+                top: 85,
+                borderRadius: 10,
+                overflow: 'auto',
+            }}>
+                <List>
+                    <ListItem sx={{
+                        background: '#242424',
+                        width: .98,
+                        mx: 'auto',
+                        borderRadius: 8,
+                    }}>
+                        <Typography fontWeight="bold">
+                            Tags:
+                        </Typography>
+                    </ListItem>
+                    {tags}
+                </List>
+            </Sheet>
+            <Box sx={{
+                background: '#0b0b0b',
+                width: 340,
+                height: 'auto',
+                overflow: 'hidden', //do not remove, will break the ratings appearance and idk why
+                position: 'absolute',
+                ml: 6, //left margin (percent of screen)
+                mt: 63, //top margin (percent of screen)
+                borderRadius: 10,
+            }}>
+                <Tooltip title={`Average Rating: ${avg}`} placement="bottom">
+                    <IconButton color="inherit">
+                        <InfoIcon />
+                    </IconButton>
+                </Tooltip>
+                <IconButton color="inherit" onClick={handleClick1}>
+                    {starClick1 ? <StarIcon /> : <StarOutlineIcon />}
+                </IconButton>
+                <IconButton color="inherit" onClick={handleClick2}>
+                    {starClick2 ? <StarIcon /> : <StarOutlineIcon />}
+                </IconButton>
+                <IconButton color="inherit" onClick={handleClick3}>
+                    {starClick3 ? <StarIcon /> : <StarOutlineIcon />}
+                </IconButton>
+                <IconButton color="inherit" onClick={handleClick4}>
+                    {starClick4 ? <StarIcon /> : <StarOutlineIcon />}
+                </IconButton>
+                <IconButton color="inherit" onClick={handleClick5}>
+                    {starClick5 ? <StarIcon /> : <StarOutlineIcon />}
+                </IconButton>
+                <IconButton color="inherit" onClick={handleSavedClick}>
+                    {savedClick ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                </IconButton>
+            </Box>
+            <Box sx={{ml: 6, mt: 70, width: .9, height: 'auto', position:'absolute'}}>
+                <Box sx = {{
+                    borderColor: '#242424',
+                    p: 1,
+                    m: 1,
+                    borderRadius: 4,
+                    border: '1px solid',
+                    width: 1,
+                    height: 'auto',
+                    display: 'block',
+                }}>
+                    <Typography fontWeight="bold"> 
+                        Ingredients: &nbsp;
+                    </Typography>
+                    {menuItem.ingredients}
+                </Box>
+                <Box sx = {{
+                    borderColor: '#242424',
+                    p: 1,
+                    m: 1,
+                    borderRadius: 4,
+                    border: '1px solid',
+                    height: 'auto',
+                    width: 1,
+                    display: 'block',
+                }}>
+                    <Typography style={{color:"#f74d40"}} fontWeight="bold" color='red'> 
+                        Disclaimer: &nbsp;
+                    </Typography>
+                    Menus subject to change. All nutritional information is based on the listed menu items. Any additions to ingredients or condiments will change the nutritional value. All information provided is believed to be accurate and reliable as of the date of posting. Nutritional information may vary by location due to product substitutions or product availability.
+                </Box>
+            </Box>
         </div>
     );
 };
+
+
 
 export default FoodInfo;

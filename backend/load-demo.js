@@ -86,7 +86,7 @@ async function load() {
         
                         const json = await response.json()
                         menuItems.push(json.Name)
-                        //debug/demo:
+                        menuItems.push(json.Nutrition)                        //debug/demo:
                         // console.log("Name: ", json.Name)
                         // console.log("Nutrition: ", json.Nutrition)
                         // console.log("Allergens: ", json.Allergens)

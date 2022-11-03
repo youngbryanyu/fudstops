@@ -165,13 +165,13 @@ const Home = () => {
     }
 
     const handleChange = (event) => { // this is for handling the filters options
-        if (event.target.value == 1) { // this means the user selected Items Matching My Prefs & Rests
+        if (event.target.value === 1) { // this means the user selected Items Matching My Prefs & Rests
             setView("MatchingItems");
             setCourtsMenu(matchingItems);
-        } else if (event.target.value == 2) { // this means user wants to select from checkbox
+        } else if (event.target.value === 2) { // this means user wants to select from checkbox
             setView("SelectPrefs");
             setCourtsMenu(selectedItems);
-        } else if (event.target.value == 3) { //this means the user wants to view all items
+        } else if (event.target.value === 3) { //this means the user wants to view all items
             setView("AllItems");
             setCourtsMenu(allItems);
         }
@@ -247,8 +247,9 @@ const Home = () => {
                         <Select id="demo-simple-select" value={view} label="Filter" onChange={handleChange}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
-                            <MenuItem value={1}>Dining Courts Having Items Matching My Preferences & Restrictions</MenuItem>
-                            <MenuItem value={2}>Choose Custom Preferences & Restrictions</MenuItem>
+                        
+                            <MenuItem value={1}>Dining courts with items matching my restrictions/preferences</MenuItem>
+                            <MenuItem value={2}>Input restrictions/preferences</MenuItem>
                             <MenuItem value={3}>{`All Dining Courts`}</MenuItem>
                         </Select>
                     </FormControl>
@@ -259,9 +260,9 @@ const Home = () => {
             </div>
             <div className="filter">
                 {
-                    view == "SelectPrefs" && (
+                    view === "SelectPrefs" && (
                         <>
-                            <h4 className="space">{`Submit the Prefs/Rests You Want!`}</h4><h6>(then the items will update)</h6>
+                            <h4 className="space">{`Input your restrictions and preferences:`}</h4><h6>(submit to see updates)</h6>
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGETARIAN} checked={vegetarian} onChange={handleVegetarian} />
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={VEGAN} checked={vegan} onChange={handleVegan} />
@@ -277,7 +278,7 @@ const Home = () => {
             </div>
             <div className="filter2">
                 {
-                    view == "SelectPrefs" && (
+                    view === "SelectPrefs" && (
                         <>
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={SHELLFISH + " free"} checked={shellfish} onChange={handleShellfish} />
