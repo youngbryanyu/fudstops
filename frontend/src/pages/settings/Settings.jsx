@@ -13,7 +13,7 @@ import { useContext } from "react";
 
 const Settings = () => {
     const { dispatch } = useContext(AuthContext); // get auth context
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     /**
      * Logs the user out
@@ -27,65 +27,66 @@ const Settings = () => {
     return (
         <div className="settings">
             <Navbar />
+            <div className="centered">
+                <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
+                    <Grid item xs={6}>
+                        <div className="about">
+                            <Box className="box"><span className="title">{"Info & Settings"}</span></Box>
+                            <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box>
+                        </div>
+                    </Grid>
 
-            <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
-                <Grid item xs={6}>
-                    <div className="about">
-                        <Box className="box"><span className="title">{"Info & Settings"}</span></Box>
-                        <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box>
-                    </div>
-                </Grid>
-
-                <Grid item xs={3}>
-                    <div className="info2">
-                        <Box className="box">
-                            <Link to="/personalInfo" className="link">
-                                <span className="header">Personal Information</span>
-                            </Link>
-                        </Box>
-                        <Box className="box">
-                            <Link to="/preferences" className="link">
-                                <span className="header">Dietary Preferences</span>
-                            </Link>
-                        </Box>
-                        <Box className="box">
+                    <Grid item xs={3}>
+                        <div className="info2">
+                            <Box className="box">
+                                <Link to="/personalInfo" className="link">
+                                    <span className="header">Personal Information</span>
+                                </Link>
+                            </Box>
+                            <Box className="box">
+                                <Link to="/preferences" className="link">
+                                    <span className="header">Dietary Preferences</span>
+                                </Link>
+                            </Box>
+                            <Box className="box">
+                                <Link to="" className="link">
+                                    <span className="header">Notifications</span>
+                                </Link>
+                            </Box>
+                            {/* <Box className="box">
                             <Link to="" className="link">
                                 <span className="header">Location</span>
                             </Link>
-                        </Box>
-                        <Box className="box">
+                        </Box> */}
+                            {/* <Box className="box">
                             <Link to="" className="link">
                                 <span className="header">Recommendations</span>
                             </Link>
-                        </Box>
-                    </div>
-                </Grid>
+                        </Box> */}
+                        </div>
+                    </Grid>
 
-                <Grid item xs={3}>
-                    <div className="info3">
-                        <Box className="box">
-                            <Link to="/reportProblem" className="link">
-                                <span className="header">Report a Problem</span>
-                            </Link>
-                        </Box>
-                        <Box className="box">
-                            <Link to="" className="link">
-                                <span className="header">Notifications</span>
-                            </Link>
-                        </Box>
-                        <Box className="box">
-                            <Link to="" className="link">
-                                <span className="header">Delete Account</span>
-                            </Link>
-                        </Box>
-                        <Box className="box">
-                            <Link to="/login" className="link">
-                                <span className="header" onClick={handleLogout}>Logout</span>
-                            </Link>
-                        </Box>
-                    </div>
+                    <Grid item xs={3}>
+                        <div className="info3">
+                            <Box className="box">
+                                <Link to="/reportProblem" className="link">
+                                    <span className="header">Report a Problem</span>
+                                </Link>
+                            </Box>
+                            <Box className="box">
+                                <Link to="" className="link">
+                                    <span className="header">Delete Account</span>
+                                </Link>
+                            </Box>
+                            <Box className="box">
+                                <Link to="/login" className="link">
+                                    <span className="header" onClick={handleLogout}>Logout</span>
+                                </Link>
+                            </Box>
+                        </div>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </div>
             {/* <Footer /> */}
         </div>
     );
