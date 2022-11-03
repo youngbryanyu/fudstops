@@ -93,9 +93,7 @@ const FoodInfo = () => {
         setScore(5);
     }
     const handleSavedClick = () => {
-
         setSavedClick(!savedClick);
-
     }
 
     /**

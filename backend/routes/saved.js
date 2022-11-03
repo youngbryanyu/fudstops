@@ -100,7 +100,7 @@ router.get("/:username/:menuItemId", async (req, res) => {
         if(!findSaved) { // this means a rating doc was not found
             const newSaved = await new Saved({
                 username:   req.params.username,
-                menuItemID: req.params.menuItemID,
+                menuItemID: req.params.menuItemId,
                 saved: false
             }).save();
             res.status(200).json(newSaved);
