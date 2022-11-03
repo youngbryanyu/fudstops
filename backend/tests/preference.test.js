@@ -12,7 +12,7 @@ const initial_prefs = ["Vegan"];
 const after_prefs = ["Vegan", "Vegetarian"];
 
 // save/update preferences to/in DB
-describe("send preferences to DB: POST /preference", () => {
+describe("POST /preference", () => {
     describe("given a user with no preferences", () => {
         test("should return a 201", async () => {
             await createUser();
@@ -26,6 +26,12 @@ describe("send preferences to DB: POST /preference", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should create new DB entry", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
     describe("given a user with existing preferences", () => {
         test("should return a 201", async () => {
@@ -37,11 +43,17 @@ describe("send preferences to DB: POST /preference", () => {
                 });
             expect(response.statusCode).toBe(201);
         });
+        test("should update existing DB entry", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
 // test get preferences
-describe("get preferences from DB: GET /preference/:username", () => {
+describe("GET /preference/:username", () => {
     describe("given a user with preferences", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -49,6 +61,9 @@ describe("get preferences from DB: GET /preference/:username", () => {
                 .send();
 
             expect(response.statusCode).toBe(200);
+        });
+        test("should return user's preferences", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
     describe("given an invalid username", () => {
@@ -59,11 +74,14 @@ describe("get preferences from DB: GET /preference/:username", () => {
 
             expect(response.statusCode).toBe(500);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
 // test deleting preferences
-describe("delete preferences from DB: DELETE /preference", () => {
+describe("DELETE /preference", () => {
     describe("given a user with preferences", () => {
         test("should return a 200", async () => {
             const response = await request(test_app)
@@ -76,6 +94,9 @@ describe("delete preferences from DB: DELETE /preference", () => {
 
             await deleteUserAfterTest();
             await deletePreferencesAfterTest();
+        });
+        test("user's preferences should not exist in DB anymore", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });

@@ -29,6 +29,12 @@ describe("update user: PUT /users/:id", () => {
                 });
             expect(response.statusCode).toBe(200);
         });
+        test("attribute should be equal to the new attribute value after", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given the user has not logged in and updates one of their attributes", () => {
@@ -45,6 +51,9 @@ describe("update user: PUT /users/:id", () => {
                 });
             expect(response.statusCode).toBe(401);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given the user has not logged in and tries to modify their account", () => {
@@ -60,6 +69,9 @@ describe("update user: PUT /users/:id", () => {
                     isAdmin: !isAdmin
                 });
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });
@@ -78,6 +90,9 @@ describe("get user: GET /users/find/:id", () => {
                 .set("token", "Bearer " + JWTToken)
                 .send();
             expect(response.statusCode).toBe(200);
+        });
+        test("should return user's data", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -125,6 +140,9 @@ describe("get all users: GET /users", () => {
 
             expect(response.statusCode).toBe(200);
         });
+        test("should return every user's data", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 
     describe("given the admin user is not logged in and gets everyone's data", () => {
@@ -133,6 +151,9 @@ describe("get all users: GET /users", () => {
                 .get("/api/users")
                 .send();
             expect(response.statusCode).toBe(401);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });
@@ -152,6 +173,9 @@ describe("delete user: DELETE /users/:id", () => {
 
             expect(response.statusCode).toBe(401);
         });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
     describe("given the user is logged in, they should be able to delete their account", () => {
         test("should return a 200", async () => {
@@ -166,6 +190,12 @@ describe("delete user: DELETE /users/:id", () => {
                 .send();
             expect(response.statusCode).toBe(200);
             await deleteUserAfterTest(); // delete user after test
+        });
+        test("user's account should not exist in DB anymore", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });

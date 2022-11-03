@@ -165,9 +165,9 @@ const FoodInfo = () => {
         const getMenuItemInfo = async () => {
 
             try {
-
                 const response = await axios.get(`/menuInfo/item/${menuItemID}`);
                 const item = response.data;
+                
                 //
                 menuItem["_id"] = item._id;
                 menuItem["ID"] = item.ID;

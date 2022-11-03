@@ -11,31 +11,33 @@ const isAdmin = false;
 
 const DINING_COURT = "Wiley";
 
-// save/update preferences to/in DB
-describe("get menu items that align with user's prefs/rest from a dining court: GET /menuInfo/prefs/:diningCourt", () => {
+// get menu items that align with user's prefs/rest from a dining court
+describe("GET /menuInfo/prefs/:diningCourt/:username", () => {
     describe("given a valid user", () => {
         test("should return a 200 with all the menu items aligning with their preferences", async () => {
             await createUser();
             await login();
 
             const response = await request(test_app)
-                .get("/api/menuInfo/prefs/" + DINING_COURT)
-                .send({
-                    username: username,
-                });
+                .get("/api/menuInfo/prefs/" + DINING_COURT + "/" + username)
+                .send();
             expect(response.statusCode).toBe(200);
+        });
+        test("should return all the menu items aligning with their preferences", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
     describe("given an invalid user", () => {
         test("should return a 500 with the error", async () => {
             const response = await request(test_app)
-                .get("/api/menuInfo/prefs/" + DINING_COURT)
-                .send({
-                    username: "invalid user",
-                });
+                .get("/api/menuInfo/prefs/" + DINING_COURT + "/invalid_username")
+                .send();
             expect(response.statusCode).toBe(500);
 
             await deleteUserAfterTest();
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });

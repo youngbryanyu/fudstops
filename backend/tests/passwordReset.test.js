@@ -14,7 +14,7 @@ const isAdmin = false;
 const resetTokenValue = "12345";
 
 // test send reset password link API
-describe("send password reset link: POST /forgotPasswordReset", () => {
+describe("POST /forgotPasswordReset", () => {
     describe("given a valid username and the user tries to get a password reset link", () => {
         test("should return a 200", async () => {
             await createUser();
@@ -34,6 +34,9 @@ describe("send password reset link: POST /forgotPasswordReset", () => {
                 });
             expect(response.statusCode).toBe(200);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
@@ -45,6 +48,9 @@ describe("verify token and user: GET /forgotPasswordReset/:id/:token", () => {
                 .get("/api/forgotPasswordReset/invalid_user/invalid_token")
                 .send();
             expect(response.statusCode).toBe(400);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -59,6 +65,9 @@ describe("verify token and user: GET /forgotPasswordReset/:id/:token", () => {
                 .send();
             expect(response.statusCode).toBe(200);
         });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
     });
 });
 
@@ -70,6 +79,9 @@ describe("reset password: POST /forgotPasswordReset/:id/:token", () => {
                 .post("/api/forgotPasswordReset/invalid_user/invalid_token")
                 .send();
             expect(response.statusCode).toBe(400);
+        });
+        test("should return an error message", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 
@@ -87,6 +99,12 @@ describe("reset password: POST /forgotPasswordReset/:id/:token", () => {
                 password = "new_password"; // reset global password var
             expect(response.statusCode).toBe(200);
             await deleteUserAfterTest(); // delete temp user after last test
+        });
+        test("should return a success message", async () => { // TODO
+            expect(true).toBe(true);
+        });
+        test("user's password should be equal to new password", async () => { // TODO
+            expect(true).toBe(true);
         });
     });
 });
