@@ -13,7 +13,6 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import { AuthContext } from "../../authContext/AuthContext";
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
-import ListItemButton from '@mui/joy/ListItemButton';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import Box from '@mui/material/Box';
@@ -157,18 +156,18 @@ const FoodInfo = () => {
             try {
                 const response = await axios.get(`/menuInfo/item/${menuItemID}`);
                 const item = response.data;
-                
-                menuItem["_id"] = item._id;
-                menuItem["ID"] = item.ID;
-                menuItem["name"] = item.name;
-                menuItem["courtData"] = item.courtData;
-                menuItem["dateServed"] = item.dateServed;
-                menuItem["isVegetarian"] = item.isVegetarian;
-                menuItem["allergens"] = item.allergens;
-                menuItem["nutritionFacts"] = item.nutritionFacts;
-                menuItem["ingredients"] = item.ingredients;
-                menuItem["__v"] = item.__v;
-
+                setMenuItem({
+                    _id: item._id,
+                    ID: item.ID,
+                    name: item.name,
+                    courtData: item.courtData,
+                    dateServed: item.dateServed,
+                    isVegetarian: item.isVegetarian,
+                    allergens: item.allergens,
+                    nutritionFacts: item.nutritionFacts,
+                    ingredients: item.ingredients,
+                    __v: item.__v,
+                })
                 console.log(menuItem);
             } catch (error) { console.log(error) };
 
@@ -226,6 +225,24 @@ const FoodInfo = () => {
 
     }, [score]);
 
+    const nutrition = menuItem.nutritionFacts.map((fact) =>
+        <ListItem key="{fact.Name}">
+            <Typography fontWeight="bold">
+                {fact.Name}: &nbsp;
+            </Typography>
+            {fact.LabelValue}
+        </ListItem>
+    );
+
+    const tags = menuItem.allergens.map((tag) =>
+        <ListItem key="{tag.Name}">
+            <Typography fontWeight="bold">
+                {tag.Name}: &nbsp;
+            </Typography>
+            {String(tag.Value)}
+        </ListItem>
+    );
+
     /**
      * Update the savedStatus in the database when saved changes, not on first render though.
      */
@@ -254,33 +271,7 @@ const FoodInfo = () => {
         }// eslint-disable-next-line
 
     }, [savedClick]);
-
-    const nutrition = menuItem.nutritionFacts.map((fact) => 
-        <ListItem key="{fact.Name}">
-            <Typography fontWeight="bold">
-                {fact.Name}: &nbsp;
-            </Typography>
-            {fact.LabelValue}
-        </ListItem>
-    );
-
-    // function tagDescription(tag) {
-    //     if(tag.Name === "Vegan" || tag.Name === "Vegetarian") {
-    //         if(tag.Value === true) {
-
-    //         }
-    //     }
-    // }
     
-    const tags = menuItem.allergens.map((tag) => 
-        <ListItem key="{tag.Name}">
-            <Typography fontWeight="bold">
-                {tag.Name}: &nbsp;
-            </Typography>
-            {String(tag.Value)}
-        </ListItem>
-    );
-
     return (
         <div className="foodInfo">
             <Navbar />
@@ -303,7 +294,7 @@ const FoodInfo = () => {
                         mx: 'auto',
                         borderRadius: 8,
                     }}>
-                        <Typography style={{color:"#ebc034"}} fontWeight="bold">
+                        <Typography style={{ color: "#ebc034" }} fontWeight="bold">
                             Nutrition Facts for: &nbsp; {menuItem.name}
                         </Typography>
                     </ListItem>
@@ -334,6 +325,7 @@ const FoodInfo = () => {
                         </Typography>
                     </ListItem>
                     {tags}
+
                 </List>
             </Sheet>
             <Box sx={{
@@ -370,8 +362,8 @@ const FoodInfo = () => {
                     {savedClick ? <BookmarkIcon /> : <BookmarkBorderIcon />}
                 </IconButton>
             </Box>
-            <Box sx={{ml: 6, mt: 70, width: .9, height: 'auto', position:'absolute'}}>
-                <Box sx = {{
+            <Box sx={{ ml: 6, mt: 70, width: .9, height: 'auto', position: 'absolute' }}>
+                <Box sx={{
                     borderColor: '#242424',
                     p: 1,
                     m: 1,
@@ -381,12 +373,12 @@ const FoodInfo = () => {
                     height: 'auto',
                     display: 'block',
                 }}>
-                    <Typography fontWeight="bold"> 
+                    <Typography fontWeight="bold">
                         Ingredients: &nbsp;
                     </Typography>
                     {menuItem.ingredients}
                 </Box>
-                <Box sx = {{
+                <Box sx={{
                     borderColor: '#242424',
                     p: 1,
                     m: 1,
@@ -396,7 +388,7 @@ const FoodInfo = () => {
                     width: 1,
                     display: 'block',
                 }}>
-                    <Typography style={{color:"#f74d40"}} fontWeight="bold" color='red'> 
+                    <Typography style={{ color: "#f74d40" }} fontWeight="bold" color='red'>
                         Disclaimer: &nbsp;
                     </Typography>
                     Menus subject to change. All nutritional information is based on the listed menu items. Any additions to ingredients or condiments will change the nutritional value. All information provided is believed to be accurate and reliable as of the date of posting. Nutritional information may vary by location due to product substitutions or product availability.
