@@ -278,7 +278,7 @@ const Menu = () => {
                         <Select id="demo-simple-select" value={view} label="Filter" onChange={handleChange}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
-                            <MenuItem value={1}>Items Matching My Prefs & Rests</MenuItem>
+                            <MenuItem value={1}>Items Matching My Preferences & Restrictions</MenuItem>
                             <MenuItem value={2}>Choose Custom Preferences & Restrictions</MenuItem>
                             <MenuItem value={3}>{`All ${location}'s Items`}</MenuItem>
                         </Select>

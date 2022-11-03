@@ -247,7 +247,7 @@ const Home = () => {
                         <Select id="demo-simple-select" value={view} label="Filter" onChange={handleChange}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
-                            <MenuItem value={1}>Dining Courts Having Items Matching My Prefs & Rests</MenuItem>
+                            <MenuItem value={1}>Dining Courts Having Items Matching My Preferences & Restrictions</MenuItem>
                             <MenuItem value={2}>Choose Custom Preferences & Restrictions</MenuItem>
                             <MenuItem value={3}>{`All Dining Courts`}</MenuItem>
                         </Select>
