@@ -454,7 +454,7 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
         });
 
         if (!menuItems || menuItems.length == 0) { // this means items were not found
-            res.status(500).json("No items found");
+            res.status(200).json([]); // empty
             return;
         }
 

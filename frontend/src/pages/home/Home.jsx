@@ -153,6 +153,8 @@ const Home = () => {
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
                         console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
+                    } else {
+                        console.log(diningCourt + " has no items match prefs/rests");
                     }
                 }
 
@@ -201,9 +203,12 @@ const Home = () => {
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
                         console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
+                    } else {
+                        console.log(diningCourt + " has no match")
                     }
                 }
                 setMatchingItems(matchingCourts);
+                setCourtsMenu(matchingCourts);
             } catch (error) {
                 console.log(error)
             };

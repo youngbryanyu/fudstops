@@ -230,6 +230,7 @@ const Menu = () => {
             try {
                 const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
                 const courtsItems = response.data;
+                console.log("courts items is")
                 setMatchingItems(courtsItems);
             } catch (error) { console.log(error) };
         };
