@@ -1,20 +1,210 @@
 const router = require("express").Router();
 const fetch = require('node-fetch');
 const MenuItem = require('../models/MenuItem');
+const DiningCourt = require('../models/DiningCourt')
 const Preference = require("../models/Preference");
 const Restriction = require("../models/Restriction");
 const User = require("../models/User");
 
-const DINING_COURTS = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"];
+const DINING_COURTS = ["Earhart", "Ford", "Hillenbrand", "Wiley", "Windsor"];
 const PURDUE_DINING_URL = "https://dining.purdue.edu/menus/"; //unused
 const PURDUE_DINING_API_URL_MENU_ITEMS = "https://api.hfs.purdue.edu/menus/v2/items/";
 const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2/locations/";
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+// router.post("/dining", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
+//     var d = new Date();
+//     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+
+//     var todayDay = d.getDay();
+//     try { //parse outer xml
+//         const response = await fetch(PURDUE_DINING_API_URL_DINING_COURTS);
+//         if (!response.ok) {
+//             throw new Error(`Error! status: ${response.status}`);
+//         }
+//         const json = await response.json(); //outer information stored in outer json
+//         //debug: console.log(outerJson);
+//         //iterate through locations listed in dining url
+//         //structure: court -> day -> meal
+//         for(var court of json.Location){
+//             //if not a court in DINING_COURTS, skip
+//             if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
+//                 continue
+//             }
+//             const name = court.Name
+//             const formalName = court.FormalName
+//             const placeID = String(court.GooglePlaceId)
+//             var mealInfo = [] //[{meal name, start time, end time}]
+//             //populate mealInfo array
+//             for (var day of court.NormalHours[0].Days) {
+//                 //only select today's day, disregard other days
+//                 if (day.Name !== DAYS[todayDay]) {
+//                     continue
+//                 }
+//                 //for each meal today calculate start and end times, convert to 12-hour format, and add suffix
+//                 for (var meal of day.Meals) {
+//                     var type = meal.Name
+//                     var start = meal.Hours.StartTime
+//                     var end = meal.Hours.EndTime
+//                     var sh = start.split(":")[0]
+//                     var eh = end.split(":")[0]
+//                     var sm = start.split(":")[1]
+//                     var em = end.split(":")[1]
+//                     var startSuffix = sh >= 12 ? " PM" : " AM"
+//                     var endSuffix = eh >= 12 ? " PM" : " AM"
+//                     var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
+//                     var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
+
+//                     console.log(mealstart)
+//                     console.log(mealend)
+//                     var curmealinfo = {
+//                         mealType: type,
+//                         start: mealstart,
+//                         end: mealend,
+//                     }
+//                     mealInfo.push(curmealinfo)
+//                     //type contains final meal type
+//                     //mealstart contains this meal's start time, mealend contains end time
+//                 }
+//             }
+//             //create object and push
+
+//             //name contains court name
+//             //formalName contains court's formal name
+//             //mealInfo contains objects denoting meals start/end times
+//             //googleID contains google place API key
+//             try {
+//                 const diningCourtObj = await DiningCourt.findOne({
+//                     name: name
+//                 });
+//                 if (diningCourtObj) { // if menu item already exists, update it with possibly new information
+//                     await DiningCourt.findByIdAndUpdate(diningCourtObj._id, {
+//                         name: name,
+//                         formalName: formalName,
+//                         googleID: placeID,
+//                         mealInfo: mealInfo,
+//                     });
+//                     console.log("Updated dining court - " + name);
+//                 } else {// create new MenuItem for current menu item
+//                     const newDiningCourt = new DiningCourt({
+//                         name: name,
+//                         formalName: formalName,
+//                         googleID: placeID,
+//                         mealInfo: mealInfo,
+//                     });
+
+//                     const newcourt = await newDiningCourt.save();
+//                     // res.status(201).json(item); //return item in DB response to JSON
+//                     console.log("Added dining court - " + name);
+//                 }
+//             } catch (err) {
+//                 console.log("Error occured while parsing and saving dining court information");
+//                 console.log(err)
+//             }
+//         }
+//     } catch (err) {
+//         res.status(500).json(err);
+//         console.log(err);
+//     }
+//     res.status(201).json("Dining/dining courts data was parsed successfully for " + today);
+//     console.log("Dining/dining courts data was parsed successfully for " + today);
+// });
 //LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     var d = new Date();
     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 
+    var todayDay = d.getDay();
+    try { //parse outer xml
+        const response = await fetch(PURDUE_DINING_API_URL_DINING_COURTS);
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+        const json = await response.json(); //outer information stored in outer json
+        //debug: console.log(outerJson);
+        //iterate through locations listed in dining url
+        //structure: court -> day -> meal
+        for(var court of json.Location){
+            //if not a court in DINING_COURTS, skip
+            if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
+                continue
+            }
+            const name = court.Name
+            const formalName = court.FormalName
+            const placeID = String(court.GooglePlaceId)
+            var mealInfo = [] //[{meal name, start time, end time}]
+            //populate mealInfo array
+            for (var day of court.NormalHours[0].Days) {
+                //only select today's day, disregard other days
+                if (day.Name !== DAYS[todayDay]) {
+                    continue
+                }
+                //for each meal today calculate start and end times, convert to 12-hour format, and add suffix
+                for (var meal of day.Meals) {
+                    var type = meal.Name
+                    var start = meal.Hours.StartTime
+                    var end = meal.Hours.EndTime
+                    var sh = start.split(":")[0]
+                    var eh = end.split(":")[0]
+                    var sm = start.split(":")[1]
+                    var em = end.split(":")[1]
+                    var startSuffix = sh >= 12 ? " PM" : " AM"
+                    var endSuffix = eh >= 12 ? " PM" : " AM"
+                    var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
+                    var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
+
+                    console.log(mealstart)
+                    console.log(mealend)
+                    var curmealinfo = {
+                        mealType: type,
+                        start: mealstart,
+                        end: mealend,
+                    }
+                    mealInfo.push(curmealinfo)
+                    //type contains final meal type
+                    //mealstart contains this meal's start time, mealend contains end time
+                }
+            }
+            //create object and push
+
+            //name contains court name
+            //formalName contains court's formal name
+            //mealInfo contains objects denoting meals start/end times
+            //googleID contains google place API key
+            try {
+                const diningCourtObj = await DiningCourt.findOne({
+                    name: name
+                });
+                if (diningCourtObj) { // if menu item already exists, update it with possibly new information
+                    await DiningCourt.findByIdAndUpdate(diningCourtObj._id, {
+                        name: name,
+                        formalName: formalName,
+                        googleID: placeID,
+                        mealInfo: mealInfo,
+                    });
+                    console.log("Updated dining court - " + name);
+                } else {// create new MenuItem for current menu item
+                    const newDiningCourt = new DiningCourt({
+                        name: name,
+                        formalName: formalName,
+                        googleID: placeID,
+                        mealInfo: mealInfo,
+                    });
+
+                    const newcourt = await newDiningCourt.save();
+                    // res.status(201).json(item); //return item in DB response to JSON
+                    console.log("Added dining court - " + name);
+                }
+            } catch (err) {
+                console.log("Error occured while parsing and saving dining court information");
+                console.log(err)
+            }
+        }
+    } catch (err) {
+        res.status(500).json(err);
+        console.log(err);
+    }
+    
     // Parse dining items for each dining court
     for (const diningCourt of DINING_COURTS) {
         const outerUrl = PURDUE_DINING_API_URL_DINING_COURTS + diningCourt + "/" + today;
@@ -88,8 +278,8 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
             console.log(err);
         }
     }
-    res.status(201).json("Dining data was parsed successfully for " + today);
-    console.log("Dining data was parsed successfully for " + today);
+    res.status(201).json("Dining/dining courts data was parsed successfully for " + today);
+    console.log("Dining/dining courts data was parsed successfully for " + today);
 });
 
 /*
@@ -230,7 +420,7 @@ router.post("/prefsAndRests", async (req, res) => {
         }
 
         //then find out the rests & prefs
-        
+
         let matchingItems = [];
 
         menuItems.forEach((item) => { //for each item we check if it matches all preferences
@@ -322,7 +512,7 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
                     skip = true;
                 }
             });
-        }); 
+        });
 
         if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
             res.status(200).json(courtsItems);
@@ -334,7 +524,6 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
         let matchingItems = [];
 
         courtsItems.forEach((item) => { //for each item we check if it matches all preferences
-
             let allergens = item.allergens;
             let skipRests = false;
             let skipPrefs = false;
@@ -363,7 +552,6 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
                         skipPrefs = true;
 
                     }
-
                 });
                 if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
             }
@@ -373,7 +561,6 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
         res.status(500).json(error);
         console.log(error);
     }
-
 });
 
 // this endpoint returns all menu items of the provided dining court
@@ -390,28 +577,52 @@ router.get("/:diningCourt", async (req, res) => {
         }
 
         let courtsItems = [];
-
         menuItems.forEach((item) => {
-
             let courtsArray = item.courtData;
             let skip = false;
 
             if (courtsArray == null) return;
 
             courtsArray.forEach((court) => {
-
                 if (!skip && court.includes(req.params.diningCourt) && item.dateServed.getTime() === today.getTime()) {
                     courtsItems.push(item);
                     skip = true;
                 }
-
             });
-
         });
         res.status(200).json(courtsItems);
     } catch (error) { console.log(error); }
-
 });
+
+//this endpoint returns all menu items of provided dining court that are serving during the meal specified
+// router.get("/:diningCourt/:meal", async (req, res) => {
+//     var d = new Date();
+//     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+//     try {
+//         const menuItems = await(MenuItem.find({}))
+//         if (!menuItems) { //this means items were not found
+//             res.status(500).json("No items found");
+//             return;
+//         }
+
+//         let matches = [];
+//         menuItems.forEach((item) => {
+//             let courtData = item.courtData;
+//             let visited = false;
+
+//             if (courtData == null) return;
+
+//             //iterate through court data array and find items that match parameters
+//             courtData.forEach((court) => {
+//                 if (!skip && court.includes(req.params.diningCourt) && court.includes(req.params.meal) && item.dateServed.getTime() === today.getTime()) {
+//                     matches.push(item);
+//                     visited = true;
+//                 }
+//             });
+//         });
+//     } catch {
+//     }
+// });
 
 // this endpoint returns all menu items of the provided dining court that aligns 
 // with a user's dietary preferences
@@ -508,59 +719,40 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
                         skip = true;
                     }
                 }
-
             });
-
         });
-
         res.status(200).json(courtsItems);
-
-
     } catch (error) { console.log(error); }
-
 });
 
 /*
-
 Returns a menu item based on the provided item ID
 
 Example Call: http://localhost:8000/api/menuInfo/item/76f9d158-d45d-42e0-8e37-8bd3c2c45986
 Returns this object: 
 {
-
     ...
     "ID": "76f9d158-d45d-42e0-8e37-8bd3c2c45986",
     "name": "Scrambled Eggs With Bacon And Cheese"
     ...
-
 }
-
 */
 router.get("/item/:menuItemID", async (req, res) => {
-
-    try{
-
+    try {
         const menuItemID = req.params.menuItemID;
-        
         const item = await MenuItem.findOne({
             ID: menuItemID
         });
-
-        if(item == null) {
+        if (item == null) {
             res.status(500).json("No item found");
             return;
         }
-
         res.status(200).json(item);
         return;
-
-    } catch(error) {
-
+    } catch (error) {
         res.status(500).json("Error: " + error);
         console.log("Error: " + error);
-
     }
-
 });
 
 module.exports = router;
