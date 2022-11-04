@@ -16,7 +16,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
-import ProfPic from "./pages/profPic/ProfPic";
+import ProfPic from "./pages/profilePic/ProfilePic";
 
 
 const App = () => {
@@ -44,7 +44,6 @@ const App = () => {
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/reportProblem" element={<ReportProblem />} />
                             <Route path="/profPic" element={<ProfPic />} />
-
                         </>
                     )
                 }
@@ -54,15 +53,18 @@ const App = () => {
                             <Route path="/" element={<Register />} />
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
+                            <Route path="/foodInfo/:menuItemID" element={<Register />} /> 
                             <Route path="/forgotPassword" element={<ForgotPassword />} /> 
                             <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} /> 
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
-                            <Route path="/register" element={<Register />} />
                             <Route path="/personalInfo" element={<Register />} />
                             <Route path="/preferences" element={<Register />} />
+                            <Route path="/recommendations" element={<Register />} />
+                            <Route path="/register" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
                             <Route path="/reportProblem" element={<Register />} />
+                            <Route path="/profPic" element={<Register />} />
                         </>
                     )
                 }

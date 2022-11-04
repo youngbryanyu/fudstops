@@ -19,63 +19,79 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }); //ask multer to use this storage
 
 router.post("/:username", upload.single("image"), async (req, res) => {
+    try {
+        const userHasProfilePic = await imageModel.find({ username: req.params.username });
+        //console.log("here");
+        //console.log(userHasProfilePic);
+        if (userHasProfilePic.length == 0) {
+            if (req.file.filename) {
+                const saveImage = imageModel({
+                    username: req.params.username,
+                    img: {
+                        data: fs.readFileSync("uploads/" + req.file.filename),
+                        contentType: "image/png",
+                    },
+                });
+                saveImage
+                    .save()
+                    .then((res) => {
+                        console.log("image is saved");
+                    })
+                    .catch((err) => {
+                        console.log(err, "error has occur");
+                    });
+                res.send(saveImage.img);
+            } else {
+                res.status(500).json("error, empty image or other error");
+            }
+        } else {
+            if (req.file.filename) {
+                const newImage = await imageModel.updateOne(
+                    { username: req.params.username },
+                    {
+                        $set: {
+                            img: {
+                                data: fs.readFileSync("uploads/" + req.file.filename),
+                                contentType: "image/png",
+                            }
 
-    const userHasProfilePic = await imageModel.find({ username: req.params.username });
-    //console.log("here");
-    //console.log(userHasProfilePic);
-    if (userHasProfilePic.length == 0) {
-        console.log("here");
-        const saveImage = imageModel({
-            username: req.params.username,
-            img: {
-                data: fs.readFileSync("uploads/" + req.file.filename),
-                contentType: "image/png",
-            },
-        });
-        saveImage
-            .save()
-            .then((res) => {
-                console.log("image is saved");
-            })
-            .catch((err) => {
-                console.log(err, "error has occur");
-            });
-        res.send(saveImage.img)
-    } else {
-        if (!req.file.filename) {
-            const newImage = await imageModel.updateOne(
-                { username: req.params.username },
-                {
-                    $set: {
-                        img: {
-                            data: fs.readFileSync("uploads/" + req.file.filename),
-                            contentType: "image/png",
                         }
-
                     }
-                }
-            );
-
-            res.send(newImage.img)
+                );
+                res.send(newImage.img)
+            } else {
+                res.status(500).json("error, empty image or other error");
+            }
         }
+    } catch (error) {
+        res.status(500).json(error);
     }
 });
 
 router.get('/:username', async (req, res) => {
-    const allData = await imageModel.find({ username: req.params.username })
-    res.json(allData)
+    try {
+        const allData = await imageModel.find({ username: req.params.username })
+        res.json(allData)
+    } catch (error) {
+        res.status(500).json(error);
+    }
 });
 
 router.delete('/:username', async (req, res) => {
-    const userHasProfilePic = await imageModel.find({ username: req.params.username });
-    if (userHasProfilePic.length != 0) {
-        //console.log("in here");
-        try {
-            await imageModel.findByIdAndDelete(userHasProfilePic);
-            res.status(200).json("profile pic has been deleted");
-        } catch (err) {
-            res.status(500).json(err);
+    try {
+        const userHasProfilePic = await imageModel.find({ username: req.params.username });
+        if (userHasProfilePic.length != 0) {
+            //console.log("in here");
+            try {
+                await imageModel.findByIdAndDelete(userHasProfilePic);
+                res.status(200).json("profile pic has been deleted");
+                console.log("deleted image");
+            } catch (err) {
+                res.status(500).json(err);
+            }
         }
+    } catch (error) {
+        res.status(500).json(error);
     }
 });
 

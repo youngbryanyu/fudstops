@@ -3,7 +3,7 @@
 import Navbar from "../../components/navbar/Navbar";
 import "./foodInfo.scss";
 import { useContext, useState, useEffect, useRef } from 'react';
-import { json, Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { IconButton, Tooltip } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';

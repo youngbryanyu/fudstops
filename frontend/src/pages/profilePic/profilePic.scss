@@ -1,5 +1,5 @@
 // Styling for page to report a problem
-.reportProblem {
+.profilePic {
     width: 100vw;
     height: 100vh;
     background: linear-gradient(to bottom,
@@ -8,7 +8,7 @@
         url("https://pixelz.cc/wp-content/uploads/2018/07/hamburgers-uhd-4k-wallpaper.jpeg");
     background-size: cover;
 
-    .reportProblemForm {
+    .uploadFileForm {
         position: relative;
         width: 100vw;
         height: 100vh;
@@ -27,7 +27,7 @@
 
             form {
                 width: 300px;
-                height: 300px;
+                height: 450px;
                 padding: 30px;
                 border-radius: 5px;
                 background-color: var(--main-color);
@@ -35,26 +35,10 @@
                 flex-direction: column;
                 justify-content: space-between;
 
-                .message.message {
-                    margin-bottom: 5px;
-                    align-items: center;
-                }
-
-                textarea {
-                    height: 40px;
-                    border-radius: 5px;
-                    background-color: gray;
-                    color: white;
-                    padding-left: 10px;
-                    border: none;
-                    resize: none;
-                    height: 120px;
-                    margin-top: 10px;
-
-                    &::placeholder {
-                        color: lightgray;
-                    }
-                }
+                .image {
+                    width: 300px;
+                    height: 300px;
+                } // TODO: resize to fit instead of squashing 
 
                 button {
                     height: 40px;
@@ -69,6 +53,7 @@
 
                 .link {
                     margin-top: 10px;
+
                     button {
                         width: 300px;
                         color: black;
@@ -92,16 +77,6 @@
 
                 h1 {
                     text-align: center;
-                }
-            }
-
-            .errorMessage {
-                margin-top: 5px;
-
-                p {
-                    text-align: center;
-                    font-size: 14px;
-                    color: red;
                 }
             }
 
