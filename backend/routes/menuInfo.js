@@ -33,6 +33,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                 continue
             }
             const name = court.Name
+            name = name.replace(/\s+/g, '-')
             const formalName = court.FormalName
             const placeID = String(court.GooglePlaceId)
             var mealInfo = [] //[{meal name, start time, end time}]
@@ -140,7 +141,8 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                             const menuItem = await MenuItem.findOne({
                                 ID: json.ID
                             });
-                            if (menuItem) { // if menu item already exists, update it with possibly new information
+                            //item.dateServed.getTime() === today.getTime()
+                            if (menuItem && menuItem.dateServed.getTime() === today.getTime()) { //if menu item exists and was served today at different place, push courtdata
                                 await MenuItem.findByIdAndUpdate(menuItem._id, { $push: { courtData: courtdata } }, {
                                     ID: json.ID,
                                     name: json.Name,
@@ -151,6 +153,18 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     ingredients: json.Ingredients
                                 });
                                 console.log("Updated menu item - " + diningCourt + ": " + json.Name);
+                            } else if(menuItem && menuItem.dateServed.getTime !== today.gettime()) { //if menu item exists and is for a different day, replace courtdata & update info
+                                await MenuItem.findByIdAndUpdate(menuItem._id, {
+                                    ID: json.ID,
+                                    name: json.Name,
+                                    dateServed: today,
+                                    courtData: courtdata,
+                                    isVegetarian: json.IsVegetarian,
+                                    allergens: json.Allergens,
+                                    nutritionFacts: json.Nutrition,
+                                    ingredients: json.Ingredients
+                                });
+                                console.log("Updated menu item (reset courtdata) - " + diningCourt + ": " + json.Name);
                             } else {// create new MenuItem for current menu item
                                 const newMenuItem = new MenuItem({
                                     ID: json.ID,
@@ -498,10 +512,8 @@ router.get("/:diningCourt", async (req, res) => {
 });
 
 //this endpoint returns all menu items of provided dining court that are serving during the meal specified
-router.get("/:diningCourt/:meal", async (req, res) => {
+router.get("/meals/:diningCourt/:meal", async (req, res) => {
     //debug:
-    console.log(req.params.diningCourt)
-    console.log(req.params.meal)
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
     try {
@@ -516,7 +528,7 @@ router.get("/:diningCourt/:meal", async (req, res) => {
             let courtData = item.courtData;
             let visited = false;
 
-            if (courtData == null) return;
+            if (courtData === null) return;
 
             //iterate through court data array and find items that match parameters
             courtData.forEach((court) => {
@@ -530,6 +542,25 @@ router.get("/:diningCourt/:meal", async (req, res) => {
         res.status(200).json(matches);
     } catch (error) { console.log(error); }
 });
+
+//this endpoint returns the specified court's information
+router.get("/courts/:diningCourt", async (req,res) => {
+    try {
+        const diningCourt = req.params.diningCourt;
+        const court = await DiningCourt.findOne({
+            name: diningCourt
+        });
+        if (court == null) {
+            res.status(500).json("No court found");
+            return;
+        }
+        res.status(200).json(court);
+        return;
+    } catch (error) {
+        res.status(500).json("Error: " + error);
+        console.log("Error: " + error);
+    }
+})
 
 // this endpoint returns all menu items of the provided dining court that aligns 
 // with a user's dietary preferences
