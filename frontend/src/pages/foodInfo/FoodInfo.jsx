@@ -107,10 +107,8 @@ const FoodInfo = () => {
                 let rating = response.data;
 
                 if (rating === "No doc found") { //means no rating for this item
-
-                    //leave all stars blank
+                    // leave all stars blank
                     handleClick0();
-
                 } else { //find rating and call respective function
 
                     rating = response.data.rating;
