@@ -1,4 +1,4 @@
-// Javascript for page displaying a user's favorite menu items
+//personal info
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
 import "./personalInfo.scss";
@@ -161,27 +161,7 @@ const PersonalInfo = () => {
                      <input type="submit" />
                    </form>
                 </div>
-
-                <div className = "formPic">
-                <form onSubmit={()=> updatePic()}>
-                       <label>Add/Change/Delete profile picture:
-                         <input 
-                            type="text" 
-                            value={newPicture}
-                            onChange={(e) => setNewPicture(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
-
                 <div className="buttons">
-                    {/* <button onClick={updateUserInfo}> Change number </button>
-                    <button onClick={updateUserInfo}> Change email </button>
-                    <button onClick={updateUserInfo}> Change username </button>
-                    <button onClick={updateUserInfo}> Add picture</button>
-                    <button onClick={updateUserInfo}> Change picture</button>
-                    <button onClick={updateUserInfo}> Delete picture</button> */}
                 </div>
                 <div className="personalDropdown">
                     <div className="header">
@@ -198,8 +178,8 @@ const PersonalInfo = () => {
                         <Link to="" className="link">
                             <span className="highlight">Username: {username} </span>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Profile Pic: {picture} </span>
+                        <Link to="/profPic" className="link">
+                            <span className="highlight">Profile Pic: Click here to edit your Profile Picture! </span>
                         </Link>
                     </div>
                 </div>
