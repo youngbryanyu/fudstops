@@ -24,3 +24,5 @@ yarn-error.log*
 # remove eslintcache from repo
 .eslintcache
 .cache
+
+**/node_modules
