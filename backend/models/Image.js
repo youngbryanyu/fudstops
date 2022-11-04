@@ -1,5 +1,4 @@
 //Image.js-models
-const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const imgSchema = new mongoose.Schema({

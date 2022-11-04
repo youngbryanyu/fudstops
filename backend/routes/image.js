@@ -35,7 +35,7 @@ router.post("/:username", upload.single("image"), async (req, res) => {
                 saveImage
                     .save()
                     .then((res) => {
-                        console.log("image is saved");
+                        // console.log("new pfp is saved");
                     })
                     .catch((err) => {
                         console.log(err, "error has occur");
@@ -54,11 +54,11 @@ router.post("/:username", upload.single("image"), async (req, res) => {
                                 data: fs.readFileSync("uploads/" + req.file.filename),
                                 contentType: "image/png",
                             }
-
                         }
                     }
                 );
                 res.send(newImage.img)
+                // console.log("updated pfp");
             } else {
                 res.status(500).json("error, empty image or other error");
             }
@@ -79,16 +79,14 @@ router.get('/:username', async (req, res) => {
 
 router.delete('/:username', async (req, res) => {
     try {
-        const userHasProfilePic = await imageModel.find({ username: req.params.username });
-        if (userHasProfilePic.length != 0) {
-            //console.log("in here");
-            try {
-                await imageModel.findByIdAndDelete(userHasProfilePic);
-                res.status(200).json("profile pic has been deleted");
-                console.log("deleted image");
-            } catch (err) {
-                res.status(500).json(err);
-            }
+        try {
+            await imageModel.deleteMany({
+                username: req.params.username
+            });
+            res.status(200).json("profile pic has been deleted");
+            // console.log("deleted pfp");
+        } catch (err) {
+            res.status(500).json(err);
         }
     } catch (error) {
         res.status(500).json(error);

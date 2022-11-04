@@ -6,24 +6,29 @@ import { useContext, useEffect, useState, useRef } from "react";
 import React from "react";
 import "./profilePic.scss";
 import defaultPfp from "../../components/default_pfp.png";
+import imageCompression from 'browser-image-compression';
+
+const MAX_FILE_SIZE = 10000; // 10 kb
 
 export default function ProfPic() {
 
     const { user } = useContext(AuthContext); // get user from auth context
-    const [data, setData] = useState([]); // update data with current data
+    const [data, setData] = useState(null); // update data with current data
     const [fileObject, setFileObj] = useState({});
     const fileRef = useRef();
-
 
     // call to display your profile picture on first render
     const initialRender = useRef(true);
     useEffect(() => {
         if (initialRender.current === true) {
             getCall();
-
             initialRender.current = false;
         }
-    }, []);
+
+        setTimeout(() => {
+            getCall(); // rerender every second to check for PFP
+        }, 1000);
+    }, [data]);
 
     /* get PFP and set image data to response from HTTP request */
     const getCall = async () => {
@@ -31,42 +36,79 @@ export default function ProfPic() {
             const response = await axios.get(`/image/${user.username}`);
             const imageData = response.data;
             setData(imageData);
-            console.log(imageData);
+            // console.log(imageData);
         } catch (error) {
             console.log(error);
         }
     }
 
     /* delete PFP */
-    const deleteCall = async () => {
+    const deleteCall = async (e) => {
+        e.preventDefault();
         try {
+            await axios.delete(`/image/${user.username}`);
             setData(null);
-            const response = await axios.delete(`/image/${user.username}`);
         } catch (error) {
             console.log(error);
         }
     }
 
     /* handle uploading new PFP */
-    const handleSubmit = async (event) => {
-        event.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         const formData = new FormData();
         formData.append("image", fileObject);
-        try {
-            const response = await axios({
-                method: "post",
-                url: `/image/${user.username}`,
-                data: formData,
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-            getCall(); // update PFP after uploading
-        } catch (error) {
-            console.log(error)
-        }
+        var res = Array.from(formData.entries(), ([key, prop]) => (
+            {
+                [key]: {
+                    "ContentLength":
+                        typeof prop === "string"
+                            ? new Blob([prop]).size
+                            : prop.size
+                }
+            }));
+
+        const fileSize = res[0].image.ContentLength; 
+        // console.log("file size now is " + fileSize);
+
+        if (fileSize)
+
+            try {
+                const response = await axios({
+                    method: "post",
+                    url: `/image/${user.username}`,
+                    data: formData,
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
+                getCall();
+            } catch (error) {
+                console.log(error);
+            }
     }
-    const handleFileSelect = (event) => { //update the selected file
-        setFileObj(event.target.files[0]);
-        console.log(event.target.files[0]);
+    const handleFileSelect = async (event) => { //update the selected file
+        if (!event.target.files[0]) {
+            console.log("file is undefined")
+            return;
+        }
+        const image = event.target.files[0];
+        const fileSize = image.size; // 100,000 = 100kb
+
+        if (fileSize < MAX_FILE_SIZE) { // no need to compress small images
+            setFileObj(image);
+            console.log("no need to compress");
+            return;
+        }
+
+        /* compress file if larger than 25 kb */
+        const options = {
+            maxSizeMB: .01, // 1 kb
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        }
+        const compressedFile = await imageCompression(image, options);
+        setFileObj(compressedFile);
+        console.log("size of compressed 2: " + compressedFile.size)
     }
 
     return (
@@ -76,7 +118,7 @@ export default function ProfPic() {
             </div>
             <div className="uploadFileForm">
                 <div className="container">
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         {
                             data && data.length != 0 ? (
                                 <>

@@ -46,6 +46,7 @@ const Navbar = () => {
     useEffect(() => {
         if (isFirstRender.current === true) {
             getCall(); // instantly get PFP on first render
+            isFirstRender.current = false;
             return;
         }
 
