@@ -25,6 +25,11 @@
             justify-content: center;
             color: white;
 
+            .message {
+                width: 300px;
+                text-align: center;
+            }
+
             form {
                 width: 300px;
                 height: 450px;
@@ -79,11 +84,6 @@
                 h1 {
                     text-align: center;
                 }
-            }
-
-            .recentlyRegisteredMessage {
-                margin-top: -20px; // to center the sign in box
-                margin-bottom: 20px;
             }
         }
     }

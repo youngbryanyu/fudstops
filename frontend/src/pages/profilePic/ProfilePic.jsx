@@ -9,6 +9,9 @@ import defaultPfp from "../../components/default_pfp.png";
 import imageCompression from 'browser-image-compression';
 
 const MAX_FILE_SIZE = 10000; // 10 kb
+const IMPORTING_MSG = "importing image...";
+const DELETING_MSG = "deleting image...";
+const UPLOADING_MSG = "uploading image...";
 
 export default function ProfPic() {
 
@@ -16,6 +19,8 @@ export default function ProfPic() {
     const [data, setData] = useState(null); // update data with current data
     const [fileObject, setFileObj] = useState({});
     const fileRef = useRef();
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState(IMPORTING_MSG);
 
     // call to display your profile picture on first render
     const initialRender = useRef(true);
@@ -36,7 +41,6 @@ export default function ProfPic() {
             const response = await axios.get(`/image/${user.username}`);
             const imageData = response.data;
             setData(imageData);
-            // console.log(imageData);
         } catch (error) {
             console.log(error);
         }
@@ -45,58 +49,57 @@ export default function ProfPic() {
     /* delete PFP */
     const deleteCall = async (e) => {
         e.preventDefault();
+        setMessage(DELETING_MSG);
+        setShowMessage(true); // deleting --> show message to user
         try {
             await axios.delete(`/image/${user.username}`);
             setData(null);
         } catch (error) {
             console.log(error);
         }
+        setShowMessage(false);
     }
 
     /* handle uploading new PFP */
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setMessage(UPLOADING_MSG);
+        setShowMessage(true); // deleting --> show message to user
         const formData = new FormData();
         formData.append("image", fileObject);
-        var res = Array.from(formData.entries(), ([key, prop]) => (
-            {
-                [key]: {
-                    "ContentLength":
-                        typeof prop === "string"
-                            ? new Blob([prop]).size
-                            : prop.size
-                }
-            }));
 
-        const fileSize = res[0].image.ContentLength; 
-        // console.log("file size now is " + fileSize);
-
-        if (fileSize)
-
-            try {
-                const response = await axios({
-                    method: "post",
-                    url: `/image/${user.username}`,
-                    data: formData,
-                    headers: { "Content-Type": "multipart/form-data" }
-                });
-                getCall();
-            } catch (error) {
-                console.log(error);
-            }
+        /* write to DB */
+        try {
+            await axios({
+                method: "post",
+                url: `/image/${user.username}`,
+                data: formData,
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            getCall(); // get new image and show to user
+        } catch (error) {
+            console.log(error);
+        }
+        setShowMessage(false);
     }
-    const handleFileSelect = async (event) => { //update the selected file
+
+    /* handle selecting an image file */
+    const handleFileSelect = async (event) => {
         if (!event.target.files[0]) {
             console.log("file is undefined")
             return;
         }
+
+        setMessage(IMPORTING_MSG);
+        setShowMessage(true); // importing --> show message to user
+
         const image = event.target.files[0];
         const fileSize = image.size; // 100,000 = 100kb
 
         if (fileSize < MAX_FILE_SIZE) { // no need to compress small images
             setFileObj(image);
             console.log("no need to compress");
+            setShowMessage(false);
             return;
         }
 
@@ -108,7 +111,8 @@ export default function ProfPic() {
         }
         const compressedFile = await imageCompression(image, options);
         setFileObj(compressedFile);
-        console.log("size of compressed 2: " + compressedFile.size)
+        setShowMessage(false); // d
+        console.log("size of compressed 2: " + compressedFile.size);
     }
 
     return (
@@ -138,6 +142,11 @@ export default function ProfPic() {
                                 </div>
                             )
                         }
+                        <div className="message"> {/* recently submitted form message */}
+                            <p style={{ visibility: !showMessage && "hidden" }}>
+                                {message}
+                            </p>
+                        </div>
                         <input className="uploadFile" type="file" onChange={handleFileSelect} ref={fileRef} />
                         <button onClick={handleSubmit}>Upload Image</button>
                         <button onClick={deleteCall}>Delete Profile Picture</button>
