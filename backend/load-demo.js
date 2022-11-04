@@ -1,3 +1,4 @@
+const { object } = require('joi');
 const fetch = require('node-fetch');
 
 /*
@@ -14,8 +15,11 @@ var date = new Date();
 
 console.log(date.addDays(5));
 
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 var d = new Date();
 var today = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + "/";
+var todayDay = d.getDay();
 //all menu items and keys:
 //https://api.hfs.purdue.edu/menus/v2/locations/Earhart/2022-10-22 
 //specific menu item information:
@@ -25,25 +29,49 @@ var today = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + "/"
 // all locations and open times:
 //https://api.hfs.purdue.edu/menus/v2/locations
 
+const courts = ["Earhart", "Ford", "Hillenbrand", "Wiley", "Windsor"]
 async function load() {
-    console.log("======================================================================================================================")
-    const outerUrl = "https://api.hfs.purdue.edu/menus/v2/locations";
+    const url = "https://api.hfs.purdue.edu/menus/v2/locations";
+    //check if name is Earhart, Wiley, Windsor, Hillenbrand, Ford
     try { //parse outer xml
-        const outerResponse = await fetch(outerUrl);
-        if (!outerResponse.ok) {
-            throw new Error(`Error! status: ${outerResponse.status}`);
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
         }
-        const outerJson = await outerResponse.json(); //outer information stored in outer json
+        const json = await response.json(); //outer information stored in outer json
         //debug: console.log(outerJson);
-        for(object of outerJson.Location){
-            var name = object.Name;
-            console.log(name);
+        for(var court of json.Location){
+            if (!(courts.find(courtname => (courtname === court.Name)))) {
+                continue
+            }
+            for (var day of court.NormalHours[0].Days) {
+                if (day.Name !== days[todayDay]) {
+                    continue
+                }
+                for (var meal of day.Meals) {
+                    var name = meal.Name
+                    var start = meal.Hours.StartTime
+                    var end = meal.Hours.EndTime
+                    var sh = start.split(":")[0]
+                    var eh = end.split(":")[0]
+                    var sm = start.split(":")[1]
+                    var em = end.split(":")[1]
+                    var startSuffix = sh >= 12 ? " PM" : " AM"
+                    var endSuffix = eh >= 12 ? " PM" : " AM"
+                    var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
+                    var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
+
+                    console.log(name)
+                    console.log(meal.Hours.StartTime, meal.Hours.EndTime)
+                    console.log(mealstart)
+                    console.log(mealend)
+                }
+            }
         }
     } catch (err) {
         //res.status(500).json(err);
         console.log(err);
     }
-    console.log("======================================================================================================================")
 }
 load()
 
