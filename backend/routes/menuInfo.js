@@ -12,103 +12,6 @@ const PURDUE_DINING_API_URL_MENU_ITEMS = "https://api.hfs.purdue.edu/menus/v2/it
 const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2/locations/";
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// router.post("/dining", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
-//     var d = new Date();
-//     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-
-//     var todayDay = d.getDay();
-//     try { //parse outer xml
-//         const response = await fetch(PURDUE_DINING_API_URL_DINING_COURTS);
-//         if (!response.ok) {
-//             throw new Error(`Error! status: ${response.status}`);
-//         }
-//         const json = await response.json(); //outer information stored in outer json
-//         //debug: console.log(outerJson);
-//         //iterate through locations listed in dining url
-//         //structure: court -> day -> meal
-//         for(var court of json.Location){
-//             //if not a court in DINING_COURTS, skip
-//             if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
-//                 continue
-//             }
-//             const name = court.Name
-//             const formalName = court.FormalName
-//             const placeID = String(court.GooglePlaceId)
-//             var mealInfo = [] //[{meal name, start time, end time}]
-//             //populate mealInfo array
-//             for (var day of court.NormalHours[0].Days) {
-//                 //only select today's day, disregard other days
-//                 if (day.Name !== DAYS[todayDay]) {
-//                     continue
-//                 }
-//                 //for each meal today calculate start and end times, convert to 12-hour format, and add suffix
-//                 for (var meal of day.Meals) {
-//                     var type = meal.Name
-//                     var start = meal.Hours.StartTime
-//                     var end = meal.Hours.EndTime
-//                     var sh = start.split(":")[0]
-//                     var eh = end.split(":")[0]
-//                     var sm = start.split(":")[1]
-//                     var em = end.split(":")[1]
-//                     var startSuffix = sh >= 12 ? " PM" : " AM"
-//                     var endSuffix = eh >= 12 ? " PM" : " AM"
-//                     var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
-//                     var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
-
-//                     console.log(mealstart)
-//                     console.log(mealend)
-//                     var curmealinfo = {
-//                         mealType: type,
-//                         start: mealstart,
-//                         end: mealend,
-//                     }
-//                     mealInfo.push(curmealinfo)
-//                     //type contains final meal type
-//                     //mealstart contains this meal's start time, mealend contains end time
-//                 }
-//             }
-//             //create object and push
-
-//             //name contains court name
-//             //formalName contains court's formal name
-//             //mealInfo contains objects denoting meals start/end times
-//             //googleID contains google place API key
-//             try {
-//                 const diningCourtObj = await DiningCourt.findOne({
-//                     name: name
-//                 });
-//                 if (diningCourtObj) { // if menu item already exists, update it with possibly new information
-//                     await DiningCourt.findByIdAndUpdate(diningCourtObj._id, {
-//                         name: name,
-//                         formalName: formalName,
-//                         googleID: placeID,
-//                         mealInfo: mealInfo,
-//                     });
-//                     console.log("Updated dining court - " + name);
-//                 } else {// create new MenuItem for current menu item
-//                     const newDiningCourt = new DiningCourt({
-//                         name: name,
-//                         formalName: formalName,
-//                         googleID: placeID,
-//                         mealInfo: mealInfo,
-//                     });
-
-//                     const newcourt = await newDiningCourt.save();
-//                     // res.status(201).json(item); //return item in DB response to JSON
-//                     console.log("Added dining court - " + name);
-//                 }
-//             } catch (err) {
-//                 console.log("Error occured while parsing and saving dining court information");
-//                 console.log(err)
-//             }
-//         }
-//     } catch (err) {
-//         res.status(500).json(err);
-//         console.log(err);
-//     }
-//     res.status(201).json("Dining/dining courts data was parsed successfully for " + today);
-//     console.log("Dining/dining courts data was parsed successfully for " + today);
-// });
 //LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     var d = new Date();
@@ -595,59 +498,59 @@ router.get("/:diningCourt", async (req, res) => {
 });
 
 //this endpoint returns all menu items of provided dining court that are serving during the meal specified
-// router.get("/:diningCourt/:meal", async (req, res) => {
-//     var d = new Date();
-//     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
-//     try {
-//         const menuItems = await(MenuItem.find({}))
-//         if (!menuItems) { //this means items were not found
-//             res.status(500).json("No items found");
-//             return;
-//         }
+router.get("/:diningCourt/:meal", async (req, res) => {
+    //debug:
+    console.log(req.params.diningCourt)
+    console.log(req.params.meal)
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+    try {
+        const menuItems = await(MenuItem.find({}))
+        if (!menuItems) { //this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
 
-//         let matches = [];
-//         menuItems.forEach((item) => {
-//             let courtData = item.courtData;
-//             let visited = false;
+        let matches = [];
+        menuItems.forEach((item) => {
+            let courtData = item.courtData;
+            let visited = false;
 
-//             if (courtData == null) return;
+            if (courtData == null) return;
 
-//             //iterate through court data array and find items that match parameters
-//             courtData.forEach((court) => {
-//                 if (!skip && court.includes(req.params.diningCourt) && court.includes(req.params.meal) && item.dateServed.getTime() === today.getTime()) {
-//                     matches.push(item);
-//                     visited = true;
-//                 }
-//             });
-//         });
-//     } catch {
-//     }
-// });
+            //iterate through court data array and find items that match parameters
+            courtData.forEach((court) => {
+                if (!visited && court.includes(req.params.diningCourt) && court.includes(req.params.meal) && item.dateServed.getTime() === today.getTime()) {
+                    matches.push(item);
+                    visited = true;
+                }
+            });
+        });
+        console.log("Successfully retrieved " + req.params.diningCourt + "'s " + req.params.meal + " menu")
+        res.status(200).json(matches);
+    } catch (error) { console.log(error); }
+});
 
 // this endpoint returns all menu items of the provided dining court that aligns 
 // with a user's dietary preferences
 router.get("/prefs/:diningCourt/:username", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
-
     // console.log("today is " + d);
     try {
         const user = await User.findOne({
             username: req.params.username
         });
-
         if (!user) {
             res.status(500).json("User doesn't exist");
             return;
         }
-
         const prefResponse = await Preference.findOne({
             username: req.params.username
         });
         const restResponse = await Restriction.findOne({
             username: req.params.username
         });
-
         // get preferences from response
         let preferences;
         if (!prefResponse) {
@@ -656,7 +559,6 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
         else {
             preferences = prefResponse.preferences;
         }
-
         // get restrictions from response
         let restrictions;
         if (!restResponse) {
@@ -665,30 +567,20 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
         else {
             restrictions = restResponse.restrictions;
         }
-
         const menuItems = await MenuItem.find();
         if (!menuItems || menuItems.length == 0) { //this means items were not found
-
             res.status(500).json("No items found");
             return;
-
         }
-
         let courtsItems = [];
-
         menuItems.forEach((item) => {
-
             let courtsArray = item.courtData;
             let skip = false;
-
             if (courtsArray == null) return;
-
             courtsArray.forEach((court) => {
-
                 if (!skip && court.includes(req.params.diningCourt)) {
                     allergens = item.allergens;
                     let matchesPrefs = true;
-
                     /* if doesn't match all restrictions then continue */
                     if (restrictions.length > 0) {
                         if (allergens.length === 0) { /* edge case for when item has no allergen info */
@@ -701,7 +593,6 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
                             }
                         }
                     }
-
                     /* if doesn't match all preferences then continue */
                     if (preferences.length > 0) {
                         if (allergens.length === 0) { /* edge case for when item has no allergen info */
