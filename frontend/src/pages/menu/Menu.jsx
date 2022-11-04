@@ -225,6 +225,15 @@ const Menu = () => {
                 setAllItems(courtsItems);
             } catch (error) { console.log(error) };
         };
+        //=================TODO===================
+        //insert method to getItemsMatchingMeal
+        // const getItemsMatchingMeal = async () => {
+        //     try {
+        //         const response = await axios.get(`/menuInfo/meals/${location}/${meal}`);
+        //         const courtsItems = response.data;
+        //         setMatchingItems(courtsItems);
+        //     } catch (error) { console.log(error) };
+        // }
 
         const getItemsMatchingUser = async () => {
             try {
