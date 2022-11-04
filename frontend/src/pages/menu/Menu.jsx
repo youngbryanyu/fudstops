@@ -41,7 +41,7 @@ const Menu = () => {
     const [courtsMenu, setCourtsMenu] = useState([]); // the current items displayed in list
     const [times, setTimes] = useState([]) //the current times in the list
     const [matchingItems, setMatchingItems] = useState([]); //keep track of matching user's prefs items
-    const [view, setView] = useState(""); //keep track of which filter option is currently chosen
+    const [view, setView] = useState(""); //keep track of which filterconst [] option is currently chosen
     const { user } = useContext(AuthContext);
     const [shouldSort, setShouldSort] = useState(false);
     const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
@@ -202,37 +202,36 @@ const Menu = () => {
         } else if (event.target.value === 3) { //this means the user selected Items Matching My Prefs & Rests
             setView("MatchingItems");
             setCourtsMenu(matchingItems);
+            console.log(matchingItems)
         }
     };
 
     const handleMeals = (event) => { //this is for handling the meal selection options
         if (event.target.value === 1) { 
-            setMeal("");
-        } else if (event.target.value === 2) { 
             setMeal("Breakfast");
-        } else if (event.target.value === 3) { 
+        } else if (event.target.value === 2) { 
             setMeal("Brunch");
-        } else if (event.target.value === 4) { 
+        } else if (event.target.value === 3) { 
             setMeal("Lunch");
-        }else if (event.target.value === 5) { 
+        }else if (event.target.value === 4) { 
             setMeal("Late-Lunch");
-        }else if (event.target.value === 6) { 
+        }else if (event.target.value === 5) { 
             setMeal("Dinner");
         }
     };
 
-    const getCourtsItems = async () => {
-        try {
-            const response = await axios.get(`/menuInfo/${location}`);
-            const courtsItems = response.data;
-            setCourtsMenu(courtsItems);
-            setAllItems(courtsItems);
-        } catch (error) { console.log(error) };
-    };
     /**
     * Load dining courts items on page load and alters anytime the location changes (when user first enters the page)
     */
     useEffect(() => {
+        const getCourtsItems = async () => {
+            try {
+                const response = await axios.get(`/menuInfo/${location}`);
+                const courtsItems = response.data;
+                setCourtsMenu(courtsItems);
+                setAllItems(courtsItems);
+            } catch (error) { console.log(error) };
+        };
 
         const getItemsMatchingUser = async () => {
             try {
@@ -258,24 +257,22 @@ const Menu = () => {
         }
         // eslint-disable-next-line
     }, [location]);
-    
+
     useEffect(() => {
         const getItemsMatchingMeal = async () => {
             try {
                 const response = await axios.get(`/menuInfo/meals/${location}/${meal}`);
-                const courtsItems = response.data;
-                setMatchingItems(courtsItems);
+                const data = response.data;
+                setCourtsMenu(data);
             } catch (error) { console.log(error) };
         }
 
-        if (meal !== "") {
+        if (meal !== null) {
             setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
-            getCourtsItems();
             getItemsMatchingMeal();
         }
         // eslint-disable-next-line
-    }, [meal])
-
+    }, [meal]);
 
     function listTimes(time) {
         const type = time.mealType;
@@ -316,9 +313,9 @@ const Menu = () => {
                 </Box>
             </div>
             <div className="menuTimes">
-                <h4>{`${location}'s meal times:`}</h4> 
-                <Box sx={{ height: 150, width: 200, bgcolor: 'Black' }} className="times">
-                    <Paper style={{ height: 150, overflow: 'auto' }}>
+                <h4 className = "evenMoreSpace">{`${location}'s meal times:`}</h4> 
+                <Box sx={{ height: 400, width: 200, bgcolor: 'Black' }} className="times">
+                    <Paper style={{ height: 400, overflow: 'auto' }}>
                         <List>
                             {times.map((time) => listTimes(time))}
                         </List>
@@ -352,18 +349,13 @@ const Menu = () => {
                         <Select id="demo-simple-select" value={meal} label="Filter" onChange={handleMeals}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
-                            <MenuItem value={1}>{`View ${location}'s Full Menu`}</MenuItem>
-                            <MenuItem value={2}>{`View ${location}'s Breakfast Menu`}</MenuItem>
-                            <MenuItem value={3}>{`View ${location}'s Brunch Menu`}</MenuItem>
-                            <MenuItem value={4}>{`View ${location}'s Lunch Menu`}</MenuItem>
-                            <MenuItem value={5}>{`View ${location}'s Late Lunch Menu`}</MenuItem>
-                            <MenuItem value={6}>{`View ${location}'s Dinner Menu`}</MenuItem>
+                            <MenuItem value={1}>{`View ${location}'s Breakfast Menu`}</MenuItem>
+                            <MenuItem value={2}>{`View ${location}'s Brunch Menu`}</MenuItem>
+                            <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
+                            <MenuItem value={4}>{`View ${location}'s Late Lunch Menu`}</MenuItem>
+                            <MenuItem value={5}>{`View ${location}'s Dinner Menu`}</MenuItem>
                         </Select>
                     </FormControl>
-
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort Alphabetically"} checked={shouldSort} onChange={handleSortClick} />
-                    </FormGroup>
                 </Box>
             </div>
             <div className="filter">

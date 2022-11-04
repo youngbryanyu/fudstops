@@ -57,8 +57,6 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                     var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
                     var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
 
-                    console.log(mealstart)
-                    console.log(mealend)
                     var curmealinfo = {
                         mealType: type,
                         start: mealstart,
@@ -517,6 +515,7 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
     try {
+        const meal = req.params.meal.replace("-", " ")
         const menuItems = await(MenuItem.find({}))
         if (!menuItems) { //this means items were not found
             res.status(500).json("No items found");
@@ -532,7 +531,7 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
 
             //iterate through court data array and find items that match parameters
             courtData.forEach((court) => {
-                if (!visited && court.includes(req.params.diningCourt) && court.includes(req.params.meal) && item.dateServed.getTime() === today.getTime()) {
+                if (!visited && court.includes(req.params.diningCourt) && court.includes(meal) && item.dateServed.getTime() === today.getTime()) {
                     matches.push(item);
                     visited = true;
                 }
