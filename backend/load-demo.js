@@ -44,6 +44,8 @@ async function load() {
             if (!(courts.find(courtname => (courtname === court.Name)))) {
                 continue
             }
+            console.log(court.FormalName)
+            console.log(court.GooglePlaceId)
             for (var day of court.NormalHours[0].Days) {
                 if (day.Name !== days[todayDay]) {
                     continue
@@ -61,10 +63,12 @@ async function load() {
                     var mealstart = ((sh % 12) || 12) + ":" + sm + startSuffix
                     var mealend = ((eh % 12) || 12) + ":" + em + endSuffix
 
-                    console.log(name)
-                    console.log(meal.Hours.StartTime, meal.Hours.EndTime)
-                    console.log(mealstart)
-                    console.log(mealend)
+                    const curmealinfo = {
+                        mealType: name,
+                        start: mealstart,
+                        end: mealend,
+                    }
+                    console.log(curmealinfo)
                 }
             }
         }
