@@ -16,6 +16,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
+import ProfPic from "./pages/profPic/ProfPic";
+
 
 const App = () => {
     const { user } = useContext(AuthContext); // get user from auth context
@@ -41,6 +43,8 @@ const App = () => {
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/reportProblem" element={<ReportProblem />} />
+                            <Route path="/profPic" element={<ProfPic />} />
+
                         </>
                     )
                 }
@@ -68,3 +72,4 @@ const App = () => {
 };
 
 export default App;
+
