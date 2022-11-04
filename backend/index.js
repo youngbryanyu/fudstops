@@ -15,6 +15,8 @@ const problemRoute = require("./routes/problem");
 const ratingsRoute = require("./routes/ratings");
 const savedRoute = require("./routes/saved");
 const recommendationsRoute = require("./routes/recommendations");
+const imagesRoute = require("./routes/image");
+
 
 dotenv.config();
 
@@ -39,6 +41,8 @@ app.use("/api/problem", problemRoute); // endpoint for reporting problems
 app.use("/api/ratings", ratingsRoute); // endpoint for ratings
 app.use("/api/saved", savedRoute); // endpoint for saved items
 app.use("/api/recommendations", recommendationsRoute); // endpoint for recommended items
+app.use("/api/image", imagesRoute); // endpoint for recommended items
+
     
 app.listen(8000, () => { // start server, listen for connections
     console.log("backend is running");

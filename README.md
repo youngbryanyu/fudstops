@@ -6,6 +6,8 @@ A convenient and centralized spot for students to view menus & dining locations,
 
 ### Starting the front end
 
+Before starting the frontend, run `yarn` in the `/frontend` to install any missing dependencies.
+
 In the `/frontend` directory run:
 
 `yarn start` or `npm run start`
@@ -15,6 +17,8 @@ In the `/frontend` directory run:
 - The page will reload if you make edits.
 
 ### Starting the back end
+
+Before starting the frontend, run `yarn` in the `/backend` to install any missing dependencies.
 
 In the `/backend` directory run:
 

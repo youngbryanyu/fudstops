@@ -51,3 +51,10 @@ export function isValidUsernameFormat(username) {
 export function stripNonDigits(phoneNumber) {
     return phoneNumber.replace(/\D/g, '');
 }
+
+/**
+ * Returns if the user has no phone number or email
+ */
+export function isEmptyPhoneOrEmail(input) {
+    return input.includes(EMPTY_PHONE_STRING) || input.includes(EMPTY_EMAIL_STRING);
+}

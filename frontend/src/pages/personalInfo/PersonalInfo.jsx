@@ -1,4 +1,4 @@
-// Javascript for page displaying a user's favorite menu items
+//personal info
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
 import "./personalInfo.scss";
@@ -6,7 +6,21 @@ import axios from 'axios';
 import { AuthContext } from "../../authContext/AuthContext";
 import { useContext } from "react";
 import { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import {
+    isValidEmailFormat, isValidPhoneFormat, isValidEmailOrPhoneFormat, isValidUsernameFormat,
+    isValidPasswordFormat, stripNonDigits, isEmptyPhoneOrEmail,
+    MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING
+} from "../../utils/regexAndStrings";
 
+const EXISTING_CREDENTIALS_ERROR = "Email, phone number, or username already taken."
+const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone number format."
+const INVALID_USERNAME_ERROR = "Invalid username. Username cannot contain spaces and minimum length must be at least "
+const INVALID_PASSWORD_ERROR = "Invalid password. The length must be at least "
+
+// TODO: add password editing feature
+// TODO: add validation for modifying user information (like in registration)
 
 const PersonalInfo = () => {
     const { user } = useContext(AuthContext); // get user from auth context
@@ -22,10 +36,8 @@ const PersonalInfo = () => {
     const [number, setNumber] = useState('')
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
-    const [picture, setPicture] = useState('')
 
-    
-    //get
+    /* retrieves the latest user info */
     const getUserInfo = () => {
         axios.get(url) //put the entire url including the user
             .then(res => {
@@ -33,22 +45,20 @@ const PersonalInfo = () => {
                 setNumber(res.data.phone)
                 setEmail(res.data.email)
                 setUsername(res.data.username)
-                setPicture(res.data.profilePic)
             }).catch(err => {
                 console.log(err)
             })
-    }
-   
-    // const getUserInfo = async () => {
-    //     try {
-    //        const res =  await axios.get(url);
-    //         console.log(res);
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
+    };
+    /* get user info on first render */
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current === true) {
+            getUserInfo();
+            isFirstRender.current = false;
+        }
+    }, []);
 
-    //update username
+    // update username
     const updateUserName = async () => {
         try {
             await axios.put(putUrl, {
@@ -62,25 +72,29 @@ const PersonalInfo = () => {
         } catch (err) {
             console.log(err);
         }
+        getUserInfo();
     };
 
-    //update username
-    const updateEmail = async () => {
+    // update email
+    const updateEmail = async (e) => {
+        e.preventDefault();
+        console.log("email is" + newEmail);
         try {
             await axios.put(putUrl, {
                 email: newEmail,
             }, {
                 headers: {
                     token:
-                       auth
+                        auth
                 }
             });
         } catch (err) {
             console.log(err);
         }
+        getUserInfo();
     };
 
-    //update username
+    // update phone 
     const updatePhone = async () => {
         try {
             await axios.put(putUrl, {
@@ -94,114 +108,82 @@ const PersonalInfo = () => {
         } catch (err) {
             console.log(err);
         }
-    };
-
-    //update username
-    const updatePic = async () => {
-        try {
-            await axios.put(putUrl, {
-                profilePic: newPicture,
-            }, {
-                headers: {
-                    token:
-                        auth
-                }
-            });
-        } catch (err) {
-            console.log(err);
-        }
+        getUserInfo();
     };
 
     const [newUsername, setNewUsername] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [newNumber, setNewNumber] = useState('')
-    const [newPicture, setNewPicture] = useState('')
 
 
     return (
         <div className="personalInfo">
-            {getUserInfo()}
             <Navbar />
-            <div className="left">
-                <div className = "formName">
-                    <form onSubmit={()=> updateUserName()}>
-                       <label>Change username:
-                         <input 
-                            type="text" 
-                            value={newUsername}
-                            onChange={(e) => setNewUsername(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
 
-                <div className = "formEmail">
-                <form onSubmit={()=> updateEmail()}>
-                       <label>Change email:
-                         <input 
-                            type="text" 
-                            value={newEmail}
-                            onChange={(e) => setNewEmail(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
+            <div className="personalInfoForm">
+                <div className="container">
+                    <form>
+                        <h1>Personal Info</h1>
+                        <button className="infoButton">
+                            {"Phone Number: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(number) ? "N/A" : number
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">Email:
+                            {"Email: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(email) ? "N/A" : email
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">Username: <span>{username}</span> </button>
 
-                <div className = "formPhone">
-                <form onSubmit={()=> updatePhone()}>
-                       <label>Change number:
-                         <input 
-                            type="text" 
-                            value={newNumber}
-                            onChange={(e) => setNewNumber(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
 
-                <div className = "formPic">
-                <form onSubmit={()=> updatePic()}>
-                       <label>Add/Change/Delete profile picture:
-                         <input 
-                            type="text" 
-                            value={newPicture}
-                            onChange={(e) => setNewPicture(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
+                        <label>
+                            <div className="infoType"> {"Change username: "}</div>
+                            <input
+                                type="text"
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                            />
+                            <button onClick={updateUserName} className="formButton">Submit</button>
 
-                <div className="buttons">
-                    {/* <button onClick={updateUserInfo}> Change number </button>
-                    <button onClick={updateUserInfo}> Change email </button>
-                    <button onClick={updateUserInfo}> Change username </button>
-                    <button onClick={updateUserInfo}> Add picture</button>
-                    <button onClick={updateUserInfo}> Change picture</button>
-                    <button onClick={updateUserInfo}> Delete picture</button> */}
-                </div>
-                <div className="personalDropdown">
-                    <div className="header">
-                        <span>Personal Information</span>
+                        </label>
 
-                    </div>
-                    <div className="personalItems">
-                        <Link to="" className="link">
-                            <span className="highlight">Number: {number} </span>
+                        <label>
+                            <div className="infoType"> {"Change email: "}</div>
+                            <input
+                                type="text"
+                                value={newEmail}
+                                onChange={(e) => setNewEmail(e.target.value)}
+                                className="input"
+                            />
+                            <button onClick={updateEmail} className="formButton">Submit</button>
+                        </label>
+
+                        <label>
+                            <div className="infoType"> {"Change phone number: "}</div>
+                            <input
+                                type="text"
+                                value={newNumber}
+                                onChange={(e) => setNewNumber(e.target.value)}
+                                className="input"
+                            />
+                            <button onClick={updatePhone} className="formButton">Submit</button>
+                        </label>
+
+                        <Link to="/profPic" className="link">
+                            <button className="button2">Edit profile picture </button>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Email: {email} </span>
+
+                        <Link to="/settings" className="link">
+                            <button className="backButton">Back</button>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Username: {username} </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Profile Pic: {picture} </span>
-                        </Link>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -209,3 +191,71 @@ const PersonalInfo = () => {
 };
 
 export default PersonalInfo;
+
+
+/*
+<div className="infoForm">
+                <div className="container">
+                    <div className="personalDropdown">
+                        <div className="header">
+                            <span>Personal Information</span>
+
+                        </div>
+                        <div className="personalItems">
+                            <Link to="" className="link">
+                                <span className="highlight">Number: {number} </span>
+                            </Link>
+                            <Link to="" className="link">
+                                <span className="highlight">Email: {email} </span>
+                            </Link>
+                            <Link to="" className="link">
+                                <span className="highlight">Username: {username} </span>
+                            </Link>
+                            <Link to="/profPic" className="link">
+                                <span className="highlight">Profile Pic: Click here to edit your Profile Picture! </span>
+                            </Link>
+                        </div>
+
+                        <div className="formName">
+                            <form onSubmit={() => updateUserName()}>
+                                <label>Change username:
+                                    <input
+                                        type="text"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                    />
+                                </label>
+                                <input type="submit" />
+                            </form>
+                        </div>
+
+                        <div className="formEmail">
+                            <form onSubmit={() => updateEmail()}>
+                                <label>Change email:
+                                    <input
+                                        type="text"
+                                        value={newEmail}
+                                        onChange={(e) => setNewEmail(e.target.value)}
+                                    />
+                                </label>
+                                <input type="submit" />
+                            </form>
+                        </div>
+
+                        <div className="formPhone">
+                            <form onSubmit={() => updatePhone()}>
+                                <label>Change number:
+                                    <input
+                                        type="text"
+                                        value={newNumber}
+                                        onChange={(e) => setNewNumber(e.target.value)}
+                                    />
+                                </label>
+                                <input type="submit" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+*/
