@@ -6,6 +6,7 @@ const DiningCourtSchema = new mongoose.Schema( // create schema for Location in 
     {
         name: { type: String, required: true, unique: true },
         formalName: { type: String },
+        googleId: { type: String, required: true, unique: true}, //google places id for future use
         mealInfo: {type: [Object], required: true}, //{meal name, start time, end time}
         // mealInfo: {type: Object}, //{meal name, start time, end time}
 
