@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import {
     isValidEmailFormat, isValidPhoneFormat, isValidEmailOrPhoneFormat, isValidUsernameFormat,
-    isValidPasswordFormat, stripNonDigits,
+    isValidPasswordFormat, stripNonDigits, isEmptyPhoneOrEmail,
     MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING
 } from "../../utils/regexAndStrings";
 
@@ -124,9 +124,23 @@ const PersonalInfo = () => {
                 <div className="container">
                     <form>
                         <h1>Personal Info</h1>
-                        <button className="infoButton">Phone Number: {number} </button>
-                        <button className="infoButton">Email: {email} </button>
-                        <button className="infoButton">Username: {username} </button>
+                        <button className="infoButton">
+                            {"Phone Number: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(number) ? "N/A" : number
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">Email:
+                            {"Email: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(email) ? "N/A" : email
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">Username: <span>{username}</span> </button>
 
 
                         <label>
