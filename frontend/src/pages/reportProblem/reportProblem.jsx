@@ -29,6 +29,7 @@ export default function ReportProblem() {
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevent default behavior
 
+        console.log("error message is " + errRef.current.value)
         if (!isValidErrorMessageChecker(problemMessage)) {
             setIsValidProblemMessage(false);
             return;
@@ -41,6 +42,7 @@ export default function ReportProblem() {
                 });
                 setSubmittedForm(true);
                 errRef.current.value = ''; // set text box to empty
+                setProblemMesssage(""); // set error message to empty
             } catch (error) {
                 console.log(error);
             }

@@ -183,7 +183,6 @@ const Home = () => {
     * Load dining courts items on page load and alters anytime the location changes
     */
     useEffect(() => {
-
         const getAllDiningCourts = async () => {
             try {
                 setAllItems(DINING_COURTS);
@@ -208,14 +207,14 @@ const Home = () => {
                     }
                 }
                 setMatchingItems(matchingCourts);
-                setCourtsMenu(matchingCourts);
             } catch (error) {
                 console.log(error)
             };
         };
 
-        getAllDiningCourts();
+        
         getItemsMatchingUser();
+        getAllDiningCourts(); // get all dining courts after b/c we want to show all dining courts
 
         // eslint-disable-next-line
     }, [location]);

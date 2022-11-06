@@ -132,7 +132,7 @@ const PersonalInfo = () => {
                                 }
                             </span>
                         </button>
-                        <button className="infoButton">Email:
+                        <button className="infoButton">
                             {"Email: "}
                             <span>
                                 {

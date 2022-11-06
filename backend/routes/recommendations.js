@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Saved = require("../models/Saved");
 const MenuItem = require("../models/MenuItem");
 
-//get all recommended items based on user's saved items
+// get all recommended items based on user's saved items
 router.get("/saved/:username", async (req, res) => {
 
     try {
@@ -15,8 +15,8 @@ router.get("/saved/:username", async (req, res) => {
 
         if (!savedItems || savedItems.length == 0) { //this means no saved items were found
 
-            //we will return all menu items, with a boolean to indicate that the mesage
-            //"save more items to have better recommendations"
+            // we will return all menu items, with a boolean to indicate that the mesage
+            // "save more items to have better recommendations"
 
             const allItems = await MenuItem.find({});
             let todaysItems = [];
@@ -135,8 +135,8 @@ router.get("/saved/:username", async (req, res) => {
                 let weights = [vegetarianWeight, veganWeight, coconutWeight, eggsWeight, fishWeight, glutenWeight,
                     sesameWeight, shellfishWeight, soyWeight, treeNutsWeight, wheatWeight, milkWeight, peanutsWeight];
 
-                //now we just need select the attributes that have a weight above 3
-                //and if no weights above 3, return all items
+                // now we just need select the attributes that have a weight above 3
+                // and if no weights above 3, return all items
 
                 let finalPrefs = [];
                 let finalRests = [];
