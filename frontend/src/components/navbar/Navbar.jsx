@@ -104,8 +104,8 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="right">
-                    <Search className="icon" />
-                    <Notifications className="icon" />
+                    {/* <Search className="icon" /> */}
+                    {/* <Notifications className="icon" /> */}
                     {
                         data && data.length != 0 ? (
                             <>
