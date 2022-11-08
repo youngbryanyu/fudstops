@@ -60,7 +60,7 @@ app.listen(8000, async () => {
 /* Parse dining data everyday at 12:01 am --> scheduler uses CRON formatting: https://crontab.guru/every-night-at-midnight */
 schedule.scheduleJob('1 0 * * *', async () => {
     try {
-        axios.post('http://localhost:8000/api/menuInfo/load');
+        await axios.post('http://localhost:8000/api/menuInfo/load');
     } catch (error) {
         console.log("ERROR PARSING DINING DATA AT MIDNIGHT: " + error);
     }
