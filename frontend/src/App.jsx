@@ -17,7 +17,8 @@ import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
 import ProfPic from "./pages/profilePic/ProfilePic";
-
+// import axios from "axios";
+// import schedule from "node-schedule";
 
 const App = () => {
     const { user } = useContext(AuthContext); // get user from auth context
@@ -53,9 +54,9 @@ const App = () => {
                             <Route path="/" element={<Register />} />
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
-                            <Route path="/foodInfo/:menuItemID" element={<Register />} /> 
-                            <Route path="/forgotPassword" element={<ForgotPassword />} /> 
-                            <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} /> 
+                            <Route path="/foodInfo/:menuItemID" element={<Register />} />
+                            <Route path="/forgotPassword" element={<ForgotPassword />} />
+                            <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
                             <Route path="/personalInfo" element={<Register />} />
