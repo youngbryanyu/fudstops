@@ -25,9 +25,14 @@
             justify-content: center;
             color: white;
 
+            .successMessage {
+                margin-top: -10px; // to center the sign in box
+                margin-bottom: 10px;
+            }
+
             form {
                 width: 500px;
-                height: 500px;
+                height: 520px;
                 padding: 30px;
                 border-radius: 5px;
                 background-color: var(--main-color);
@@ -37,7 +42,7 @@
 
                 label {
                     width: 500px;
-                    margin: 5px;
+                    // margin-top: 5px;
 
                     .infoType {
                         width: 500px;
@@ -63,10 +68,10 @@
                     }
                 }
 
-                .message {
-                    margin-bottom: 5px;
-                    align-items: center;
-                }
+                // .message {
+                //     margin-bottom: 5px;
+                //     align-items: center;
+                // }
 
                 button {
                     height: 40px;
@@ -99,7 +104,7 @@
 
 
                 .link {
-                    margin-top: 10px;
+                    margin-top: 5px;
 
                     button {
                         width: 500px;
@@ -131,6 +136,15 @@
 
             h1 {
                 text-align: center;
+            }
+
+            .errorMessage {
+                text-align: center;
+                margin-top: 5px;
+                p {
+                    font-size: 14px;
+                    // color: red;
+                }
             }
         }
     }
