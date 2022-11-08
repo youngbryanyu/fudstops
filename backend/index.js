@@ -45,8 +45,6 @@ app.use("/api/saved", savedRoute); // endpoint for saved items
 app.use("/api/recommendations", recommendationsRoute); // endpoint for recommended items
 app.use("/api/image", imagesRoute); // endpoint for recommended items
 
-const alreadyParsedToday = false;
-
 /* Listen on port 8000 locally */
 app.listen(8000, async () => {
     console.log("backend is running");
@@ -65,6 +63,5 @@ schedule.scheduleJob('1 0 * * *', async () => {
         console.log("ERROR PARSING DINING DATA AT MIDNIGHT: " + error);
     }
 });
-
 
 module.exports = app;
