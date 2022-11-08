@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
 import ProfPic from "./pages/profilePic/ProfilePic";
+import DeleteAccount from "./pages/deleteAccount/deleteAccount";
 // import axios from "axios";
 // import schedule from "node-schedule";
 
@@ -31,9 +32,10 @@ const App = () => {
                     user && (
                         <>
                             <Route path="/" element={<Home />} />
+                            <Route path="/deleteAccount" element={<DeleteAccount />} />
                             <Route path="/favorites" element={<Favorites />} />
-                            <Route path="/foodInfo/:menuItemID" element={<FoodInfo />} /> {/* This route will be utilized later to lead user to the specific menu item page for a selected menuItemId*/}
                             <Route path="/foodInfo" element={<FoodInfo />} />
+                            <Route path="/foodInfo/:menuItemID" element={<FoodInfo />} /> {/* This route will be utilized later to lead user to the specific menu item page for a selected menuItemId*/}
                             <Route path="/forgotPassword" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/forgotPasswordReset/:id/:token" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
@@ -52,6 +54,7 @@ const App = () => {
                     !user && (
                         <>
                             <Route path="/" element={<Register />} />
+                            <Route path="/deleteAccount" element={<Register />} />
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
                             <Route path="/foodInfo/:menuItemID" element={<Register />} />

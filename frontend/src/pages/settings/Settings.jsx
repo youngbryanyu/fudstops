@@ -74,7 +74,7 @@ const Settings = () => {
                                 </Link>
                             </Box>
                             <Box className="box">
-                                <Link to="" className="link">
+                                <Link to="/deleteAccount" className="link">
                                     <span className="header">Delete Account</span>
                                 </Link>
                             </Box>

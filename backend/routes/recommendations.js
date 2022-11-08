@@ -19,7 +19,7 @@ router.get("/saved/:username", async (req, res) => {
             // "save more items to have better recommendations"
 
             const todaysItems = await MenuItem.find({
-                dateServed: today, 
+                dateServed: today,
             });
 
             const toReturn = {
@@ -190,7 +190,7 @@ router.get("/saved/:username", async (req, res) => {
                     //"save more items to have better recommendations"
 
                     const todaysItems = await MenuItem.find({
-                        dateServed: today, 
+                        dateServed: today,
                     });
 
                     const toReturn = {
@@ -230,5 +230,5 @@ router.get("/saved/:username", async (req, res) => {
     }
 
 });
- 
+
 module.exports = router;

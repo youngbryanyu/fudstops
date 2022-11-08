@@ -1,5 +1,5 @@
 // navigation bar at top of page
-import { ArrowDropDown, Notifications, Search } from "@material-ui/icons";
+import { ArrowDropDown } from "@material-ui/icons";
 import { useState, useEffect } from "react";
 import "./navbar.scss";
 import logo from "../fudstops_white_logo.png"
