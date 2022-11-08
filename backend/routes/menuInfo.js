@@ -14,6 +14,7 @@ const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     var d = new Date();
     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    var todayDate = new Date(today);
 
     // Parse dining items for each dining court
     for (const diningCourt of DINING_COURTS) {
@@ -47,8 +48,21 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                             const menuItem = await MenuItem.findOne({
                                 ID: json.ID
                             });
-                            if (menuItem) { // if menu item already exists, update it with possibly new information
-                                await MenuItem.findByIdAndUpdate(menuItem._id, { $push: { courtData: courtdata } }, {
+
+                            /* if menu item date is different, reset court data and update info */
+                            if (menuItem && menuItem.dateServed.getDate != todayDate.getDate) {
+                                await MenuItem.findByIdAndUpdate(menuItem._id, {
+                                    ID: json.ID,
+                                    name: json.Name,
+                                    courtData: [courtdata],
+                                    dateServed: today,
+                                    isVegetarian: json.IsVegetarian,
+                                    allergens: json.Allergens,
+                                    nutritionFacts: json.Nutrition,
+                                    ingredients: json.Ingredients
+                                })
+                            } else if (menuItem) { // if menu item already exists, update it with possibly new information
+                                await MenuItem.findByIdAndUpdate(menuItem._id, { $addToSet: { courtData: courtdata } }, { /* use addToSet to prevent duplicates */
                                     ID: json.ID,
                                     name: json.Name,
                                     dateServed: today,
@@ -58,7 +72,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     ingredients: json.Ingredients
                                 });
                                 console.log("Updated menu item - " + diningCourt + ": " + json.Name);
-                            } else {// create new MenuItem for current menu item
+                            } else { // create new MenuItem for current menu item
                                 const newMenuItem = new MenuItem({
                                     ID: json.ID,
                                     name: json.Name,
@@ -77,7 +91,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                             }
                         } catch (err) {
                             // res.status(500).json(err);
-                            console.log("Error occured while parsing and saving data");
+                            console.log("Error occured while parsing and saving data: " + err);
                         }
                     }
                 }
