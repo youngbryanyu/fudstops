@@ -12,11 +12,10 @@ const PURDUE_DINING_API_URL_MENU_ITEMS = "https://api.hfs.purdue.edu/menus/v2/it
 const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2/locations/";
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-//LOAD - load menus site for current day
+// LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     var d = new Date();
     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-
     var todayDay = d.getDay();
     try { //parse outer xml
         const response = await fetch(PURDUE_DINING_API_URL_DINING_COURTS);
@@ -32,8 +31,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
             if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
                 continue
             }
-            const name = court.Name
-            name = name.replace(/\s+/g, '-')
+            var name = court.Name
             const formalName = court.FormalName
             const placeID = String(court.GooglePlaceId)
             var mealInfo = [] //[{meal name, start time, end time}]
@@ -130,18 +128,15 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         if (!response.ok) {
                             throw new Error(`Error! status: ${response.status}`)
                         }
-
                         const json = await response.json();
-
                         const courtdata = [diningCourt, stationname, type]
-
                         try {
                             const menuItem = await MenuItem.findOne({
                                 ID: json.ID
                             });
-                            //item.dateServed.getTime() === today.getTime()
-                            if (menuItem && menuItem.dateServed.getTime() === today.getTime()) { //if menu item exists and was served today at different place, push courtdata
-                                await MenuItem.findByIdAndUpdate(menuItem._id, { $push: { courtData: courtdata } }, {
+                            //item.dateServed.getDate() === today.getDate()
+                            if (menuItem && menuItem.dateServed.getDate() === d.getDate()) { //if menu item exists and was served today, update it with possibly new information 
+                                await MenuItem.findByIdAndUpdate(menuItem._id, { $addToSet: { courtData: courtdata } }, {
                                     ID: json.ID,
                                     name: json.Name,
                                     dateServed: today,
@@ -151,7 +146,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     ingredients: json.Ingredients
                                 });
                                 console.log("Updated menu item - " + diningCourt + ": " + json.Name);
-                            } else if(menuItem && menuItem.dateServed.getTime !== today.gettime()) { //if menu item exists and is for a different day, replace courtdata & update info
+                            } else if(menuItem) { //if menu item exists and is for a different day, replace courtdata & update info
                                 await MenuItem.findByIdAndUpdate(menuItem._id, {
                                     ID: json.ID,
                                     name: json.Name,
@@ -183,10 +178,10 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         } catch (err) {
                             // res.status(500).json(err);
                             console.log("Error occured while parsing and saving data");
+                            console.log(err)
                         }
                     }
                 }
-
             }
         } catch (err) {
             res.status(500).json(err);
@@ -213,52 +208,52 @@ Example req body below
 
 */
 router.get("/prefs", async (req, res) => {
-    var d = new Date();
-    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+     var d = new Date();
+     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
-    try {
-        const prefs = req.body.preferences; //for example could be - "Vegan", "Vegetarian"
-        const menuItems = await MenuItem.find({}); //all menu items
+     try {
+         const prefs = req.body.preferences; //for example could be - "Vegan", "Vegetarian"
+         const menuItems = await MenuItem.find({}); //all menu items
 
-        if (!menuItems) { //this means items were not found
-            res.status(500).json("No items found");
-            return;
-        }
+         if (!menuItems) { //this means items were not found
+             res.status(500).json("No items found");
+             return;
+         }
 
-        if (prefs.length == 0) { //no preferences provided, so all items work
-            console.log("0 lenght");
-            res.status(200).json(menuItems);
-            return;
-        }
+         if (prefs.length == 0) { //no preferences provided, so all items work
+             console.log("0 lenght");
+             res.status(200).json(menuItems);
+             return;
+         }
 
-        let prefItems = [];
+         let prefItems = [];
 
-        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+         menuItems.forEach((item) => { //for each item we check if it matches all preferences
 
-            let allergens = item.allergens;
-            let skipPrefs = false;
+             let allergens = item.allergens;
+             let skipPrefs = false;
 
-            if (allergens == null || allergens.length == 0) skipPrefs = true;
+             if (allergens == null || allergens.length == 0) skipPrefs = true;
 
-            allergens.forEach((allergen) => {
-                if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
-                    skipPrefs = true;
-                }
-            });
-            if (!skipPrefs && item.dateServed.getTime() === today.getTime()) prefItems.push(item); //if we found that the item aligned with req prefs
-        });
+             allergens.forEach((allergen) => {
+                 if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
+                     skipPrefs = true;
+                 }
+             });
+             if (!skipPrefs && item.dateServed.getTime() === today.getTime()) prefItems.push(item); //if we found that the item aligned with req prefs
+         });
 
-        res.status(200).json(prefItems);
+         res.status(200).json(prefItems);
 
-    } catch (error) {
-        res.status(500).json(error);
-        console.log(error);
-    }
-});
+     } catch (error) {
+         res.status(500).json(error);
+         console.log(error);
+     }
+ });
 
 /*
-//this endpoint returns all of today's items that align with the requested restrictions
-//the request body must include the requested restrictions
+this endpoint returns all of today's items that align with the requested restrictions
+the request body must include the requested restrictions
 
 req url -> http://localhost:8000/api/menuInfo/rests
 Example req body below
@@ -270,50 +265,50 @@ Example req body below
 ^ that call + body will give all items that don't have Coconut or Tree Nuts in it
 
 */
-router.get("/rests", async (req, res) => {
-    var d = new Date();
-    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+ router.get("/rests", async (req, res) => {
+     var d = new Date();
+     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
-    try {
+     try {
 
-        const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
-        const menuItems = await MenuItem.find({}); //all menu items
+         const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
+         const menuItems = await MenuItem.find({}); //all menu items
 
-        if (!menuItems) { //this means items were not found
-            res.status(500).json("No items found");
-            return;
-        }
+         if (!menuItems) { //this means items were not found
+             res.status(500).json("No items found");
+             return;
+         }
 
-        if (rests.length == 0) { //no preferences provided, so all items work
-            res.status(200).json(menuItems);
-            return;
-        }
+         if (rests.length == 0) { //no preferences provided, so all items work
+             res.status(200).json(menuItems);
+             return;
+         }
 
-        let restsItems = [];
+         let restsItems = [];
 
-        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+         menuItems.forEach((item) => { //for each item we check if it matches all preferences
 
-            let allergens = item.allergens;
-            let skipRests = false;
+             let allergens = item.allergens;
+             let skipRests = false;
 
-            if (allergens == null || allergens.length == 0) skipRests = true;
+             if (allergens == null || allergens.length == 0) skipRests = true;
 
-            allergens.forEach((allergen) => {
-                if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
-                    skipRests = true;
-                }
-            });
-            if (!skipRests && item.dateServed.getTime() === today.getTime()) restsItems.push(item); //if we found that the item aligned with req prefs
-        });
-        res.status(200).json(restsItems);
-    } catch (error) {
-        res.status(500).json(error);
-        console.log(error);
-    }
+             allergens.forEach((allergen) => {
+                 if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
+                     skipRests = true;
+                 }
+             });
+             if (!skipRests && item.dateServed.getTime() === today.getTime()) restsItems.push(item); //if we found that the item aligned with req prefs
+         });
+         res.status(200).json(restsItems);
+     } catch (error) {
+         res.status(500).json(error);
+         console.log(error);
+     }
 
-});
-
-//this gets all items regardless of dining court given the prefs and rests
+ });
+ 
+// this gets all items from today regardless of dining court given the prefs and rests
 router.post("/prefsAndRests", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
@@ -322,7 +317,9 @@ router.post("/prefsAndRests", async (req, res) => {
 
         const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
         const prefs = req.body.preferences; //for example could be - "Vegan"
-        const menuItems = await MenuItem.find({}); //all menu items
+        const menuItems = await MenuItem.find({
+            dateServed: today, 
+        });
 
         if (!menuItems) { //this means items were not found
             res.status(500).json("No items found");
@@ -370,7 +367,7 @@ router.post("/prefsAndRests", async (req, res) => {
                     }
 
                 });
-                if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
+                if (!skipPrefs) matchingItems.push(item); //this item matches both prefs & rests
             }
         });
         res.status(200).json(matchingItems);
@@ -405,9 +402,20 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
 
         const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
         const prefs = req.body.preferences; //for example could be - "Vegan"
-        const menuItems = await MenuItem.find({}); //all menu items
 
-        if (!menuItems) { //this means items were not found
+        // get all menu items
+        const menuItems = await MenuItem.find({
+            dateServed: today, 
+            courtData: {
+                $elemMatch: {
+                    $elemMatch: {
+                        $in: [req.params.diningCourt]
+                    }
+                }
+            }
+        });
+
+        if (!menuItems) { // this means items were not found
             res.status(500).json("No items found");
             return;
         }
@@ -428,9 +436,10 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
                 }
             });
         });
+        
 
         if (rests.length == 0 && prefs.length == 0) { //no prefs or rests provided, so all items work
-            res.status(200).json(courtsItems);
+            res.status(200).json(menuItems);
             return;
         }
 
@@ -438,7 +447,9 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
 
         let matchingItems = [];
 
-        courtsItems.forEach((item) => { //for each item we check if it matches all preferences
+        //courtsItems.forEach((item) => { //for each item we check if it matches all preferences
+        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+
             let allergens = item.allergens;
             let skipRests = false;
             let skipPrefs = false;
@@ -468,7 +479,7 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
 
                     }
                 });
-                if (!skipPrefs && item.dateServed.getTime() === today.getTime()) matchingItems.push(item); //this item matches both prefs & rests
+                if (!skipPrefs) matchingItems.push(item); // this item matches both prefs & rests
             }
         });
         res.status(200).json(matchingItems);
@@ -484,28 +495,18 @@ router.get("/:diningCourt", async (req, res) => {
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 
     try {
-        const menuItems = await MenuItem.find({});
+        const menuItems = await MenuItem.find({
+            dateServed: today,
+            courtData: {
+                $elemMatch: { $elemMatch: { $in: [req.params.diningCourt] } }
+            }
+        });
 
         if (!menuItems) { //this means items were not found
             res.status(500).json("No items found");
             return;
         }
-
-        let courtsItems = [];
-        menuItems.forEach((item) => {
-            let courtsArray = item.courtData;
-            let skip = false;
-
-            if (courtsArray == null) return;
-
-            courtsArray.forEach((court) => {
-                if (!skip && court.includes(req.params.diningCourt) && item.dateServed.getTime() === today.getTime()) {
-                    courtsItems.push(item);
-                    skip = true;
-                }
-            });
-        });
-        res.status(200).json(courtsItems);
+        res.status(200).json(menuItems);
     } catch (error) { console.log(error); }
 });
 
@@ -516,29 +517,42 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
     try {
         const meal = req.params.meal.replace("-", " ")
-        const menuItems = await(MenuItem.find({}))
+        const menuItems = await (MenuItem.find({
+            $and: [{
+                dateServed: today,
+                courtData: {
+                    $elemMatch: { $elemMatch: { $in: [req.params.diningCourt] } }
+                }
+            },
+            {
+                dateServed: today,
+                courtData: {
+                    $elemMatch: { $elemMatch: { $in: [req.params.meal] } }
+                }
+            }]
+        }))
         if (!menuItems) { //this means items were not found
             res.status(500).json("No items found");
             return;
         }
 
-        let matches = [];
-        menuItems.forEach((item) => {
-            let courtData = item.courtData;
-            let visited = false;
+        // let matches = [];
+        // menuItems.forEach((item) => {
+        //     let courtData = item.courtData;
+        //     let visited = false;
 
-            if (courtData === null) return;
+        //     if (courtData === null) return;
 
-            //iterate through court data array and find items that match parameters
-            courtData.forEach((court) => {
-                if (!visited && court.includes(req.params.diningCourt) && court.includes(meal) && item.dateServed.getTime() === today.getTime()) {
-                    matches.push(item);
-                    visited = true;
-                }
-            });
-        });
+        //     //iterate through court data array and find items that match parameters
+        //     courtData.forEach((court) => {
+        //         if (!visited && court.includes(req.params.diningCourt) && court.includes(meal) && item.dateServed.getTime() === today.getTime()) {
+        //             matches.push(item);
+        //             visited = true;
+        //         }
+        //     });
+        // });
         console.log("Successfully retrieved " + req.params.diningCourt + "'s " + req.params.meal + " menu")
-        res.status(200).json(matches);
+        res.status(200).json(menuItems);
     } catch (error) { console.log(error); }
 });
 
@@ -562,7 +576,7 @@ router.get("/courts/:diningCourt", async (req,res) => {
 })
 
 // this endpoint returns all menu items of the provided dining court that aligns 
-// with a user's dietary preferences
+// with a user's dietary preferences and restrictions
 router.get("/prefs/:diningCourt/:username", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
@@ -597,14 +611,29 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
         else {
             restrictions = restResponse.restrictions;
         }
+        //old method
         const menuItems = await MenuItem.find();
-        if (!menuItems || menuItems.length == 0) { //this means items were not found
-            res.status(500).json("No items found");
+
+        /* young's method query menu items */
+        // const menuItems = await MenuItem.find({
+        //     dateServed: today,
+        //     courtData: {
+        //         $elemMatch: {
+        //             $elemMatch: {
+        //                 $in: [req.params.diningCourt]
+        //             }
+        //         }
+        //     }
+        // });
+
+        if (!menuItems || menuItems.length == 0) { // this means items were not found
+            res.status(200).json([]); // empty
             return;
         }
         let courtsItems = [];
         menuItems.forEach((item) => {
             let courtsArray = item.courtData;
+
             let skip = false;
             if (courtsArray == null) return;
             courtsArray.forEach((court) => {
@@ -641,9 +670,47 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
                     }
                 }
             });
+
+
+            if (courtsArray == null) return;
+
+            allergens = item.allergens;
+            let matchesPrefs = true;
+
+            /* if doesn't match all restrictions then continue */
+            if (restrictions.length > 0) {
+                if (allergens.length === 0) { /* edge case for when item has no allergen info */
+                    matchesPrefs = false;
+                }
+                for (const allergen of allergens) {
+                    if (restrictions.includes(allergen.Name) && allergen.Value === true) {
+                        matchesPrefs = false;
+                        break;
+                    }
+                }
+            }
+
+            /* if doesn't match all preferences then continue */
+            if (preferences.length > 0) {
+                if (allergens.length === 0) { /* edge case for when item has no allergen info */
+                    matchesPrefs = false;
+                }
+                for (const allergen of allergens) {
+                    if (preferences.includes(allergen.Name) && allergen.Value === false) {
+                        matchesPrefs = false;
+                        break;
+                    }
+                }
+            }
+            if (matchesPrefs) {
+                courtsItems.push(item);
+            }
         });
         res.status(200).json(courtsItems);
-    } catch (error) { console.log(error); }
+    //} catch (error) { console.log(error); }
+    } catch (error) { 
+        console.log(error); 
+    }
 });
 
 /*
@@ -659,18 +726,23 @@ Returns this object:
 }
 */
 router.get("/item/:menuItemID", async (req, res) => {
+
     try {
         const menuItemID = req.params.menuItemID;
         const item = await MenuItem.findOne({
             ID: menuItemID
         });
+
         if (item == null) {
             res.status(500).json("No item found");
             return;
         }
         res.status(200).json(item);
         return;
+    //} catch (error) {
+
     } catch (error) {
+
         res.status(500).json("Error: " + error);
         console.log("Error: " + error);
     }

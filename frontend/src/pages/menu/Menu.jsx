@@ -289,7 +289,6 @@ const Menu = () => {
     function listItem(item) { //display a menu item
         const name = item.name;
         const id = item.ID
-
         return (
             <Link to={`/foodInfo/${id}`} className="link">
                 <ListItem component="div" disablePadding button={true}>
@@ -299,6 +298,18 @@ const Menu = () => {
         );
     }
 
+    // prototype for displaying a default message for if there is no response for a meal
+    // function displayMenu(menu) {
+    //     if(!menu) {
+    //         return (
+    //             <ListItem component="div" disablePadding button={true}>
+    //                 <span className="header">{`${location}`} is not serving {`${meal}`}</span>
+    //             </ListItem>
+    //         )
+    //     } else {
+    //         menu.map((item) => listItem(item))
+    //     }
+    // }
     return (
         <div className="menu">
             <Navbar />
