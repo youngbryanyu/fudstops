@@ -98,37 +98,71 @@ const Menu = () => {
     const handleMilk = () => setMilk(!milk);
     const handlePeanuts = () => setPeanuts(!peanuts);
 
-    //states for number, email, and loc
+    // states for number, email, and loc
     const [number, setNumber] = useState("");
     const [email, setEmail] = useState("");
     const [loc, setLoc] = useState("");
+
+    // dining court names
+    const WINDSOR = "Windsor";
+    const WILEY = "Wiley";
+    const FORD = "Ford";
+    const EARHART = "Earhart";
+    const HILLENBRAND = "Hillenbrand";
+
+    const WINDSOR_ADDR = "https://www.google.com/maps/place/Windsor+Dining+Court/@40.4270199,-86.9227636,17z/data=!3m1!4b1!4m5!3m4!1s0x8812e2b5c166c8cb:0xc6b89b5c96b567c4!8m2!3d40.4270158!4d-86.9205696";
+    const WILEY_ADDR = "https://www.google.com/maps/place/Wiley+Dining+Court,+500+S+Martin+Jischke+Dr,+West+Lafayette,+IN+47906/@40.4270199,-86.9227636,17z/data=!4m5!3m4!1s0x8812e2b5a74ea24f:0x73a56c71f42b5191!8m2!3d40.4285229!4d-86.9207974";
+    const FORD_ADDR = "https://www.google.com/maps/place/Ford+Dining+Court/@40.432113,-86.9217514,17z/data=!3m1!4b1!4m5!3m4!1s0x8812fd4b26db4177:0x2f3f9ae6b45d3924!8m2!3d40.4321076!4d-86.9193754";
+    const EARHART_ADDR = "https://www.google.com/maps/place/Earhart+Dining+Court/@40.432113,-86.9217514,17z/data=!4m5!3m4!1s0x8812fddb980c7891:0xbe31985e92758c5a!8m2!3d40.4256049!4d-86.9251085";
+    const HILLENBRAND_ADDR = "https://www.google.com/maps/place/Hillenbrand+Dining+Court/@40.4265725,-86.9290621,17z/data=!3m1!4b1!4m5!3m4!1s0x8812e2cbef5b238b:0xf6c8203c74b1aa90!8m2!3d40.4270003!4d-86.9266448";
+
+    /* handle clicking on address of dining court --> redirect to external link*/
+    const handleClickLocation = () => {
+        if (location === WINDSOR) {
+            window.open(WINDSOR_ADDR, '_blank');
+        }
+        if (location === WILEY) {
+            window.open(WILEY_ADDR, '_blank');
+        }
+        if (location == FORD) {
+            window.open(FORD_ADDR, '_blank');
+        }
+        if (location == EARHART) {
+            window.open(EARHART_ADDR, '_blank');
+        }
+        if (location == HILLENBRAND) {
+            window.open(HILLENBRAND_ADDR, '_blank');
+        }
+    }
+
+    /* set correct dining court info when location changes */
     useEffect(() => {
-        if (location == "Windsor") {
+        if (location === WINDSOR) {
             setNumber("(765) 496-3905")
             setEmail("kbinge@purdue.edu")
             setLoc("205 North Russell Street West Lafayette, IN 47906")
         }
-        if (location == "Wiley") {
+        if (location === WILEY) {
             setNumber("(765) 494-2264")
             setEmail("cavanare@purdue.edu")
             setLoc("498 S Martin Jischke Drive West Lafayette, IN 47906")
         }
-        if (location == "Ford") {
+        if (location == FORD) {
             setNumber("(765) 494-2482")
             setEmail("ahallmen@purdue.edu")
             setLoc("1122 West Stadium Avenue West Lafayette, IN 47906")
         }
-        if (location == "Earhart") {
+        if (location == EARHART) {
             setNumber("(765) 496-6925")
             setEmail("coryb@purdue.edu")
             setLoc("1275 1st Street West Lafayette, IN 47906")
         }
-        if (location == "Hillenbrand") {
+        if (location == HILLENBRAND) {
             setNumber("(765) 496-0461")
             setEmail("nmputubw@purdue.edu")
             setLoc("1301 3rd Street West Lafayette, IN 47906")
         }
-    });
+    }, [location]);
 
     /* sorting */
     const handleSortClick = () => {
@@ -237,6 +271,7 @@ const Menu = () => {
             try {
                 const response = await axios.get(`/menuInfo/prefs/${location}/${username}`);
                 const courtsItems = response.data;
+                console.log("courts items is")
                 setMatchingItems(courtsItems);
             } catch (error) { console.log(error) };
         };
@@ -415,7 +450,7 @@ const Menu = () => {
             <span className="contactInfo">
                     <span className="number"> <Phone className="icon" />  {number} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
                     <span className="email"> <Mail className="icon" /> {email} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                    <span className="location"> <NearMe className="icon" /> {loc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                    <span className="location" onClick={handleClickLocation}> <NearMe className="icon" /> {loc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
             </span>
         </div>
         

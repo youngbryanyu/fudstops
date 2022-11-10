@@ -153,6 +153,8 @@ const Home = () => {
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
                         console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
+                    } else {
+                        console.log(diningCourt + " has no items match prefs/rests");
                     }
                 }
 
@@ -181,7 +183,6 @@ const Home = () => {
     * Load dining courts items on page load and alters anytime the location changes
     */
     useEffect(() => {
-
         const getAllDiningCourts = async () => {
             try {
                 setAllItems(DINING_COURTS);
@@ -201,6 +202,8 @@ const Home = () => {
                     if (courtsItems.length > 0) { // if more than 0 dining items match from the dining court, push it to the dining courts list
                         matchingCourts.push(diningCourt);
                         console.log("Items from " + diningCourt + " that match prefs/rests is " + courtsItems.length);
+                    } else {
+                        console.log(diningCourt + " has no match")
                     }
                 }
                 setMatchingItems(matchingCourts);
@@ -209,8 +212,9 @@ const Home = () => {
             };
         };
 
-        getAllDiningCourts();
+        
         getItemsMatchingUser();
+        getAllDiningCourts(); // get all dining courts after b/c we want to show all dining courts
 
         // eslint-disable-next-line
     }, [location]);

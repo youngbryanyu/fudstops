@@ -1,16 +1,22 @@
 // navigation bar at top of page
-import { ArrowDropDown, Notifications, Search } from "@material-ui/icons";
-import { useState } from "react";
+import { ArrowDropDown } from "@material-ui/icons";
+import { useState, useEffect } from "react";
 import "./navbar.scss";
 import logo from "../fudstops_white_logo.png"
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { logout } from "../../authContext/apiCalls";
 import { AuthContext } from "../../authContext/AuthContext";
+import axios from 'axios';
+import React from "react";
+import defaultPfp from "../default_pfp.png";
+import { useRef } from "react";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const { dispatch } = useContext(AuthContext); // get auth context
+    const [data, setData] = React.useState([]);//update data with current data
+
     const navigate = useNavigate();
 
     const handleLogout = (e) => {
@@ -23,6 +29,36 @@ const Navbar = () => {
         setIsScrolled(window.pageYOffset === 0 ? false : true);
         return () => (window.onscroll = null);
     };
+
+
+    const { user } = useContext(AuthContext); // get user from auth context
+
+    const getCall = async () => {
+        try {
+            const response = await axios.get(`/image/${user.username}`);
+            const obj = response.data;
+            setData(obj);
+        } catch (error) { console.log(error); }
+    }
+
+    // call to display your new profile picture when it changes or on first render
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current === true) {
+            getCall(); // instantly get PFP on first render
+            isFirstRender.current = false;
+            return;
+        }
+
+        setTimeout(() => {
+            getCall(); // rerender every second to check for PFP
+        }, 1000);
+    }, [data]);
+
+    //mainidea : useEffect does an action on page load (or when items in the provided array change)
+    //so well use effect to do the getCall on page load and then set the data to the result of that call
+    //then display the data in the profile icon once call is done
+    //also make sure the rendering is smaller because it prolly be large
 
     return (
         <div className={isScrolled ? "navbar scrolled" : "navbar"}>
@@ -68,12 +104,26 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="right">
-                    <Search className="icon" />
-                    <Notifications className="icon" />
-                    <img
-                        src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                        alt=""
-                    />
+                    {/* <Search className="icon" /> */}
+                    {/* <Notifications className="icon" /> */}
+                    {
+                        data && data.length != 0 ? (
+                            <>
+                                <div>
+                                    {data.map((singleData) => {
+                                        const base64String = btoa(new Uint8Array(singleData.img.data.data).reduce(function (data, byte) {
+                                            return data + String.fromCharCode(byte);
+                                        }, ''));
+                                        return <img src={`data:image/png;base64,${base64String}`} width="300" />
+                                    })}
+                                </div>
+                            </>
+                        ) : (
+                            <div>
+                                <img src={defaultPfp} className="image" />
+                            </div>
+                        )
+                    }
                     <div className="profile">
                         <ArrowDropDown className="icon" />
                         <div className="options">

@@ -1,4 +1,4 @@
-// Javascript for page displaying a user's favorite menu items
+//personal info
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
 import "./personalInfo.scss";
@@ -6,26 +6,42 @@ import axios from 'axios';
 import { AuthContext } from "../../authContext/AuthContext";
 import { useContext } from "react";
 import { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import {
+    isValidEmailFormat, isValidPhoneFormat, isValidEmailOrPhoneFormat, isValidUsernameFormat,
+    isValidPasswordFormat, stripNonDigits, isEmptyPhoneOrEmail,
+    MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, EMPTY_EMAIL_STRING, EMPTY_PHONE_STRING
+} from "../../utils/regexAndStrings";
 
+const EXISTING_CREDENTIALS_ERROR = "Email, phone number, or username already taken.";
+const INVALID_EMAIL_OR_PHONE_ERROR = "Invalid email or phone number format.";
+const INVALID_USERNAME_ERROR = "Invalid username. Username cannot contain spaces and minimum length must be at least ";
+const INVALID_PASSWORD_ERROR = "Invalid password. The length must be at least ";
+const SUCCESS_MESSAGE = "Successfully updated your personal information!";
 
+// TODO: add password editing feature
+// TODO: add validation for modifying user information (like in registration)
+// TODO: handle enters
 const PersonalInfo = () => {
     const { user } = useContext(AuthContext); // get user from auth context
     const url = 'users/find/' + user._id; //get the user id field from api
     const putUrl = 'users/' + user._id; //this is the url that is needed in order to make a put request
     const accessTok = user.accessToken;
-    const auth = `Bearer ${accessTok}` //full authtoken
-    //console.log(accessTok);
-    //  console.log(user._id);
-    //  console.log(user);
-    //console.log(putUrl);
+    const auth = `Bearer ${accessTok}`; //full authtoken
 
-    const [number, setNumber] = useState('')
-    const [email, setEmail] = useState('')
-    const [username, setUsername] = useState('')
-    const [picture, setPicture] = useState('')
+    const RED = "red"; // message colors
+    const WHITE = "white";
 
-    
-    //get
+    const [number, setNumber] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [message, setMessage] = useState(EXISTING_CREDENTIALS_ERROR);
+    const [error, setError] = useState(false);
+    const [successful, setSuccessful] = useState(false);
+    const [messageColor, setMessageColor] = useState(RED);
+
+    /* retrieves the latest user info */
     const getUserInfo = () => {
         axios.get(url) //put the entire url including the user
             .then(res => {
@@ -33,23 +49,81 @@ const PersonalInfo = () => {
                 setNumber(res.data.phone)
                 setEmail(res.data.email)
                 setUsername(res.data.username)
-                setPicture(res.data.profilePic)
             }).catch(err => {
                 console.log(err)
             })
-    }
-   
-    // const getUserInfo = async () => {
-    //     try {
-    //        const res =  await axios.get(url);
-    //         console.log(res);
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
+    };
+    /* get user info on first render */
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current === true) {
+            getUserInfo();
+            isFirstRender.current = false;
+        }
+    });
 
-    //update username
-    const updateUserName = async () => {
+    /**
+    * Have success message  disappear after 5 seconds
+    */
+    useEffect(() => {
+        if (successful) {
+            setTimeout(() => {
+                setSuccessful(false);
+            }, 5000);
+        }
+    }, [successful]);
+
+    /* update username using enter/return key */
+    const handleUpdateUsernameEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // reset all error messages at start of event
+            setError(false);
+
+            /* check valid username */
+            if (!isValidUsernameFormat(newUsername)) {
+                setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
+                setMessageColor(RED);
+                setError(true);
+                return;
+            }
+
+            try {
+                await axios.put(putUrl, {
+                    username: newUsername,
+                }, {
+                    headers: {
+                        token:
+                            auth
+                    }
+                });
+                setMessage(SUCCESS_MESSAGE);
+                setMessageColor(WHITE);
+                setSuccessful(true);
+            } catch (err) {
+                setMessage(EXISTING_CREDENTIALS_ERROR);
+                setMessageColor(RED);
+                setError(true);
+                console.log(err);
+            }
+            getUserInfo();
+        }
+    }
+
+    // update username
+    const updateUserName = async (e) => {
+        e.preventDefault();
+        // reset all error messages at start of event
+        setError(false);
+
+        /* check valid username */
+        if (!isValidUsernameFormat(newUsername)) {
+            setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
+            setMessageColor(RED);
+            setError(true);
+            return;
+        }
+
         try {
             await axios.put(putUrl, {
                 username: newUsername,
@@ -59,29 +133,130 @@ const PersonalInfo = () => {
                         auth
                 }
             });
+            setMessage(SUCCESS_MESSAGE);
+            setMessageColor(WHITE);
+            setSuccessful(true);
         } catch (err) {
+            setMessage(EXISTING_CREDENTIALS_ERROR);
+            setMessageColor(RED);
+            setError(true);
             console.log(err);
         }
+        getUserInfo();
     };
 
-    //update username
-    const updateEmail = async () => {
+    /* update email using enter/return key */
+    const handleUpdateEmailEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // reset all error messages at start of event
+            setError(false);
+
+            /* check valid email */
+            if (!isValidEmailFormat(newEmail)) {
+                setMessage(INVALID_EMAIL_OR_PHONE_ERROR);
+                setMessageColor(RED);
+                setError(true);
+                return;
+            }
+
+            try {
+                await axios.put(putUrl, {
+                    email: newEmail,
+                }, {
+                    headers: {
+                        token:
+                            auth
+                    }
+                });
+                setMessage(SUCCESS_MESSAGE);
+                setMessageColor(WHITE);
+                setSuccessful(true);
+            } catch (err) {
+                console.log(err);
+            }
+            getUserInfo();
+        }
+    }
+
+    // update email
+    const updateEmail = async (e) => {
+        e.preventDefault();
+        // reset all error messages at start of event
+        setError(false);
+
+        /* check valid email */
+        if (!isValidEmailFormat(newEmail)) {
+            setMessage(INVALID_EMAIL_OR_PHONE_ERROR);
+            setMessageColor(RED);
+            setError(true);
+            return;
+        }
+
         try {
             await axios.put(putUrl, {
                 email: newEmail,
             }, {
                 headers: {
                     token:
-                       auth
+                        auth
                 }
             });
+            setMessage(SUCCESS_MESSAGE);
+            setMessageColor(WHITE);
+            setSuccessful(true);
         } catch (err) {
             console.log(err);
         }
+        getUserInfo();
     };
 
-    //update username
-    const updatePhone = async () => {
+    /* update phone using enter/return key */
+    const handleUpdatePhoneEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // reset all error messages at start of event
+            setError(false);
+
+            /* check valid username */
+            if (!isValidPhoneFormat(newNumber)) {
+                setMessage(INVALID_EMAIL_OR_PHONE_ERROR);
+                setMessageColor(RED);
+                setError(true);
+                return;
+            }
+            try {
+                await axios.put(putUrl, {
+                    phone: newNumber,
+                }, {
+                    headers: {
+                        token:
+                            auth
+                    }
+                });
+                setMessage(SUCCESS_MESSAGE);
+                setMessageColor(WHITE);
+                setSuccessful(true);
+            } catch (err) {
+                console.log(err);
+            }
+            getUserInfo();
+        }
+    }
+
+    // update phone 
+    const updatePhone = async (e) => {
+        e.preventDefault();
+        // reset all error messages at start of event
+        setError(false);
+
+        /* check valid username */
+        if (!isValidPhoneFormat(newNumber)) {
+            setMessage(INVALID_EMAIL_OR_PHONE_ERROR);
+            setMessageColor(RED);
+            setError(true);
+            return;
+        }
         try {
             await axios.put(putUrl, {
                 phone: newNumber,
@@ -91,117 +266,179 @@ const PersonalInfo = () => {
                         auth
                 }
             });
+            setMessage(SUCCESS_MESSAGE);
+            setMessageColor(WHITE);
+            setSuccessful(true);
         } catch (err) {
             console.log(err);
         }
+        getUserInfo();
     };
 
-    //update username
-    const updatePic = async () => {
+    /* update phone using enter/return key */
+    const handleUpdatePasswordEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // reset all error messages at start of event
+            setError(false);
+
+            /* check valid username */
+            if (!isValidPasswordFormat(newPassword)) {
+                setMessage(INVALID_PASSWORD_ERROR + MIN_PASSWORD_LENGTH);
+                setMessageColor(RED);
+                setError(true);
+                return;
+            }
+            try {
+                await axios.put(putUrl, {
+                    password: newPassword,
+                }, {
+                    headers: {
+                        token:
+                            auth
+                    }
+                });
+                setMessage(SUCCESS_MESSAGE);
+                setMessageColor(WHITE);
+                setSuccessful(true);
+            } catch (err) {
+                console.log(err);
+            }
+            getUserInfo();
+        }
+    }
+
+    // update password 
+    const updatePassword = async (e) => {
+        e.preventDefault();
+        // reset all error messages at start of event
+        setError(false);
+
+        /* check valid username */
+        if (!isValidPasswordFormat(newPassword)) {
+            setMessage(INVALID_PASSWORD_ERROR + MIN_PASSWORD_LENGTH);
+            setMessageColor(RED);
+            setError(true);
+            return;
+        }
         try {
             await axios.put(putUrl, {
-                profilePic: newPicture,
+                password: newPassword,
             }, {
                 headers: {
                     token:
                         auth
                 }
             });
+            setMessage(SUCCESS_MESSAGE);
+            setMessageColor(WHITE);
+            setSuccessful(true);
         } catch (err) {
             console.log(err);
         }
+        getUserInfo();
     };
 
-    const [newUsername, setNewUsername] = useState('')
-    const [newEmail, setNewEmail] = useState('')
-    const [newNumber, setNewNumber] = useState('')
-    const [newPicture, setNewPicture] = useState('')
-
+    const [newUsername, setNewUsername] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newNumber, setNewNumber] = useState('');
+    const [newPassword, setNewPassword] = useState('');
 
     return (
         <div className="personalInfo">
-            {getUserInfo()}
             <Navbar />
-            <div className="left">
-                <div className = "formName">
-                    <form onSubmit={()=> updateUserName()}>
-                       <label>Change username:
-                         <input 
-                            type="text" 
-                            value={newUsername}
-                            onChange={(e) => setNewUsername(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
 
-                <div className = "formEmail">
-                <form onSubmit={()=> updateEmail()}>
-                       <label>Change email:
-                         <input 
-                            type="text" 
-                            value={newEmail}
-                            onChange={(e) => setNewEmail(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
+            <div className="personalInfoForm">
+                <div className="container">
+                    <form>
+                        <h1>Personal Info</h1>
+                        <button className="infoButton">
+                            {"Phone Number: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(number) ? "N/A" : number
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">
+                            {"Email: "}
+                            <span>
+                                {
+                                    isEmptyPhoneOrEmail(email) ? "N/A" : email
+                                }
+                            </span>
+                        </button>
+                        <button className="infoButton">Username: <span>{username}</span> </button>
 
-                <div className = "formPhone">
-                <form onSubmit={()=> updatePhone()}>
-                       <label>Change number:
-                         <input 
-                            type="text" 
-                            value={newNumber}
-                            onChange={(e) => setNewNumber(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
 
-                <div className = "formPic">
-                <form onSubmit={()=> updatePic()}>
-                       <label>Add/Change/Delete profile picture:
-                         <input 
-                            type="text" 
-                            value={newPicture}
-                            onChange={(e) => setNewPicture(e.target.value)}
-                        />
-                      </label>
-                     <input type="submit" />
-                   </form>
-                </div>
+                        <label>
+                            <div className="infoType"> {"Change username: "}</div>
+                            <input
+                                type="username"
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                                onKeyDown={handleUpdateUsernameEnter}
+                            />
+                            <button onClick={updateUserName} className="formButton">Submit</button>
 
-                <div className="buttons">
-                    {/* <button onClick={updateUserInfo}> Change number </button>
-                    <button onClick={updateUserInfo}> Change email </button>
-                    <button onClick={updateUserInfo}> Change username </button>
-                    <button onClick={updateUserInfo}> Add picture</button>
-                    <button onClick={updateUserInfo}> Change picture</button>
-                    <button onClick={updateUserInfo}> Delete picture</button> */}
-                </div>
-                <div className="personalDropdown">
-                    <div className="header">
-                        <span>Personal Information</span>
+                        </label>
 
-                    </div>
-                    <div className="personalItems">
-                        <Link to="" className="link">
-                            <span className="highlight">Number: {number} </span>
+                        <label>
+                            <div className="infoType"> {"Change email: "}</div>
+                            <input
+                                type="email"
+                                value={newEmail}
+                                onChange={(e) => setNewEmail(e.target.value)}
+                                className="input"
+                                onKeyDown={handleUpdateEmailEnter}
+                            />
+                            <button onClick={updateEmail} className="formButton">Submit</button>
+                        </label>
+
+                        <label>
+                            <div className="infoType"> {"Change phone number: "}</div>
+                            <input
+                                type="phone"
+                                value={newNumber}
+                                onChange={(e) => setNewNumber(e.target.value)}
+                                className="input"
+                                onKeyDown={handleUpdatePhoneEnter}
+                            />
+                            <button onClick={updatePhone} className="formButton">Submit</button>
+                        </label>
+
+                        <label>
+                            <div className="infoType"> {"Change password: "}</div>
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="input"
+                                onKeyDown={handleUpdatePasswordEnter}
+                            />
+                            <button onClick={updatePassword} className="formButton">Submit</button>
+                        </label>
+
+                        { // error message if user enters invalid email regex or credentials already taken
+                            <div className="errorMessage"
+                                style={{
+                                    visibility: (!error && !successful) && "hidden",
+                                    color: messageColor
+                                }}>
+                                <p >
+                                    {message}
+                                </p>
+                            </div>
+                        }
+
+                        <Link to="/profPic" className="link">
+                            <button className="button2">Edit profile picture </button>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Email: {email} </span>
+
+                        <Link to="/settings" className="link">
+                            <button className="backButton">Back</button>
                         </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Username: {username} </span>
-                        </Link>
-                        <Link to="" className="link">
-                            <span className="highlight">Profile Pic: {picture} </span>
-                        </Link>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

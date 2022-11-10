@@ -16,6 +16,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
+import ProfPic from "./pages/profilePic/ProfilePic";
+import DeleteAccount from "./pages/deleteAccount/deleteAccount";
+// import axios from "axios";
+// import schedule from "node-schedule";
 
 const App = () => {
     const { user } = useContext(AuthContext); // get user from auth context
@@ -28,9 +32,10 @@ const App = () => {
                     user && (
                         <>
                             <Route path="/" element={<Home />} />
+                            <Route path="/deleteAccount" element={<DeleteAccount />} />
                             <Route path="/favorites" element={<Favorites />} />
-                            <Route path="/foodInfo/:menuItemID" element={<FoodInfo />} /> {/* This route will be utilized later to lead user to the specific menu item page for a selected menuItemId*/}
                             <Route path="/foodInfo" element={<FoodInfo />} />
+                            <Route path="/foodInfo/:menuItemID" element={<FoodInfo />} /> {/* This route will be utilized later to lead user to the specific menu item page for a selected menuItemId*/}
                             <Route path="/forgotPassword" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/forgotPasswordReset/:id/:token" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
@@ -41,6 +46,7 @@ const App = () => {
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/reportProblem" element={<ReportProblem />} />
+                            <Route path="/profPic" element={<ProfPic />} />
                         </>
                     )
                 }
@@ -48,17 +54,21 @@ const App = () => {
                     !user && (
                         <>
                             <Route path="/" element={<Register />} />
+                            <Route path="/deleteAccount" element={<Register />} />
                             <Route path="/favorites" element={<Register />} />
                             <Route path="/foodInfo" element={<Register />} />
-                            <Route path="/forgotPassword" element={<ForgotPassword />} /> 
-                            <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} /> 
+                            <Route path="/foodInfo/:menuItemID" element={<Register />} />
+                            <Route path="/forgotPassword" element={<ForgotPassword />} />
+                            <Route path="/forgotPasswordReset/:id/:token" element={<ForgotPasswordReset />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
-                            <Route path="/register" element={<Register />} />
                             <Route path="/personalInfo" element={<Register />} />
                             <Route path="/preferences" element={<Register />} />
+                            <Route path="/recommendations" element={<Register />} />
+                            <Route path="/register" element={<Register />} />
                             <Route path="/settings" element={<Register />} />
                             <Route path="/reportProblem" element={<Register />} />
+                            <Route path="/profPic" element={<Register />} />
                         </>
                     )
                 }
@@ -68,3 +78,4 @@ const App = () => {
 };
 
 export default App;
+

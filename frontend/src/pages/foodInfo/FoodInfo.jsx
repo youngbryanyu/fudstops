@@ -3,7 +3,7 @@
 import Navbar from "../../components/navbar/Navbar";
 import "./foodInfo.scss";
 import { useContext, useState, useEffect, useRef } from 'react';
-import { json, Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { IconButton, Tooltip } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
@@ -25,11 +25,11 @@ const FoodInfo = () => {
     const [starClick4, setStarClick4] = useState(false);
     const [starClick5, setStarClick5] = useState(false);
     const [savedClick, setSavedClick] = useState(false);
-    const [score, setScore] = useState(0); //tracks users rating of item
-    const [avg, setAvg] = useState("N/A"); //tracks avg rating
-    const [saved, setSaved] = useState(false); //whether or not item is saved
+    const [score, setScore] = useState(0); // tracks users rating of item
+    const [avg, setAvg] = useState("N/A"); // tracks avg rating
+    // const [saved, setSaved] = useState(false); // whether or not item is saved --> unused 
     const { user } = useContext(AuthContext);
-    let { menuItemID } = useParams(); //this will be undefined if no params
+    let { menuItemID } = useParams(); // this will be undefined if no params
     const [menuItem, setMenuItem] = useState({
         _id: "",
         ID: "",
@@ -42,6 +42,8 @@ const FoodInfo = () => {
         ingredients: "",
         __v: 0
     }); //tracks menu item
+
+    // TODO create
 
     const handleClick0 = () => {
         setStarClick1(false);
@@ -107,10 +109,8 @@ const FoodInfo = () => {
                 let rating = response.data;
 
                 if (rating === "No doc found") { //means no rating for this item
-
-                    //leave all stars blank
+                    // leave all stars blank
                     handleClick0();
-
                 } else { //find rating and call respective function
 
                     rating = response.data.rating;
@@ -167,7 +167,7 @@ const FoodInfo = () => {
                     nutritionFacts: item.nutritionFacts,
                     ingredients: item.ingredients,
                     __v: item.__v,
-                })
+                });
                 console.log(menuItem);
             } catch (error) { console.log(error) };
 
@@ -178,7 +178,7 @@ const FoodInfo = () => {
                 const response = await axios.get(`/saved/${user.username}/${menuItemID}`);
                 const savedStatus = response.data.saved;
                 if (savedStatus != null) {
-                    setSaved(savedStatus);
+                    // setSaved(savedStatus); // unused
                     setSavedClick(savedStatus); //this is a test comment
                 }
             } catch (error) { console.log(error) };
@@ -225,6 +225,7 @@ const FoodInfo = () => {
 
     }, [score]);
 
+    /* Get nutrition info */
     const nutrition = menuItem.nutritionFacts.map((fact) =>
         <ListItem key="{fact.Name}">
             <Typography fontWeight="bold">
@@ -234,9 +235,16 @@ const FoodInfo = () => {
         </ListItem>
     );
 
+    /* Get dietary tag info */
+    const tags1 = menuItem.allergens.map((tag) =>
+        vegTags(tag)
+    );
+    const tags2 = menuItem.allergens.map((tag) =>
+        nonVegTags(tag)
+    );
     function vegTags(tag) {
-        if(tag.Name === "Vegan" || tag.Name === "Vegetarian") {
-            if(tag.Value) {
+        if (tag.Name === "Vegan" || tag.Name === "Vegetarian") {
+            if (tag.Value) {
                 return (
                     <ListItem key="{tag.Name}">
                         Is&nbsp;{tag.Name}
@@ -249,13 +257,13 @@ const FoodInfo = () => {
                     </ListItem>
                 )
             }
-        } 
+        }
     }
     function nonVegTags(tag) {
         if (tag.Name === "Vegan" || tag.Name === "Vegetarian") {
             return
         }
-        if(tag.Value) {
+        if (tag.Value) {
             return (
                 <ListItem key="{tag.Name}">
                     Contains&nbsp;{tag.Name}
@@ -269,12 +277,18 @@ const FoodInfo = () => {
             )
         }
     }
-    const tags1 = menuItem.allergens.map((tag) =>
-        vegTags(tag)
-    );
-    const tags2 = menuItem.allergens.map((tag) =>
-        nonVegTags(tag)
-    );
+
+    /* Get the locations an item is served at today */
+    const locations = menuItem.courtData.map((courtDataItem) =>
+        courtDataInfo(courtDataItem)
+    )
+    function courtDataInfo(courtDataItem) {
+        return (
+            <ListItem key="{courtDataItem}">
+                &nbsp;{courtDataItem[0] + " - " + courtDataItem[1] + " (" + courtDataItem[2] + ")"}
+            </ListItem>
+        )
+    }
 
     /**
      * Update the savedStatus in the database when saved changes, not on first render though.
@@ -308,7 +322,7 @@ const FoodInfo = () => {
     return (
         <div className="foodInfo">
             <Navbar />
-            <Sheet sx={{ //sx provides inline style information for this component
+            <Sheet sx={{ // info for nutrition facts (sx provides inline style information for this component)
                 background: '#0b0b0b',
                 width: .4,
                 maxHeight: 400,
@@ -334,7 +348,8 @@ const FoodInfo = () => {
                     {nutrition}
                 </List>
             </Sheet>
-            <Sheet sx={{
+
+            <Sheet sx={{ // info for tags
                 background: '#0b0b0b',
                 width: .2,
                 maxHeight: 400,
@@ -359,9 +374,36 @@ const FoodInfo = () => {
                     </ListItem>
                     {tags1}
                     {tags2}
-
                 </List>
             </Sheet>
+
+            <Sheet sx={{ // info for locations served at today
+                background: '#0b0b0b',
+                width: .2,
+                maxHeight: 400,
+                position: 'relative',
+                float: 'left',
+                display: 'inline',
+                ml: 6,
+                top: 85,
+                borderRadius: 10,
+                overflow: 'auto',
+            }}>
+                <List>
+                    <ListItem sx={{
+                        background: '#242424',
+                        width: .98,
+                        mx: 'auto',
+                        borderRadius: 8,
+                    }}>
+                        <Typography fontWeight="bold">
+                            Locations Served At Today:
+                        </Typography>
+                    </ListItem>
+                    {locations}
+                </List>
+            </Sheet>
+
             <Box sx={{
                 background: '#0b0b0b',
                 width: 340,

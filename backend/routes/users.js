@@ -1,6 +1,13 @@
 // users.js - API for users (updating, deleting, getting)
 const router = require("express").Router();
 const User = require("../models/User");
+const Image = require("../models/Image");
+const Preference = require("../models/Preference");
+const Restriction = require("../models/Restriction");
+const Problem = require("../models/Problem");
+const Rating = require("../models/Rating");
+const ResetPasswordToken = require("../models/ResetPasswordToken");
+const Saved = require("../models/Saved");
 const CryptoJS = require("crypto-js");
 const verify = require("../verifyToken")
 
@@ -31,11 +38,50 @@ router.put("/:id", verify, async (req, res) => { // ":" is param and "?" is quer
     }
 });
 
-// DELETE - delete user
-router.delete("/:id", verify, async (req, res) => {
+/* DELETE - delete user 
+- Need to delete all user information from other tables as well
+*/
+router.delete("/:id/:username", verify, async (req, res) => {
     if (req.user.id === req.params.id || req.user.isAdmin) { // if valid user or user is admin
         try {
+            /* delete user */
             await User.findByIdAndDelete(req.params.id);
+
+            /* delete user's profile picture */
+            await Image.deleteMany({
+                username: req.params.username
+            });
+
+            /* delete user's preferences */
+            await Preference.deleteMany({
+                username: req.params.username
+            });
+
+            /* delete user's restrictions */
+            await Restriction.deleteMany({
+                username: req.params.username
+            });
+
+            /* Delete user's problems */
+            await Problem.deleteMany({
+                username: req.params.username
+            });
+
+            /* Delete user's ratings */
+            await Rating.deleteMany({
+                username: req.params.username
+            });
+
+            /* Delete user's reset password tokens */
+            await ResetPasswordToken.deleteMany({
+                username: req.params.id
+            });
+
+            /* Delete user's saved items */
+            await Saved.deleteMany({
+                username: req.params.username
+            });
+
             res.status(200).json("User has been deleted");
         } catch (err) {
             res.status(500).json(err);

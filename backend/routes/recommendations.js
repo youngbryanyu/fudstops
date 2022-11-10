@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Saved = require("../models/Saved");
 const MenuItem = require("../models/MenuItem");
 
-//get all recommended items based on user's saved items
+// get all recommended items based on user's saved items
 router.get("/saved/:username", async (req, res) => {
 
     try {
@@ -15,18 +15,11 @@ router.get("/saved/:username", async (req, res) => {
 
         if (!savedItems || savedItems.length == 0) { //this means no saved items were found
 
-            //we will return all menu items, with a boolean to indicate that the mesage
-            //"save more items to have better recommendations"
+            // we will return all menu items, with a boolean to indicate that the mesage
+            // "save more items to have better recommendations"
 
-            const allItems = await MenuItem.find({});
-            let todaysItems = [];
-
-            allItems.forEach((item) => {
-
-                if (item.dateServed.getTime() === today.getTime()) {
-                    todaysItems.push(item);
-                }
-
+            const todaysItems = await MenuItem.find({
+                dateServed: today,
             });
 
             const toReturn = {
@@ -77,7 +70,7 @@ router.get("/saved/:username", async (req, res) => {
 
             const menuItem = await MenuItem.findOne({ ID: item.menuItemID }); //the itemObj of this saved item
             const itemsAllergens = menuItem.allergens;
-            //now go through its allergens and add true attributes to respective elements in array
+            // now go through its allergens and add true attributes to respective elements in array
 
             itemsAllergens.forEach((allergen) => {
 
@@ -128,15 +121,15 @@ router.get("/saved/:username", async (req, res) => {
 
                 }
 
-            }); //after this loop, the allergens of this item have been dealt with
+            }); // after this loop, the allergens of this item have been dealt with
 
-            if (index == savedItems.length - 1) { //if we are on the last element in the array
+            if (index == savedItems.length - 1) { // if we are on the last element in the array
 
                 let weights = [vegetarianWeight, veganWeight, coconutWeight, eggsWeight, fishWeight, glutenWeight,
                     sesameWeight, shellfishWeight, soyWeight, treeNutsWeight, wheatWeight, milkWeight, peanutsWeight];
 
-                //now we just need select the attributes that have a weight above 3
-                //and if no weights above 3, return all items
+                // now we just need select the attributes that have a weight above 3
+                // and if no weights above 3, return all items
 
                 let finalPrefs = [];
                 let finalRests = [];
@@ -196,15 +189,8 @@ router.get("/saved/:username", async (req, res) => {
                     //we will return all menu items, with a boolean to indicate that the mesage
                     //"save more items to have better recommendations"
 
-                    const allItems = await MenuItem.find({});
-                    let todaysItems = [];
-
-                    allItems.forEach((item) => {
-
-                        if (item.dateServed.getTime() === today.getTime()) {
-                            todaysItems.push(item);
-                        }
-
+                    const todaysItems = await MenuItem.find({
+                        dateServed: today,
                     });
 
                     const toReturn = {
@@ -244,5 +230,5 @@ router.get("/saved/:username", async (req, res) => {
     }
 
 });
- 
+
 module.exports = router;
