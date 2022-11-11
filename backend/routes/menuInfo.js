@@ -22,11 +22,11 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
-        const json = await response.json(); //outer information stored in outer json
+        const json = await response.json(); // outer information stored in outer json
         //debug: console.log(outerJson);
         //iterate through locations listed in dining url
         //structure: court -> day -> meal
-        for(var court of json.Location){
+        for (var court of json.Location){
             //if not a court in DINING_COURTS, skip
             if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
                 continue
@@ -61,16 +61,16 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         end: mealend,
                     }
                     mealInfo.push(curmealinfo)
-                    //type contains final meal type
-                    //mealstart contains this meal's start time, mealend contains end time
+                    // type contains final meal type
+                    // mealstart contains this meal's start time, mealend contains end time
                 }
             }
-            //create object and push
+            // create object and push
 
-            //name contains court name
-            //formalName contains court's formal name
-            //mealInfo contains objects denoting meals start/end times
-            //googleID contains google place API key
+            // name contains court name
+            // formalName contains court's formal name
+            // mealInfo contains objects denoting meals start/end times
+            // googleID contains google place API key
             try {
                 const diningCourtObj = await DiningCourt.findOne({
                     name: name
@@ -103,8 +103,14 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
     } catch (err) {
         res.status(500).json(err);
         console.log(err);
+        return;
     }
     
+
+    var d = new Date();
+    var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    var todayDate = new Date(today);
+
     // Parse dining items for each dining court
     for (const diningCourt of DINING_COURTS) {
         const outerUrl = PURDUE_DINING_API_URL_DINING_COURTS + diningCourt + "/" + today;
@@ -128,15 +134,30 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         if (!response.ok) {
                             throw new Error(`Error! status: ${response.status}`)
                         }
+
                         const json = await response.json();
+
                         const courtdata = [diningCourt, stationname, type]
+
                         try {
                             const menuItem = await MenuItem.findOne({
                                 ID: json.ID
                             });
-                            //item.dateServed.getDate() === today.getDate()
-                            if (menuItem && menuItem.dateServed.getDate() === d.getDate()) { //if menu item exists and was served today, update it with possibly new information 
-                                await MenuItem.findByIdAndUpdate(menuItem._id, { $addToSet: { courtData: courtdata } }, {
+
+                            /* if menu item date is different, reset court data and update info */
+                            if (menuItem && menuItem.dateServed.getDate != todayDate.getDate) {
+                                await MenuItem.findByIdAndUpdate(menuItem._id, {
+                                    ID: json.ID,
+                                    name: json.Name,
+                                    courtData: [courtdata],
+                                    dateServed: today,
+                                    isVegetarian: json.IsVegetarian,
+                                    allergens: json.Allergens,
+                                    nutritionFacts: json.Nutrition,
+                                    ingredients: json.Ingredients
+                                })
+                            } else if (menuItem) { // if menu item already exists, update it with possibly new information
+                                await MenuItem.findByIdAndUpdate(menuItem._id, { $addToSet: { courtData: courtdata } }, { /* use addToSet to prevent duplicates */
                                     ID: json.ID,
                                     name: json.Name,
                                     dateServed: today,
@@ -146,19 +167,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     ingredients: json.Ingredients
                                 });
                                 console.log("Updated menu item - " + diningCourt + ": " + json.Name);
-                            } else if(menuItem) { //if menu item exists and is for a different day, replace courtdata & update info
-                                await MenuItem.findByIdAndUpdate(menuItem._id, {
-                                    ID: json.ID,
-                                    name: json.Name,
-                                    dateServed: today,
-                                    courtData: courtdata,
-                                    isVegetarian: json.IsVegetarian,
-                                    allergens: json.Allergens,
-                                    nutritionFacts: json.Nutrition,
-                                    ingredients: json.Ingredients
-                                });
-                                console.log("Updated menu item (reset courtdata) - " + diningCourt + ": " + json.Name);
-                            } else {// create new MenuItem for current menu item
+                            } else { // create new MenuItem for current menu item
                                 const newMenuItem = new MenuItem({
                                     ID: json.ID,
                                     name: json.Name,
@@ -181,10 +190,12 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         }
                     }
                 }
+
             }
         } catch (err) {
             res.status(500).json(err);
             console.log(err);
+            return;
         }
     }
     res.status(201).json("Dining/dining courts data was parsed successfully for " + today);
@@ -267,17 +278,13 @@ router.post("/prefsAndRests", async (req, res) => {
 //this endpoint returns all items that align with the requested restrictions and preferences
 //the request body must include the requested restrictions & preferences
 //created the other functions in case both prefs & rests are not needed to be filtered
-
 req url -> http://localhost:8000/api/menuInfo/prefsAndRests
 Example req body below
-
 {
     "preferences": ["Vegan"],
     "restrictions": ["Coconut", "Tree Nuts"]
 }
-
 ^ that call + body will give all items that don't have Coconut or Tree Nuts in it and that are Vegan
-
 */
 router.post("/prefsAndRests/:diningCourt", async (req, res) => {
     var d = new Date();
@@ -540,7 +547,6 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
 
 /*
 Returns a menu item based on the provided item ID
-
 Example Call: http://localhost:8000/api/menuInfo/item/76f9d158-d45d-42e0-8e37-8bd3c2c45986
 Returns this object: 
 {
@@ -578,19 +584,14 @@ router.get("/item/:menuItemID", async (req, res) => {
 module.exports = router;
 
 /*
-
 this endpoint returns all items that align with the requested preferences
 the request body must include the requested preferences
-
 req url -> http://localhost:8000/api/menuInfo/prefs
 Example req body below
-
 {
     "preferences": ["Vegan"]
 }
-
 ^ that call + body will give all items that are Vegan
-
 */
 // router.get("/prefs", async (req, res) => {
 //     var d = new Date();
@@ -639,16 +640,12 @@ Example req body below
 /*
 //this endpoint returns all of today's items that align with the requested restrictions
 //the request body must include the requested restrictions
-
 req url -> http://localhost:8000/api/menuInfo/rests
 Example req body below
-
 {
     "restrictions": ["Coconut", "Tree Nuts"]
 }
-
 ^ that call + body will give all items that don't have Coconut or Tree Nuts in it
-
 */
 // router.get("/rests", async (req, res) => {
 //     var d = new Date();
