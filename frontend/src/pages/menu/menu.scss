@@ -37,16 +37,21 @@
 
 }
 
+.menuTimes {
+    margin-left: 10px;
+}
+
 .moreSpace {
     margin-top: 25px;
 }
-
+.evenMoreSpace {
+    margin-top: 35px;
+}
 .contactInfo {
-    font-weight: bold;
-    transform: translate(0px, 340px);
-    position: absolute;
-
-    .icon {
+   font-weight:bold;
+   transform: translate(0px, 340px);
+   position: absolute;
+   .icon{
         transform: translate(0px, 5px);
     }
 
