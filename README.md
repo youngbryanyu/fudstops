@@ -1,6 +1,6 @@
 # Füdstops: Dining Recommendations for Students
 
-A convenient and centralized spot for students to view menus & dining locations, rate items, save favorites, and recieve personalized food recommendations!
+A convenient and centralized spot for students to view menus & dining locations, rate items, save favorites, and receive personalized food recommendations!
 
 ## Available Scripts
 
