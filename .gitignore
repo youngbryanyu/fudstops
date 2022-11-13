@@ -11,8 +11,9 @@
 # production
 /build
 
-# ignore photo uploads folder
-backend/uploads
+# ignore items in photo uploads folder, but keep .gitkeep file to keep folder from disappearing
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # misc
 .DS_Store
