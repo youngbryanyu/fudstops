@@ -71,7 +71,7 @@ router.get("/saved/:username", async (req, res) => {
             const menuItem = await MenuItem.findOne({ ID: item.menuItemID }); //the itemObj of this saved item
             const itemsAllergens = menuItem.allergens;
             // now go through its allergens and add true attributes to respective elements in array
-
+            if (!itemsAllergens || itemsAllergens.length)
             itemsAllergens.forEach((allergen) => {
 
                 if (allergen.Value == true) {

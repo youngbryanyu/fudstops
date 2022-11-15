@@ -12,6 +12,8 @@ const PURDUE_DINING_API_URL_MENU_ITEMS = "https://api.hfs.purdue.edu/menus/v2/it
 const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2/locations/";
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+const POPULAR_RATING_THRESHOLD = 3; // items >= 3 stars are considered "popular"
+
 // LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
     var d = new Date();
@@ -26,7 +28,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
         //debug: console.log(outerJson);
         //iterate through locations listed in dining url
         //structure: court -> day -> meal
-        for (var court of json.Location){
+        for (var court of json.Location) {
             //if not a court in DINING_COURTS, skip
             if (!(DINING_COURTS.find(courtname => (courtname === court.Name)))) {
                 continue
@@ -105,7 +107,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
         console.log(err);
         return;
     }
-    
+
 
     var d = new Date();
     var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
@@ -154,7 +156,8 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     isVegetarian: json.IsVegetarian,
                                     allergens: json.Allergens,
                                     nutritionFacts: json.Nutrition,
-                                    ingredients: json.Ingredients
+                                    ingredients: json.Ingredients,
+                                    avgRating: json.avgRating
                                 })
                             } else if (menuItem) { // if menu item already exists, update it with possibly new information
                                 await MenuItem.findByIdAndUpdate(menuItem._id, { $addToSet: { courtData: courtdata } }, { /* use addToSet to prevent duplicates */
@@ -164,7 +167,8 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     isVegetarian: json.IsVegetarian,
                                     allergens: json.Allergens,
                                     nutritionFacts: json.Nutrition,
-                                    ingredients: json.Ingredients
+                                    ingredients: json.Ingredients,
+                                    avgRating: json.avgRating
                                 });
                                 console.log("Updated menu item - " + diningCourt + ": " + json.Name);
                             } else { // create new MenuItem for current menu item
@@ -176,7 +180,8 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                                     isVegetarian: json.IsVegetarian,
                                     allergens: json.Allergens,
                                     nutritionFacts: json.Nutrition,
-                                    ingredients: json.Ingredients
+                                    ingredients: json.Ingredients,
+                                    avgRating: 0
                                 });
 
                                 const item = await newMenuItem.save();
@@ -198,12 +203,12 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
             return;
         }
     }
-    res.status(201).json("Dining/dining courts data was parsed successfully for " + today);
-    console.log("Dining/dining courts data was parsed successfully for " + today);
+    res.status(201).json("Dining court data was parsed successfully for " + today);
+    console.log("Dining court data was parsed successfully for " + today);
 });
 
 
- 
+
 // this gets all items from today regardless of dining court given the prefs and rests
 router.post("/prefsAndRests", async (req, res) => {
     var d = new Date();
@@ -214,7 +219,7 @@ router.post("/prefsAndRests", async (req, res) => {
         const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
         const prefs = req.body.preferences; //for example could be - "Vegan"
         const menuItems = await MenuItem.find({
-            dateServed: today, 
+            dateServed: today,
         });
 
         if (!menuItems) { //this means items were not found
@@ -296,7 +301,7 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
 
         // get all menu items
         const menuItems = await MenuItem.find({
-            dateServed: today, 
+            dateServed: today,
             courtData: {
                 $elemMatch: {
                     $elemMatch: {
@@ -361,6 +366,34 @@ router.post("/prefsAndRests/:diningCourt", async (req, res) => {
     }
 });
 
+/* Return top 25 menu items from today sorted by their average rating (rating must be greater than POPULAR_RATING_THRESHOLD) */
+router.get("/popular", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+    try {
+        const menuItems = await MenuItem.find({
+            dateServed: today,
+            avgRating: {
+                $gte: POPULAR_RATING_THRESHOLD
+            }
+        }).sort({ avgRating: -1 }).limit(25);
+
+        if (menuItems.length === 0) {
+            const allMenuItems = await MenuItem.find({
+                dateServed: today,
+            })
+            console.log("No popular menu items found");
+            res.status(500).json([]); /* send all menu items if no menu items found */
+            return;
+        } else {
+            res.status(200).json(menuItems);
+        }
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
+});
+
 // this endpoint returns all menu items of the provided dining court
 router.get("/:diningCourt", async (req, res) => {
     var d = new Date();
@@ -414,7 +447,7 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
 });
 
 // this endpoint returns the specified court's information
-router.get("/courts/:diningCourt", async (req,res) => {
+router.get("/courts/:diningCourt", async (req, res) => {
     try {
         const diningCourt = req.params.diningCourt;
         const court = await DiningCourt.findOne({
@@ -524,8 +557,8 @@ router.get("/prefs/:diningCourt/:username", async (req, res) => {
             }
         });
         res.status(200).json(courtsItems);
-    } catch (error) { 
-        console.log(error); 
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -541,9 +574,7 @@ Returns this object:
 }
 */
 router.get("/item/:menuItemID", async (req, res) => {
-
     try {
-
         const menuItemID = req.params.menuItemID;
 
         const item = await MenuItem.findOne({
@@ -556,35 +587,9 @@ router.get("/item/:menuItemID", async (req, res) => {
         }
         res.status(200).json(item);
         return;
-    //} catch (error) {
-
     } catch (error) {
-
         res.status(500).json("Error: " + error);
         console.log("Error: " + error);
-    }
-});
-
-/* Return all menu items from today sorted by their average rating */
-router.post("/allItems", async (req, res) => {
-    var d = new Date();
-    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
-
-    try {
-        const menuItems = await MenuItem.find({
-            dateServed: today, 
-        });
-
-        if (!menuItems) {
-            res.status(500).json([]); /* send empty array if no menu items found */
-            console.error("No menu items found while parsing all items for today");
-            return;
-        }
-
-
-    } catch (error) {
-        res.status(500).json(error);
-        console.log(error);
     }
 });
 

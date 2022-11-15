@@ -79,9 +79,9 @@ const Navbar = () => {
                     <Link to="/recommendations" className="link">
                         <span>Recommendations</span>
                     </Link>
-                    {/* <Link to="/foodInfo" className="link">
-                        <span>Food Info</span>
-                    </Link> */}
+                    <Link to="/popular" className="link">
+                        <span>Popular</span>
+                    </Link>
                     <div className="diningDropdown">
                         <span>Dining courts ▾</span>
                         <div className="diningDropdownOptions">

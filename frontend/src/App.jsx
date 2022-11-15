@@ -18,6 +18,7 @@ import { AuthContext } from "./authContext/AuthContext";
 import ReportProblem from "./pages/reportProblem/reportProblem";
 import ProfPic from "./pages/profilePic/ProfilePic";
 import DeleteAccount from "./pages/deleteAccount/deleteAccount";
+import Popular from "./pages/popular/Popular";
 // import axios from "axios";
 // import schedule from "node-schedule";
 
@@ -41,6 +42,7 @@ const App = () => {
                             <Route path="/login" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/menu/:location" element={<Menu />} />
                             <Route path="/personalInfo" element={<PersonalInfo />} />
+                            <Route path="/popular" element={<Popular />} />
                             <Route path="/preferences" element={<Preferences />} />
                             <Route path="/recommendations" element={<Recommendations />} />
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
@@ -63,6 +65,7 @@ const App = () => {
                             <Route path="/login" element={<Login />} />
                             <Route path="/menu/:location" element={<Register />} />
                             <Route path="/personalInfo" element={<Register />} />
+                            <Route path="/popular" element={<Register />} />
                             <Route path="/preferences" element={<Register />} />
                             <Route path="/recommendations" element={<Register />} />
                             <Route path="/register" element={<Register />} />
