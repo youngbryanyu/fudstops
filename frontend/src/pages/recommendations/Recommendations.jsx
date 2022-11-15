@@ -14,6 +14,7 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./recommendations.scss";
 import axios from "axios";
+import { useRef } from "react";
 
 //the layout will be new recommendation page that has a 
 //list component on left, a filter component on right
@@ -42,7 +43,7 @@ const Recommendations = () => {
 
     const classes = useStyles();
     const [recsSaved, setRecsSaved] = useState([]); //keep track of recs of saved items
-    const [courtsMenu, setCourtsMenu] = useState([]); //the current items displayed in list
+    const [courtsMenu, setCourtsMenu] = useState([""]); //the current items displayed in list
     const [recsPrefsRests, setRecsPrefsRests] = useState([]); //keep track of recs of prefs and rests
     const [message, setMessage] = useState("");
     const { user } = useContext(AuthContext);
@@ -52,7 +53,7 @@ const Recommendations = () => {
     const BASED_ON_PREFS = 0;
     const BASED_ON_SAVED = 1;
     const [recommendationType, setRecommendationType] = useState(BASED_ON_PREFS);
-
+    const afterFirstRender = useRef(false); // only will display no items found on 2ndsecond
 
     /* fields for meal type */
     const ALL_MEALS = 2;
@@ -149,8 +150,14 @@ const Recommendations = () => {
         }
     };
 
+    const isFirstRender = useRef(true);
     /* parses recommended items from backend based on recommendation type and meal type when those fields change */
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+        } else {
+            afterFirstRender.current = true; // set initial render to false after info loads for first time
+        }
         if (recommendationType === BASED_ON_SAVED) {
             getRecommendationsBasedOnSavedItems(mealType);
             setCourtsMenu(recsSaved);
@@ -160,6 +167,7 @@ const Recommendations = () => {
         }
         // TODO: handle all combinations of meal types and recommendation types
         // e.g.:  (recommendationType == BASED_ON_SAVED && mealType == LUNCH)
+
     }, [recommendationType, mealType]);
 
     function listItem(item) { //display a menu item
@@ -183,16 +191,24 @@ const Recommendations = () => {
                 <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
                     <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
                         {
-                            courtsMenu.length === 0 ? (
-                                <List>
-                                    <ListItem component="div" disablePadding button={true}>
-                                        <span className="header">{"No Menu Items!"}</span>
-                                    </ListItem>
-                                </List>
-                            ) : (
+                            courtsMenu.length !== 0 ? (
                                 <List>
                                     {courtsMenu.map((item) => listItem(item))}
                                 </List>
+                            ) : (
+                                afterFirstRender.current ? ( // Don't show "no menu items" when page is initially loading
+                                    <List>
+                                        <ListItem component="div" disablePadding button={true}>
+                                            <span className="header">{"No Menu Items!"}</span>
+                                        </ListItem>
+                                    </List>
+                                ) : ( // loading message on initial page load
+                                    <List> 
+                                        <ListItem component="div" disablePadding button={true}>
+                                            <span className="header">{"Loading..."}</span>
+                                        </ListItem>
+                                    </List>
+                                )
                             )
                         }
                     </Paper>
