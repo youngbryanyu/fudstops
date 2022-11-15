@@ -48,12 +48,12 @@ const Recommendations = () => {
     const [message, setMessage] = useState("");
     const { user } = useContext(AuthContext);
     let username = user.username;
+    const loading = useRef(true);
 
     /* fields for recommendation type */
     const BASED_ON_PREFS = 0;
     const BASED_ON_SAVED = 1;
     const [recommendationType, setRecommendationType] = useState(BASED_ON_PREFS);
-    const afterFirstRender = useRef(false); // only will display no items found on 2ndsecond
 
     /* fields for meal type */
     const ALL_MEALS = 2;
@@ -89,6 +89,7 @@ const Recommendations = () => {
                 });
 
                 const items = res.data;
+                loading.current = false // not loading
                 setCourtsMenu(items);
                 setRecsSaved(items);
                 setMessage(prefsRestsObj.message);
@@ -120,6 +121,7 @@ const Recommendations = () => {
             });
 
             const courtsItems = response.data;
+            loading.current = false // not loading
             setCourtsMenu(courtsItems);
             setRecsPrefsRests(courtsItems);
 
@@ -127,6 +129,7 @@ const Recommendations = () => {
     };
 
     const handleRecTypeChange = (event) => { //this is for handling the filters options
+        loading.current = true // loading
         if (event.target.value === BASED_ON_SAVED) {
             setRecommendationType(BASED_ON_SAVED)
         } else if (event.target.value === BASED_ON_PREFS) {
@@ -135,6 +138,7 @@ const Recommendations = () => {
     };
 
     const handleMealChange = (event) => {
+        loading.current = true // loading
         if (event.target.value === ALL_MEALS) {
             setMealType(ALL_MEALS)
         } else if (event.target.value === BREAKFAST) {
@@ -150,14 +154,8 @@ const Recommendations = () => {
         }
     };
 
-    const isFirstRender = useRef(true);
     /* parses recommended items from backend based on recommendation type and meal type when those fields change */
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-        } else {
-            afterFirstRender.current = true; // set initial render to false after info loads for first time
-        }
         if (recommendationType === BASED_ON_SAVED) {
             getRecommendationsBasedOnSavedItems(mealType);
             setCourtsMenu(recsSaved);
@@ -165,9 +163,6 @@ const Recommendations = () => {
             getRecommendationsBasedOnPrefsRests(mealType);
             setCourtsMenu(recsPrefsRests);
         }
-        // TODO: handle all combinations of meal types and recommendation types
-        // e.g.:  (recommendationType == BASED_ON_SAVED && mealType == LUNCH)
-
     }, [recommendationType, mealType]);
 
     function listItem(item) { //display a menu item
@@ -196,16 +191,16 @@ const Recommendations = () => {
                                     {courtsMenu.map((item) => listItem(item))}
                                 </List>
                             ) : (
-                                afterFirstRender.current ? ( // Don't show "no menu items" when page is initially loading
+                                loading.current ? (
                                     <List>
                                         <ListItem component="div" disablePadding button={true}>
-                                            <span className="header">{"Nothing served at this time!"}</span>
+                                            <span className="header">{"Loading..."}</span>
                                         </ListItem>
                                     </List>
-                                ) : ( // loading message on initial page load
-                                    <List> 
+                                ) : (
+                                    <List>
                                         <ListItem component="div" disablePadding button={true}>
-                                            <span className="header">{"Loading..."}</span>
+                                            <span className="header">{"Nothing served at this time."}</span>
                                         </ListItem>
                                     </List>
                                 )
