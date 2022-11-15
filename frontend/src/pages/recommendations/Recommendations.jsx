@@ -182,9 +182,19 @@ const Recommendations = () => {
                 <h4 className="moreSpace">{"View Recommended Items!"}</h4><h6>(click to view info)</h6>
                 <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
                     <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
-                        <List>
-                            {courtsMenu.map((item) => listItem(item))}
-                        </List>
+                        {
+                            courtsMenu.length === 0 ? (
+                                <List>
+                                    <ListItem component="div" disablePadding button={true}>
+                                        <span className="header">{"No Menu Items!"}</span>
+                                    </ListItem>
+                                </List>
+                            ) : (
+                                <List>
+                                    {courtsMenu.map((item) => listItem(item))}
+                                </List>
+                            )
+                        }
                     </Paper>
                 </Box>
             </div>
