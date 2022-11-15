@@ -199,7 +199,7 @@ const Recommendations = () => {
                                 afterFirstRender.current ? ( // Don't show "no menu items" when page is initially loading
                                     <List>
                                         <ListItem component="div" disablePadding button={true}>
-                                            <span className="header">{"No Menu Items!"}</span>
+                                            <span className="header">{"Nothing served at this time!"}</span>
                                         </ListItem>
                                     </List>
                                 ) : ( // loading message on initial page load
