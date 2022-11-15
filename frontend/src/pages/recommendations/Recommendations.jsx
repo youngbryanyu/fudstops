@@ -44,92 +44,123 @@ const Recommendations = () => {
     const [recsSaved, setRecsSaved] = useState([]); //keep track of recs of saved items
     const [courtsMenu, setCourtsMenu] = useState([]); //the current items displayed in list
     const [recsPrefsRests, setRecsPrefsRests] = useState([]); //keep track of recs of prefs and rests
-    const [view, setView] = useState(""); //keep track of which filter option is currently chosen
     const [message, setMessage] = useState("");
     const { user } = useContext(AuthContext);
     let username = user.username;
 
-    const handleChange = (event) => { //this is for handling the filters options
-        if (event.target.value == 1) { //this means the user selected Items Matching My Prefs & Rests
-            setView("RecsBasedOnSaved");
-            setCourtsMenu(recsSaved);
+    /* fields for recommendation type */
+    const BASED_ON_PREFS = 0;
+    const BASED_ON_SAVED = 1;
+    const [recommendationType, setRecommendationType] = useState(BASED_ON_PREFS);
 
-        } else if (event.target.value == 2) { //this means user wants to select from checkbox
-            setView("RecsBasedOnPrefsRests");
-            setCourtsMenu(recsPrefsRests);
+
+    /* fields for meal type */
+    const ALL_MEALS = 2;
+    const BREAKFAST = 3;
+    const BRUNCH = 4;
+    const LUNCH = 5;
+    const LATE_LUNCH = 6
+    const DINNER = 7
+    const [mealType, setMealType] = useState(ALL_MEALS);
+    const mealTypes = ["", "", "", "Breakfast", "Brunch", "Lunch", "Late Lunch", "Dinner"];
+
+    /* get recommendations based on saved items */
+    async function getRecommendationsBasedOnSavedItems(mealType) {
+        try {
+            let response;
+            if (mealType === ALL_MEALS) { /* all types of meals */
+                response = await axios.get(`/recommendations/saved/${username}`);
+            } else { /* specific meal type */
+                response = await axios.get(`/recommendations/saved/${username}/${mealType}`);
+            }
+            const prefsRestsObj = response.data;
+
+            if (prefsRestsObj.message != "All Good!") { /* if not all good get all items from dining court today */
+                setCourtsMenu(prefsRestsObj.items);
+                setRecsSaved(prefsRestsObj.items);
+                setMessage(prefsRestsObj.message);
+            } else {
+                // get items matching prefs and rests
+                const selectedMealType = mealTypes[mealType] // get selected meal type
+                const res = await axios.post("/menuInfo/prefsAndRests/" + selectedMealType, {
+                    preferences: prefsRestsObj.preferences,
+                    restrictions: prefsRestsObj.restrictions
+                });
+
+                const items = res.data;
+                setCourtsMenu(items);
+                setRecsSaved(items);
+                setMessage(prefsRestsObj.message);
+            }
+        } catch (error) { console.log(error) };
+    };
+
+    /* get recommendations based on prefs and rests */
+    async function getRecommendationsBasedOnPrefsRests(mealType) {
+        try {
+            // first do two get calls to get the users prefs and rests
+            // then do a third call to get the items matching those prefs and rests
+            const prefsResponse = await axios.get(`/preference/${username}`);
+            let prefs = [];
+            if (prefsResponse != "Error retrieving preferences (user likely doesn't have any yet)") {
+                prefs = prefsResponse.data.preferences;
+            }
+
+            const restsResponse = await axios.get(`/restriction/${username}`);
+            let rests = [];
+            if (restsResponse != "Error retrieving restrictions (user likely doesn't have any yet)") {
+                rests = restsResponse.data.restrictions;
+            }
+
+            const selectedMealType = mealTypes[mealType] // get selected meal type
+            const response = await axios.post(`/menuInfo/prefsAndRests/` + selectedMealType, {
+                preferences: prefs,
+                restrictions: rests
+            });
+
+            const courtsItems = response.data;
+            setCourtsMenu(courtsItems);
+            setRecsPrefsRests(courtsItems);
+
+        } catch (error) { console.log(error) };
+    };
+
+    const handleRecTypeChange = (event) => { //this is for handling the filters options
+        if (event.target.value === BASED_ON_SAVED) {
+            setRecommendationType(BASED_ON_SAVED)
+        } else if (event.target.value === BASED_ON_PREFS) {
+            setRecommendationType(BASED_ON_PREFS)
         }
     };
 
-    /**
-    * Load dining courts items on page load and alters anytime the location changes
-    */
-    useEffect(() => {
-
-        const getRecommendationsBasedOnSavedItems = async () => {
-
-            try {
-                const response = await axios.get(`/recommendations/saved/${username}`);
-                const prefsRestsObj = response.data;
-
-                if (prefsRestsObj.message != "All Good!") {
-                    setCourtsMenu(prefsRestsObj.items);
-                    setRecsSaved(prefsRestsObj.items);
-                    setMessage(prefsRestsObj.message);
-                } else {
-
-                    //call other endpoint with the prefs and rests
-
-                    const res = await axios.post("/menuInfo/prefsAndRests", {
-                        preferences: prefsRestsObj.preferences,
-                        restrictions: prefsRestsObj.restrictions
-                    });
-
-                    const items = res.data;
-                    setCourtsMenu(items);
-                    setRecsSaved(items);
-                    setMessage(prefsRestsObj.message);
-
-                }
-            } catch (error) { console.log(error) };
-        };
-
-        const getRecommendationsBasedOnPrefsRests = async () => {
-            try {
-
-                //first do two get calls to get the users prefs and rests
-                //then do a third call to get the items matching those prefs and rests
-
-                const prefsResponse = await axios.get(`/preference/${username}`);
-                let prefs = [];
-                if(prefsResponse != "Error retrieving preferences (user likely doesn't have any yet)") {
-                    prefs = prefsResponse.data.preferences;
-                }
-
-                const restsResponse = await axios.get(`/restriction/${username}`);
-                let rests = [];
-                if(restsResponse != "Error retrieving restrictions (user likely doesn't have any yet)") {
-                    rests = restsResponse.data.restrictions;
-                }
-                
-                const response = await axios.post(`/menuInfo/prefsAndRests`, {
-                    preferences: prefs,
-                    restrictions: rests
-                });
-
-                const courtsItems = response.data;
-                setRecsPrefsRests(courtsItems);
-
-            } catch (error) { console.log(error) };
-        };
-
-        if (username != null) {
-            getRecommendationsBasedOnSavedItems();
-            getRecommendationsBasedOnPrefsRests();
+    const handleMealChange = (event) => {
+        if (event.target.value === ALL_MEALS) {
+            setMealType(ALL_MEALS)
+        } else if (event.target.value === BREAKFAST) {
+            setMealType(BREAKFAST)
+        } else if (event.target.value === BRUNCH) {
+            setMealType(BRUNCH)
+        } else if (event.target.value === LUNCH) {
+            setMealType(LUNCH)
+        } else if (event.target.value === LATE_LUNCH) {
+            setMealType(LATE_LUNCH)
+        } else if (event.target.value === DINNER) {
+            setMealType(DINNER);
         }
+    };
 
-        // eslint-disable-next-line
-    }, []);
-
+    /* parses recommended items from backend based on recommendation type and meal type when those fields change */
+    useEffect(() => {
+        if (recommendationType === BASED_ON_SAVED) {
+            getRecommendationsBasedOnSavedItems(mealType);
+            setCourtsMenu(recsSaved);
+        } else if (recommendationType === BASED_ON_PREFS) {
+            getRecommendationsBasedOnPrefsRests(mealType);
+            setCourtsMenu(recsPrefsRests);
+        }
+        // TODO: handle all combinations of meal types and recommendation types
+        // e.g.:  (recommendationType == BASED_ON_SAVED && mealType == LUNCH)
+    }, [recommendationType, mealType]);
 
     function listItem(item) { //display a menu item
         const name = item.name;
@@ -162,27 +193,41 @@ const Recommendations = () => {
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}  >
                         <InputLabel>Filters</InputLabel>
-                        <Select id="demo-simple-select" value={view} label="Filter" onChange={handleChange}
+                        <Select id="demo-simple-select" value={recommendationType} label="Filter" onChange={handleRecTypeChange}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
+                            <MenuItem value={0}>Recommendations Based On My Prefs/Rests</MenuItem>
                             <MenuItem value={1}>Recommendations Based On Saved Items</MenuItem>
-                            <MenuItem value={2}>Recommendations Based On My Prefs/Rests</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
                 <div>
                     {
                         message != "All Good!" && (
-
                             <>
-
                                 <h4>{`${message}`}</h4>
-
                             </>
-
                         )
                     }
                 </div>
+            </div>
+            <div className="filter">
+                <h4>Select Meals:</h4><h6>(click to view options)</h6>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}  >
+                        <InputLabel>Filters</InputLabel>
+                        <Select id="demo-simple-select" value={mealType} label="Filter" onChange={handleMealChange}
+                            classes={{ root: classes.root, select: classes.selected }}
+                        >
+                            <MenuItem value={2}>{`All Meal types`}</MenuItem>
+                            <MenuItem value={3}>{`Breakfast`}</MenuItem>
+                            <MenuItem value={4}>{`Brunch`}</MenuItem>
+                            <MenuItem value={5}>{`Lunch`}</MenuItem>
+                            <MenuItem value={6}>{`Late Lunch`}</MenuItem>
+                            <MenuItem value={7}>{`Dinner`}</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
             </div>
             {/* <Footer /> */}
         </div>

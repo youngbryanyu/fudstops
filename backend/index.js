@@ -49,7 +49,7 @@ app.use("/api/image", imagesRoute); // endpoint for recommended items
 app.listen(8000, async () => {
     console.log("backend is running");
     try {
-        await axios.post('http://localhost:8000/api/menuInfo/load');
+        // await axios.post('http://localhost:8000/api/menuInfo/load');
     } catch (error) {
         console.log("ERROR PARSING DINING DATA ON STARTUP: " + error);
     }
