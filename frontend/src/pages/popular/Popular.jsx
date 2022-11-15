@@ -5,11 +5,12 @@ import ListItem from '@material-ui/core/ListItem';
 import Paper from '@material-ui/core/Paper';
 import Navbar from "../../components/navbar/Navbar";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import "./popular.scss";
 import axios from "axios";
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import StarIcon from '@material-ui/icons/Star';
+import { StarHalf } from "@material-ui/icons";
 
 const Popular = () => {
 
@@ -42,7 +43,17 @@ const Popular = () => {
             return (<> (No Ratings)</>
             )
         }
-        if (rating == 1) {
+        if (0 < rating && rating <= .75) { // .5 star
+            return (<>
+                <StarHalf color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+            </>
+            )
+        }
+        if (.75 < rating && rating <= 1.25) { // 1 star
             return (<>
                 <StarIcon color="inherit" />
                 <StarOutlineIcon color="inherit" />
@@ -52,7 +63,17 @@ const Popular = () => {
             </>
             )
         }
-        if (rating == 2) {
+        if (1.25 < rating && rating <= 1.75) { // 1.5 star
+            return (<>
+                <StarIcon color="inherit" />
+                <StarHalf color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+            </>
+            )
+        }
+        if (1.75 < rating && rating <= 2.25) { // 2 star
             return (<>
                 <StarIcon color="inherit" />
                 <StarIcon color="inherit" />
@@ -62,7 +83,17 @@ const Popular = () => {
             </>
             )
         }
-        if (rating == 3) {
+        if (2.25 < rating && rating <= 2.75) { // 2.5 star
+            return (<>
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarHalf color="inherit" />
+                <StarOutlineIcon color="inherit" />
+                <StarOutlineIcon color="inherit" />
+            </>
+            )
+        }
+        if (2.75 < rating && rating <= 3.25) { // 3 star
             return (<>
                 <StarIcon color="inherit" />
                 <StarIcon color="inherit" />
@@ -72,7 +103,17 @@ const Popular = () => {
             </>
             )
         }
-        if (rating == 4) {
+        if (3.25 < rating && rating <= 3.75) { // 3.5 star
+            return (<>
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarHalf color="inherit" />
+                <StarOutlineIcon color="inherit" />
+            </>
+            )
+        }
+        if (3.75 < rating && rating <= 4.25) { // 4 star
             return (<>
                 <StarIcon color="inherit" />
                 <StarIcon color="inherit" />
@@ -82,7 +123,17 @@ const Popular = () => {
             </>
             )
         }
-        if (rating == 5) {
+        if (4.25 < rating && rating <= 4.75) { // 4.5 star
+            return (<>
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarIcon color="inherit" />
+                <StarHalf color="inherit" />
+            </>
+            )
+        }
+        if (4.75 < rating && rating <= 5) { // 5 star
             return (<>
                 <StarIcon color="inherit" />
                 <StarIcon color="inherit" />

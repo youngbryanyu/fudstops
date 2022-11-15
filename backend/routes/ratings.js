@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
                 res.status(201).json("Rating updated, updated avg rating: " + updatedRating);
                 return;
             }
-        } else {  // if not then make a new document in the DB
+        } else { // if not then make a new document in the DB
             const newRating = await new Rating({
                 username: req.body.username,
                 menuItemID: req.body.menuItemID,
@@ -139,8 +139,8 @@ function getAverageRating(ratings) {
         total += ratingObj.rating;
     });
 
-    let avg = Math.ceil(total / numRatings);
-    return avg;
+    let avg = total / numRatings;
+    return avg.toFixed(1);
 }
 
 module.exports = router;

@@ -82,6 +82,8 @@ router.delete("/:id/:username", verify, async (req, res) => {
                 username: req.params.username
             });
 
+            /* recalculate average ratings for all menu items? --> would take to long so ignore for now */
+
             res.status(200).json("User has been deleted");
         } catch (err) {
             res.status(500).json(err);

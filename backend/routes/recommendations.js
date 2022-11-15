@@ -4,9 +4,7 @@ const MenuItem = require("../models/MenuItem");
 
 // get all recommended items based on user's saved items
 router.get("/saved/:username", async (req, res) => {
-
     try {
-
         var d = new Date();
         var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
 

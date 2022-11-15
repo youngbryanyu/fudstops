@@ -13,6 +13,7 @@ const PURDUE_DINING_API_URL_DINING_COURTS = "https://api.hfs.purdue.edu/menus/v2
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const POPULAR_RATING_THRESHOLD = 3; // items >= 3 stars are considered "popular"
+const MIN_NUM_RATINGS_POPULAR = 2; // min number of ratings for an item to be popular
 
 // LOAD - load menus site for current day
 router.post("/load", async (req, res) => { // use async/await to ensure request is fulfilled before writing to DB
@@ -378,10 +379,9 @@ router.get("/popular", async (req, res) => {
             }
         }).sort({ avgRating: -1 }).limit(25);
 
+        // TODO: create an variable to keep track on number of ratings for a given item, there should be a threshold of 2 ratings
+
         if (menuItems.length === 0) {
-            const allMenuItems = await MenuItem.find({
-                dateServed: today,
-            })
             console.log("No popular menu items found");
             res.status(500).json([]); /* send all menu items if no menu items found */
             return;
@@ -415,7 +415,7 @@ router.get("/:diningCourt", async (req, res) => {
     } catch (error) { console.log(error); }
 });
 
-//this endpoint returns all menu items of provided dining court that are serving during the meal specified
+// this endpoint returns all menu items of provided dining court that are serving during the meal specified
 router.get("/meals/:diningCourt/:meal", async (req, res) => {
     //debug:
     var d = new Date();
@@ -443,7 +443,9 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
 
         console.log("Successfully retrieved " + req.params.diningCourt + "'s " + req.params.meal + " menu")
         res.status(200).json(menuItems);
-    } catch (error) { console.log(error); }
+    } catch (error) { 
+        console.log(error); 
+    }
 });
 
 // this endpoint returns the specified court's information

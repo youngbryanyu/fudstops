@@ -8,13 +8,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from "@material-ui/core/styles";
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import Button from '@material-ui/core/Button';
 import Navbar from "../../components/navbar/Navbar";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./recommendations.scss";
@@ -55,19 +50,14 @@ const Recommendations = () => {
     let username = user.username;
 
     const handleChange = (event) => { //this is for handling the filters options
-
         if (event.target.value == 1) { //this means the user selected Items Matching My Prefs & Rests
-
             setView("RecsBasedOnSaved");
             setCourtsMenu(recsSaved);
 
         } else if (event.target.value == 2) { //this means user wants to select from checkbox
-
             setView("RecsBasedOnPrefsRests");
             setCourtsMenu(recsPrefsRests);
-
         }
-
     };
 
     /**
@@ -82,11 +72,9 @@ const Recommendations = () => {
                 const prefsRestsObj = response.data;
 
                 if (prefsRestsObj.message != "All Good!") {
-
                     setCourtsMenu(prefsRestsObj.items);
                     setRecsSaved(prefsRestsObj.items);
                     setMessage(prefsRestsObj.message);
-
                 } else {
 
                     //call other endpoint with the prefs and rests
@@ -102,15 +90,10 @@ const Recommendations = () => {
                     setMessage(prefsRestsObj.message);
 
                 }
-
-
-
             } catch (error) { console.log(error) };
-
         };
 
         const getRecommendationsBasedOnPrefsRests = async () => {
-
             try {
 
                 //first do two get calls to get the users prefs and rests
@@ -137,7 +120,6 @@ const Recommendations = () => {
                 setRecsPrefsRests(courtsItems);
 
             } catch (error) { console.log(error) };
-
         };
 
         if (username != null) {
