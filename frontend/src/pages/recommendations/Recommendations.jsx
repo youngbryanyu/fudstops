@@ -8,8 +8,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from "@material-ui/core/styles";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import Button from '@material-ui/core/Button';
 import Navbar from "../../components/navbar/Navbar";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../authContext/AuthContext";
 import "./recommendations.scss";
@@ -29,6 +34,8 @@ import axios from "axios";
 //just get all items that fit the users prefs & rests
 //limit results to 15 items
 
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
         color: "black",
@@ -46,17 +53,46 @@ const Recommendations = () => {
     const [recsPrefsRests, setRecsPrefsRests] = useState([]); //keep track of recs of prefs and rests
     const [view, setView] = useState(""); //keep track of which filter option is currently chosen
     const [message, setMessage] = useState("");
+
+    //arrays to store the breakfast, lunch, and dinner items
+    const [breakfast, setBreakfast] = useState([]); //keep track of recs of saved items
+    const [lunch, setLunch] = useState([]); //the current items displayed in list
+    const [dinner, setDinner] = useState([]); //keep track of recs of prefs and rests
+
     const { user } = useContext(AuthContext);
     let username = user.username;
+    const [mealType, setMealType] = useState([]);
+
+    
+
 
     const handleChange = (event) => { //this is for handling the filters options
         if (event.target.value == 1) { //this means the user selected Items Matching My Prefs & Rests
+
             setView("RecsBasedOnSaved");
             setCourtsMenu(recsSaved);
 
         } else if (event.target.value == 2) { //this means user wants to select from checkbox
+
             setView("RecsBasedOnPrefsRests");
             setCourtsMenu(recsPrefsRests);
+        }
+
+    };
+
+    const handleMeals = (event) => { //this is for handling the meal selection options
+        if (event.target.value === 1) { 
+            setMealType("Breakfast");
+        } else if (event.target.value === 2) { 
+            setMealType("Brunch");
+        } else if (event.target.value === 3) { 
+            setMealType("Lunch");
+        } else if (event.target.value === 4) { 
+        setMealType("Late Lunch");
+        } else if (event.target.value === 5) { 
+            setMealType("Dinner");
+        } else if (event.target.value === 6) { 
+            setMealType("All meal Types");
         }
     };
 
@@ -72,9 +108,11 @@ const Recommendations = () => {
                 const prefsRestsObj = response.data;
 
                 if (prefsRestsObj.message != "All Good!") {
+
                     setCourtsMenu(prefsRestsObj.items);
                     setRecsSaved(prefsRestsObj.items);
                     setMessage(prefsRestsObj.message);
+
                 } else {
 
                     //call other endpoint with the prefs and rests
@@ -90,10 +128,15 @@ const Recommendations = () => {
                     setMessage(prefsRestsObj.message);
 
                 }
+
+
+
             } catch (error) { console.log(error) };
+
         };
 
         const getRecommendationsBasedOnPrefsRests = async () => {
+
             try {
 
                 //first do two get calls to get the users prefs and rests
@@ -120,6 +163,7 @@ const Recommendations = () => {
                 setRecsPrefsRests(courtsItems);
 
             } catch (error) { console.log(error) };
+
         };
 
         if (username != null) {
@@ -128,7 +172,87 @@ const Recommendations = () => {
         }
 
         // eslint-disable-next-line
+    }, [mealType]);
+
+    /*Load dining court items based off the mealtype */
+    useEffect(() => {
+
+        const getRecommendationsBasedOnSavedItemsMealType = async () => {
+
+            try {
+                const response = await axios.get(`/recommendations/saved/${username}/${mealType}`);
+                const prefsRestsObj = response.data;
+
+                if (prefsRestsObj.message != "All Good!") {
+
+                    setCourtsMenu(prefsRestsObj.items);
+                    setRecsSaved(prefsRestsObj.items);
+                    setMessage(prefsRestsObj.message);
+
+                } else {
+
+                    //call other endpoint with the prefs and rests
+
+                    const res = await axios.post("/menuInfo/prefsAndRests", {
+                        preferences: prefsRestsObj.preferences,
+                        restrictions: prefsRestsObj.restrictions
+                    });
+
+                    const items = res.data;
+                    setCourtsMenu(items);
+                    setRecsSaved(items);
+                    setMessage(prefsRestsObj.message);
+
+                }
+
+
+
+            } catch (error) { console.log(error) };
+
+        };
+
+        const getRecommendationsBasedOnPrefsRests = async () => {
+
+            try {
+
+                //first do two get calls to get the users prefs and rests
+                //then do a third call to get the items matching those prefs and rests
+
+                const prefsResponse = await axios.get(`/preference/${username}`);
+                let prefs = [];
+                if(prefsResponse != "Error retrieving preferences (user likely doesn't have any yet)") {
+                    prefs = prefsResponse.data.preferences;
+                }
+
+                const restsResponse = await axios.get(`/restriction/${username}`);
+                let rests = [];
+                if(restsResponse != "Error retrieving restrictions (user likely doesn't have any yet)") {
+                    rests = restsResponse.data.restrictions;
+                }
+                
+                const response = await axios.post(`/menuInfo/prefsAndRests`, {
+                    preferences: prefs,
+                    restrictions: rests
+                });
+
+                const courtsItems = response.data;
+                setRecsPrefsRests(courtsItems);
+
+            } catch (error) { console.log(error) };
+
+        };
+
+        if (username != null) {
+            getRecommendationsBasedOnSavedItemsMealType();
+            getRecommendationsBasedOnPrefsRests();
+        }
+
+        // eslint-disable-next-line
     }, []);
+
+
+    
+
 
 
     function listItem(item) { //display a menu item
@@ -143,7 +267,6 @@ const Recommendations = () => {
             </Link>
         );
     }
-
     return (
         <div className="menu">
             <Navbar />
@@ -184,6 +307,24 @@ const Recommendations = () => {
                     }
                 </div>
             </div>
+            {/* <div className="filter">
+                <h4>Select Meals:</h4><h6>(click to view options)</h6>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}  >
+                        <InputLabel>Filters</InputLabel>
+                        <Select id="demo-simple-select" value={mealType} label="Filter" onChange={handleMeals}
+                            classes={{ root: classes.root, select: classes.selected }}
+                        >
+                            <MenuItem value={1}>{`View reccomendations for the Breakfast Menu`}</MenuItem>
+                            <MenuItem value={2}>{`View reccomendations for the Brunch Menu`}</MenuItem>
+                            <MenuItem value={3}>{`View reccomendations for the Lunch Menu`}</MenuItem>
+                            <MenuItem value={4}>{`View reccomendations for the Late Lunch Menu`}</MenuItem>
+                            <MenuItem value={5}>{`View reccomendations for the Dinner Menu`}</MenuItem>
+                            <MenuItem value={6}>{`View reccomendations for all Meal Types`}</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div> */}
             {/* <Footer /> */}
         </div>
     );
