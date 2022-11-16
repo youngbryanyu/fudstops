@@ -46,6 +46,14 @@ const Menu = () => {
     const [shouldSort, setShouldSort] = useState(false);
     const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
 
+    const [shouldSortPop, setShouldSortPop] = useState(false); //should sort based ff item popularity
+
+    const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]); // sort the menu items based on the rating
+
+    const [disableSort, setDisableSort] = useState(false); //disabling the button when the other one is in use
+    const [disableSortPop, setDisableSortPop] = useState(false); //disabling the button when the other one is in use
+
+
     let username = user.username;
 
     // preferences
@@ -169,6 +177,19 @@ const Menu = () => {
         setShouldSort(!shouldSort);
     }
 
+    const handleSortClickPop = () => {
+        setShouldSortPop(!shouldSortPop);
+    }
+
+    /*disable the sorting button*/
+    const handleSortDisable = () => {
+        setDisableSort(!disableSort);
+    }
+
+    const handleSortDisablePop = () => {
+        setDisableSortPop(!disableSortPop);
+    }
+
     /* Sorting useEffect */
     const isFirstRender = useRef(true);
     useEffect(() => {
@@ -178,6 +199,7 @@ const Menu = () => {
         }
         // sort courts menu then set it to the sorted
         if (shouldSort) {
+            setDisableSortPop(true);
             //this does a copy of the prior menu
             setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu))); //unsorted items now stored in menuBeforeSort
             //now we sort the item (this is an inline function that compares two objects names)
@@ -185,12 +207,35 @@ const Menu = () => {
             //            else return (if b's name > a's name) then 1 
             //                         else return 0 which means both names are equal
             courtsMenu.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-        } else {
+        } else if(!shouldSort) {
+            setDisableSortPop(false);
             //set courtsMenu back to the way it was originally
             setCourtsMenu(menuBeforeSort);
         }
         // eslint-disable-next-line
     }, [shouldSort]);
+
+     /*Sort by rating(popular items) */
+     const isFirstRenderPop = useRef(true);
+     useEffect(() => {
+         if (isFirstRenderPop.current === true) {
+             isFirstRenderPop.current = false;
+             return;
+         }
+         // sort courts menu then set it to the sorted
+         if(shouldSortPop) {
+             setDisableSort(true);
+             setMenuBeforeSortPop(JSON.parse(JSON.stringify(courtsMenu))); 
+             courtsMenu.sort((a,b) => (a.avgRating < b.avgRating) ? 1 : ((b.avgRating < a.avgRating) ? -1 : 0)); //make the most highly rated items appear at the top of the list
+ 
+         }else if(!shouldSortPop) {
+             setDisableSort(false);
+             setCourtsMenu(menuBeforeSortPop);
+         }
+         // eslint-disable-next-line
+     }, [shouldSortPop]);
+ 
+     console.log(courtsMenu);
 
     /* selecting preferences and restrictions from checkbox */
     const handleSelectPrefsClick = () => { //this is for handling the submit button of preferences
@@ -383,7 +428,8 @@ const Menu = () => {
                     </FormControl>
 
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort Alphabetically"} checked={shouldSort} onChange={handleSortClick} />
+                         <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort Alphabetically"} checked={shouldSort} onChange={handleSortClick} disabled={disableSort}/>
+                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort by Item Popularity"} checked={shouldSortPop} onChange={handleSortClickPop} disabled={disableSortPop}/>
                     </FormGroup>
                 </Box>
             </div>
