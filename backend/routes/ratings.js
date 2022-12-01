@@ -79,6 +79,45 @@ router.post("/", async (req, res) => {
     }
 });
 
+// this endpoint returns all menuItems rated by a specific user above 4+ stars
+//first get ALL items where user = specificUser AND rating >= 4 (using rating collection)
+//then go thru each item and see if served today (using menuItems collection) 
+router.get("/highlyRatedItems/:username", async (req, res) => {
+    
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+    try {
+        const highlyRatedItems = await (Rating.find({
+            username: req.params.username, 
+            rating: { $gte: 4 }
+        }));
+
+        let todaysHighlyRatedItems = [];
+
+        for(const highlyRatedItem of highlyRatedItems) {
+
+            const menuItem =  await (MenuItem.find({
+                ID: highlyRatedItem.menuItemID,
+                dateServed: today
+            }));
+
+            if(menuItem.length != 0) {
+                todaysHighlyRatedItems.push(menuItem);
+            }
+
+        }
+
+        if (!todaysHighlyRatedItems) { //this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
+        
+        res.status(200).json(todaysHighlyRatedItems);
+    } catch (error) { 
+        console.log(error); 
+    }
+});
+
 //get a user's rating of a specific menu item
 router.get("/:username/:menuItemId", async (req, res) => {
     try {

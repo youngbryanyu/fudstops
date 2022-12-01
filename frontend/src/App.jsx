@@ -19,6 +19,7 @@ import ReportProblem from "./pages/reportProblem/reportProblem";
 import ProfPic from "./pages/profilePic/ProfilePic";
 import DeleteAccount from "./pages/deleteAccount/deleteAccount";
 import Popular from "./pages/popular/Popular";
+import Notifications from "./pages/notifications/Notifications";
 // import axios from "axios";
 // import schedule from "node-schedule";
 
@@ -48,6 +49,7 @@ const App = () => {
                             <Route path="/register" element={<Home />} /> {/* Should go to home when logged in */}
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/reportProblem" element={<ReportProblem />} />
+                            <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profPic" element={<ProfPic />} />
                         </>
                     )
@@ -72,6 +74,7 @@ const App = () => {
                             <Route path="/settings" element={<Register />} />
                             <Route path="/reportProblem" element={<Register />} />
                             <Route path="/profPic" element={<Register />} />
+                            <Route path="/notifications" element={<Register />} />
                         </>
                     )
                 }
