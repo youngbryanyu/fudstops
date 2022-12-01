@@ -49,7 +49,7 @@ const Settings = () => {
                                 </Link>
                             </Box>
                             <Box className="box">
-                                <Link to="" className="link">
+                                <Link to="/notifications" className="link">
                                     <span className="header">Notifications</span>
                                 </Link>
                             </Box>

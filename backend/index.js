@@ -16,6 +16,7 @@ const restrictionRoute = require("./routes/restriction");
 const problemRoute = require("./routes/problem");
 const ratingsRoute = require("./routes/ratings");
 const savedRoute = require("./routes/saved");
+const notifyRoute = require("./routes/notify");
 const recommendationsRoute = require("./routes/recommendations");
 const imagesRoute = require("./routes/image");
 
@@ -43,7 +44,8 @@ app.use("/api/problem", problemRoute); // endpoint for reporting problems
 app.use("/api/ratings", ratingsRoute); // endpoint for ratings
 app.use("/api/saved", savedRoute); // endpoint for saved items
 app.use("/api/recommendations", recommendationsRoute); // endpoint for recommended items
-app.use("/api/image", imagesRoute); // endpoint for recommended items
+app.use("/api/image", imagesRoute); // endpoint for image items
+app.use("/api/notify", notifyRoute); // endpoint for menu notifications
 
 /* Listen on port 8000 locally */
 app.listen(8000, async () => {
