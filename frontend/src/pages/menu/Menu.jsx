@@ -1,7 +1,11 @@
 // Javascript for page displaying menu items for a dining court
+import Stack from "@mui/material/Stack";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import TextField from "@mui/material/TextField";
+import Autocomplete /* , {  createFilterOptions  } */ from "@mui/material/Autocomplete";
 import Paper from "@material-ui/core/Paper";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -20,6 +24,7 @@ import { AuthContext } from "../../authContext/AuthContext";
 import "./menu.scss";
 import axios from "axios";
 import { Mail, Phone, NearMe } from "@material-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,23 +38,33 @@ const useStyles = makeStyles((theme) => ({
 const Menu = () => {
   const classes = useStyles();
   let { location } = useParams();
-  const [meal, setMeal] = useState("");
-  const [allItems, setAllItems] = useState([]); //keep track of all menu items
-  const [selectedItems, setSelectedItems] = useState([]); //keep track of the selected checkbox items
-  const [courtsMenu, setCourtsMenu] = useState([]); // the current items displayed in list
-  const [times, setTimes] = useState([]); //the current times in the list
-  const [matchingItems, setMatchingItems] = useState([]); //keep track of matching user's prefs items
-  const [view, setView] = useState(""); //keep track of which filterconst [] option is currently chosen
   const { user } = useContext(AuthContext);
+
+  const [meal, setMeal] = useState("");
+  //keep track of all menu items
+  const [allItems, setAllItems] = useState([]);
+  //keep track of the selected checkbox items
+  const [selectedItems, setSelectedItems] = useState([]);
+  // the current items displayed in list
+  const [courtsMenu, setCourtsMenu] = useState([]);
+  //the current times in the list
+  const [times, setTimes] = useState([]);
+  //keep track of matching user's prefs items
+  const [matchingItems, setMatchingItems] = useState([]);
+  //keep track of which filterconst [] option is currently chosen
+  const [view, setView] = useState("");
+
   const [shouldSort, setShouldSort] = useState(false);
-  const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
-
-  const [shouldSortPop, setShouldSortPop] = useState(false); //should sort based ff item popularity
-
-  const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]); // sort the menu items based on the rating
-
-  const [disableSort, setDisableSort] = useState(false); //disabling the button when the other one is in use
-  const [disableSortPop, setDisableSortPop] = useState(false); //disabling the button when the other one is in use
+  // items displayed before sorting (courtsmenu)
+  const [menuBeforeSort, setMenuBeforeSort] = useState([]);
+  //should sort based off item popularity
+  const [shouldSortPop, setShouldSortPop] = useState(false);
+  // sort the menu items based on the rating
+  const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]);
+  //disabling the button when the other one is in use
+  const [disableSort, setDisableSort] = useState(false);
+  //disabling the button when the other one is in use
+  const [disableSortPop, setDisableSortPop] = useState(false);
 
   let username = user.username;
 
@@ -134,13 +149,13 @@ const Menu = () => {
     if (location === WILEY) {
       window.open(WILEY_ADDR, "_blank");
     }
-    if (location == FORD) {
+    if (location === FORD) {
       window.open(FORD_ADDR, "_blank");
     }
-    if (location == EARHART) {
+    if (location === EARHART) {
       window.open(EARHART_ADDR, "_blank");
     }
-    if (location == HILLENBRAND) {
+    if (location === HILLENBRAND) {
       window.open(HILLENBRAND_ADDR, "_blank");
     }
   };
@@ -157,17 +172,17 @@ const Menu = () => {
       setEmail("cavanare@purdue.edu");
       setLoc("498 S Martin Jischke Drive West Lafayette, IN 47906");
     }
-    if (location == FORD) {
+    if (location === FORD) {
       setNumber("(765) 494-2482");
       setEmail("ahallmen@purdue.edu");
       setLoc("1122 West Stadium Avenue West Lafayette, IN 47906");
     }
-    if (location == EARHART) {
+    if (location === EARHART) {
       setNumber("(765) 496-6925");
       setEmail("coryb@purdue.edu");
       setLoc("1275 1st Street West Lafayette, IN 47906");
     }
-    if (location == HILLENBRAND) {
+    if (location === HILLENBRAND) {
       setNumber("(765) 496-0461");
       setEmail("nmputubw@purdue.edu");
       setLoc("1301 3rd Street West Lafayette, IN 47906");
@@ -239,8 +254,6 @@ const Menu = () => {
     }
     // eslint-disable-next-line
   }, [shouldSortPop]);
-
-  console.log(courtsMenu);
 
   /* selecting preferences and restrictions from checkbox */
   const handleSelectPrefsClick = () => {
@@ -314,6 +327,8 @@ const Menu = () => {
     }
   };
 
+  const [busyLevel, setBusyLevel] = useState("");
+
   /**
    * Load dining courts items on page load and alters anytime the location changes (when user first enters the page)
    */
@@ -321,6 +336,7 @@ const Menu = () => {
     const getCourtsItems = async () => {
       try {
         const response = await axios.get(`/menuInfo/${location}`);
+        console.log(response.data);
         const courtsItems = response.data;
         setCourtsMenu(courtsItems);
         setAllItems(courtsItems);
@@ -335,7 +351,6 @@ const Menu = () => {
           `/menuInfo/prefs/${location}/${username}`
         );
         const courtsItems = response.data;
-        console.log("courts items is");
         setMatchingItems(courtsItems);
       } catch (error) {
         console.log(error);
@@ -352,11 +367,22 @@ const Menu = () => {
       }
     };
 
+    const getBusy = async () => {
+      try {
+        const response = await axios.get(`/menuInfo/busy/${location}`);
+        const busyness = response.data;
+        setBusyLevel(busyness);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (location !== null) {
       setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
       getCourtsItems();
       getTimes();
       getItemsMatchingUser();
+      getBusy();
     }
     // eslint-disable-next-line
   }, [location]);
@@ -404,6 +430,58 @@ const Menu = () => {
     );
   }
 
+  const navigate = useNavigate();
+  //searchbar component. cannot search for just any value, have to select from dropdown
+  //params: current menu state (pass in courtsMenu)
+  function Searchbar(menu) {
+    function handleInputChange(event, value) {
+      if (!value) {
+        return;
+      }
+      if (value.ID) {
+        console.log(value.ID);
+        navigate("/foodInfo/" + value.ID);
+      }
+    }
+    return (
+      <Box>
+        <Autocomplete
+          disablePortal
+          autoComplete={true}
+          autoHighlight={true}
+          id="menu-search-bar"
+          options={menu}
+          getOptionLabel={(option) => option.name}
+          onChange={handleInputChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Search for an item" />
+          )}
+          sx={{
+            pt: "5px",
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "& .MuiOutlinedInput-input": {
+              color: "White",
+            },
+            "& .MuiInputLabel-outlined": {
+              color: "White",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "&.Mui-focused .MuiInputLabel-outlined": {
+              color: "White",
+            },
+          }}
+        />
+      </Box>
+    );
+  }
+
   // prototype for displaying a default message for if there is no response for a meal
   // function displayMenu(menu) {
   //     if(!menu) {
@@ -416,6 +494,17 @@ const Menu = () => {
   //         menu.map((item) => listItem(item))
   //     }
   // }
+  let date = new Date();
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  var busytime = date.toLocaleTimeString("en-us", options);
   return (
     <div className="menu">
       <Navbar />
@@ -438,84 +527,108 @@ const Menu = () => {
       </div>
       <div className="menuTimes">
         <h4 className="evenMoreSpace">{`${location}'s meal times:`}</h4>
-        <Box
-          sx={{ height: 400, width: 200, bgcolor: "Black" }}
-          className="times"
+        <Stack
+          spacing={2}
+          sx={{
+            height: 400,
+            width: 200,
+          }}
+          className="miscinfo"
         >
-          <Paper style={{ height: 400, overflow: "auto" }}>
+          <Paper style={{ height: 240, overflow: "auto" }}>
             <List>{times.map((time) => listTimes(time))}</List>
           </Paper>
-        </Box>
+          <Paper style={{ height: 150, overflow: "auto" }}>
+            <List>
+              <ListItem component="div" disablePadding button={false}>
+                <span className="header">
+                  {`${location}`} is currently {`${busyLevel}`} at {`${busytime}`}
+                </span>
+              </ListItem>
+            </List>
+          </Paper>
+        </Stack>
       </div>
-      <div className="filter">
-        <h4>Apply filters:</h4>
-        <h6>(click to view options)</h6>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel>Filters</InputLabel>
-            <Select
-              id="demo-simple-select"
-              value={view}
-              label="Filter"
-              onChange={handleChange}
-              classes={{ root: classes.root, select: classes.selected }}
-            >
-              <MenuItem value={1}>{`View ${location}'s Full Menu`}</MenuItem>
-              <MenuItem value={2}>
-                Select Custom Preferences & Restrictions
-              </MenuItem>
-              <MenuItem value={3}>
-                Items Matching My Preferences & Restrictions
-              </MenuItem>
-            </Select>
-          </FormControl>
+      {/* using the MUI stack component to vertically stack the filtering options, then will stack search bar on top */}
+      <Stack className="stack" spacing={2} ml={"50px"}>
+        <div className="stackedFilter">
+          <h4>Search for a specific item:</h4>
+          {Searchbar(courtsMenu)}
+        </div>
+        <div className="stackedFilter">
+          <h4>Apply filters:</h4>
+          <h6>(click to view options)</h6>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Filters</InputLabel>
+              <Select
+                id="demo-simple-select"
+                value={view}
+                label="Filter"
+                onChange={handleChange}
+                classes={{ root: classes.root, select: classes.selected }}
+              >
+                <MenuItem value={1}>{`View ${location}'s Full Menu`}</MenuItem>
+                <MenuItem value={2}>
+                  Select Custom Preferences & Restrictions
+                </MenuItem>
+                <MenuItem value={3}>
+                  Items Matching My Preferences & Restrictions
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox size="small" color="secondary" />}
-              label={"Sort Alphabetically"}
-              checked={shouldSort}
-              onChange={handleSortClick}
-              disabled={disableSort}
-            />
-            <FormControlLabel
-              control={<Checkbox size="small" color="secondary" />}
-              label={"Sort by Item Popularity"}
-              checked={shouldSortPop}
-              onChange={handleSortClickPop}
-              disabled={disableSortPop}
-            />
-          </FormGroup>
-        </Box>
-      </div>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox size="small" color="secondary" />}
+                label={"Sort Alphabetically"}
+                checked={shouldSort}
+                onChange={handleSortClick}
+                disabled={disableSort}
+              />
+              <FormControlLabel
+                control={<Checkbox size="small" color="secondary" />}
+                label={"Sort by Item Popularity"}
+                checked={shouldSortPop}
+                onChange={handleSortClickPop}
+                disabled={disableSortPop}
+              />
+            </FormGroup>
+          </Box>
+        </div>
+        <div className="stackedFilter">
+          <h4>Select Meals:</h4>
+          <h6>(click to view options)</h6>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Filters</InputLabel>
+              <Select
+                id="demo-simple-select"
+                value={meal}
+                label="Filter"
+                onChange={handleMeals}
+                classes={{ root: classes.root, select: classes.selected }}
+              >
+                <MenuItem
+                  value={1}
+                >{`View ${location}'s Breakfast Menu`}</MenuItem>
+                <MenuItem
+                  value={2}
+                >{`View ${location}'s Brunch Menu`}</MenuItem>
+                <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
+                <MenuItem
+                  value={4}
+                >{`View ${location}'s Late Lunch Menu`}</MenuItem>
+                <MenuItem
+                  value={5}
+                >{`View ${location}'s Dinner Menu`}</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </div>
+      </Stack>
       <div className="filter">
-        <h4>Select Meals:</h4>
-        <h6>(click to view options)</h6>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel>Filters</InputLabel>
-            <Select
-              id="demo-simple-select"
-              value={meal}
-              label="Filter"
-              onChange={handleMeals}
-              classes={{ root: classes.root, select: classes.selected }}
-            >
-              <MenuItem
-                value={1}
-              >{`View ${location}'s Breakfast Menu`}</MenuItem>
-              <MenuItem value={2}>{`View ${location}'s Brunch Menu`}</MenuItem>
-              <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
-              <MenuItem
-                value={4}
-              >{`View ${location}'s Late Lunch Menu`}</MenuItem>
-              <MenuItem value={5}>{`View ${location}'s Dinner Menu`}</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </div>
-      <div className="filter">
-        {view == "SelectPrefs" && (
+        {view === "SelectPrefs" && (
           <>
             <h4 className="space">{`Input your restrictions and preferences:`}</h4>
             <h6>(menu will update after submitting)</h6>
@@ -568,7 +681,7 @@ const Menu = () => {
         )}
       </div>
       <div className="filter2">
-        {view == "SelectPrefs" && (
+        {view === "SelectPrefs" && (
           <>
             <FormGroup>
               <FormControlLabel

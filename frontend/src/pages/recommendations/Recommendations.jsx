@@ -86,7 +86,7 @@ const Recommendations = () => {
             }
             const prefsRestsObj = response.data;
 
-            if (prefsRestsObj.message != "All Good!") { /* if not all good get all items from dining court today */
+            if (prefsRestsObj.message !== "All Good!") { /* if not all good get all items from dining court today */
                 setCourtsMenu(prefsRestsObj.items);
                 setRecsSaved(prefsRestsObj.items);
                 setMessage(prefsRestsObj.message);
@@ -114,13 +114,13 @@ const Recommendations = () => {
             // then do a third call to get the items matching those prefs and rests
             const prefsResponse = await axios.get(`/preference/${username}`);
             let prefs = [];
-            if (prefsResponse != "Error retrieving preferences (user likely doesn't have any yet)") {
+            if (prefsResponse !== "Error retrieving preferences (user likely doesn't have any yet)") {
                 prefs = prefsResponse.data.preferences;
             }
 
             const restsResponse = await axios.get(`/restriction/${username}`);
             let rests = [];
-            if (restsResponse != "Error retrieving restrictions (user likely doesn't have any yet)") {
+            if (restsResponse !== "Error retrieving restrictions (user likely doesn't have any yet)") {
                 rests = restsResponse.data.restrictions;
             }
 
@@ -263,7 +263,7 @@ const Recommendations = () => {
                 </Box>
                 <div>
                     {
-                        message != "All Good!" && (
+                        message !== "All Good!" && (
                             <>
                                 <h4>{`${message}`}</h4>
                             </>

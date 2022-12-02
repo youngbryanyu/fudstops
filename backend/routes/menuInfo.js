@@ -470,6 +470,24 @@ router.get("/popular", async (req, res) => {
 });
 
 // this endpoint returns all menu items of the provided dining court
+router.get("/all", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+
+    try {
+        const menuItems = await MenuItem.find({
+            dateServed: today,
+        });
+
+        if (!menuItems) { //this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
+        res.status(200).json(menuItems);
+    } catch (error) { console.log(error); }
+});
+
+// this endpoint returns all menu items of the provided dining court
 router.get("/:diningCourt", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
@@ -667,6 +685,105 @@ router.get("/item/:menuItemID", async (req, res) => {
     } catch (error) {
         res.status(500).json("Error: " + error);
         console.log("Error: " + error);
+    }
+});
+
+router.get("/busy/:diningCourt", async (req, res) => {
+    //debug:
+    var d = new Date();
+    try {
+        const court = req.params.diningCourt;
+        var busytime = "not busy";
+        if (court === "Wiley") {
+            console.log("wiley")
+            if(d.getHours() > 20) {
+                busytime = "not too busy"
+            } else if (d.getHours() > 18 ) {
+                busytime = "as busy as it gets"
+            } else if (d.getHours() > 16) {
+                busytime = "a little busy"
+            } else if (d.getHours() > 14) {
+                busytime = "not busy"
+            } else if (d.getHours() > 12) {
+                busytime = "as busy as it gets";
+            } else if (d.getHours() > 10) {
+                busytime = "not busy";
+            } else if (d.getHours() > 8) {
+                busytime = "not too busy";
+            } else if (d.getHours() > 6) {
+                busytime = "not busy";
+            }
+        }
+        else if (court === "Windsor") {
+            console.log("windsor")
+            if(d.getHours() > 20 ) {
+                busytime = "closed"
+            } else if (d.getHours() > 18 ) {
+                busytime = "not too busy"
+            } else if (d.getHours() > 16) {
+                busytime = "a little busy"
+            } else if (d.getHours() > 14) {
+                busytime = "not too busy"
+            } else if (d.getHours() > 12) {
+                busytime = "as busy as it gets";
+            } else if (d.getHours() > 10) {
+                busytime = "not too busy";
+            } else if (d.getHours() > 8) {
+                busytime = "not busy";
+            } else if (d.getHours() > 6) {
+                busytime = "closed";
+            }
+        }
+        else if (court === "Hillenbrand") {
+            console.log("hilly")
+            busytime = "closed";
+        }
+        else if (court === "Ford") {
+            console.log("ford")
+            if(d.getHours() > 20 ) {
+                busytime = "closed"
+            } else if (d.getHours() > 18 ) {
+                busytime = "a little busy"
+            } else if (d.getHours() > 16) {
+                busytime = "a little busy"
+            } else if (d.getHours() > 14) {
+                busytime = "not too busy"
+            } else if (d.getHours() > 12) {
+                busytime = "as busy as it gets";
+            } else if (d.getHours() > 10) {
+                busytime = "closed";
+            } else if (d.getHours() > 8) {
+                busytime = "not too busy";
+            } else if (d.getHours() > 6) {
+                busytime = "not busy";
+            }
+        }
+        else if (court === "Earhart") {
+            console.log("earhart")
+            if(d.getHours() > 20 ) {
+                busytime = "not busy"
+            } else if (d.getHours() > 18 ) {
+                busytime = "a little busy"
+            } else if (d.getHours() > 16) {
+                busytime = "not too busy"
+            } else if (d.getHours() > 14) {
+                busytime = "closed"
+            } else if (d.getHours() > 12) {
+                busytime = "a little busy";
+            } else if (d.getHours() > 10) {
+                busytime = "not busy";
+            } else if (d.getHours() > 8) {
+                busytime = "not too busy";
+            } else if (d.getHours() > 6) {
+                busytime = "not busy";
+            }
+        }
+        console.log("Successfully retrieved " + req.params.diningCourt + "'s busy time at " + d)
+        console.log("busy time is: " + busytime );
+        res.status(200).json(busytime);
+        return;
+    } catch (error) { 
+        console.log(error); 
     }
 });
 
