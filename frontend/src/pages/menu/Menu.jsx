@@ -1,5 +1,6 @@
 // Javascript for page displaying menu items for a dining court
 import Stack from "@mui/material/Stack";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -326,6 +327,8 @@ const Menu = () => {
     }
   };
 
+  const [busyLevel, setBusyLevel] = useState("");
+
   /**
    * Load dining courts items on page load and alters anytime the location changes (when user first enters the page)
    */
@@ -364,11 +367,22 @@ const Menu = () => {
       }
     };
 
+    const getBusy = async () => {
+      try {
+        const response = await axios.get(`/menuInfo/busy/${location}`);
+        const busyness = response.data;
+        setBusyLevel(busyness);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (location !== null) {
       setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
       getCourtsItems();
       getTimes();
       getItemsMatchingUser();
+      getBusy();
     }
     // eslint-disable-next-line
   }, [location]);
@@ -480,6 +494,17 @@ const Menu = () => {
   //         menu.map((item) => listItem(item))
   //     }
   // }
+  let date = new Date();
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  var busytime = date.toLocaleTimeString("en-us", options);
   return (
     <div className="menu">
       <Navbar />
@@ -502,14 +527,27 @@ const Menu = () => {
       </div>
       <div className="menuTimes">
         <h4 className="evenMoreSpace">{`${location}'s meal times:`}</h4>
-        <Box
-          sx={{ height: 400, width: 200, bgcolor: "Black" }}
-          className="times"
+        <Stack
+          spacing={2}
+          sx={{
+            height: 400,
+            width: 200,
+          }}
+          className="miscinfo"
         >
-          <Paper style={{ height: 400, overflow: "auto" }}>
+          <Paper style={{ height: 240, overflow: "auto" }}>
             <List>{times.map((time) => listTimes(time))}</List>
           </Paper>
-        </Box>
+          <Paper style={{ height: 150, overflow: "auto" }}>
+            <List>
+              <ListItem component="div" disablePadding button={false}>
+                <span className="header">
+                  {`${location}`} is currently {`${busyLevel}`} at {`${busytime}`}
+                </span>
+              </ListItem>
+            </List>
+          </Paper>
+        </Stack>
       </div>
       {/* using the MUI stack component to vertically stack the filtering options, then will stack search bar on top */}
       <Stack className="stack" spacing={2} ml={"50px"}>
