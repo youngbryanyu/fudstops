@@ -23,6 +23,7 @@ import { AuthContext } from "../../authContext/AuthContext";
 import "./menu.scss";
 import axios from "axios";
 import { Mail, Phone, NearMe } from "@material-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,23 +37,33 @@ const useStyles = makeStyles((theme) => ({
 const Menu = () => {
   const classes = useStyles();
   let { location } = useParams();
-  const [meal, setMeal] = useState("");
-  const [allItems, setAllItems] = useState([]); //keep track of all menu items
-  const [selectedItems, setSelectedItems] = useState([]); //keep track of the selected checkbox items
-  const [courtsMenu, setCourtsMenu] = useState([]); // the current items displayed in list
-  const [times, setTimes] = useState([]); //the current times in the list
-  const [matchingItems, setMatchingItems] = useState([]); //keep track of matching user's prefs items
-  const [view, setView] = useState(""); //keep track of which filterconst [] option is currently chosen
   const { user } = useContext(AuthContext);
+
+  const [meal, setMeal] = useState("");
+  //keep track of all menu items
+  const [allItems, setAllItems] = useState([]);
+  //keep track of the selected checkbox items
+  const [selectedItems, setSelectedItems] = useState([]);
+  // the current items displayed in list
+  const [courtsMenu, setCourtsMenu] = useState([]);
+  //the current times in the list
+  const [times, setTimes] = useState([]);
+  //keep track of matching user's prefs items
+  const [matchingItems, setMatchingItems] = useState([]);
+  //keep track of which filterconst [] option is currently chosen
+  const [view, setView] = useState("");
+
   const [shouldSort, setShouldSort] = useState(false);
-  const [menuBeforeSort, setMenuBeforeSort] = useState([]); // items displayed before sorting (courtsmenu)
-
-  const [shouldSortPop, setShouldSortPop] = useState(false); //should sort based ff item popularity
-
-  const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]); // sort the menu items based on the rating
-
-  const [disableSort, setDisableSort] = useState(false); //disabling the button when the other one is in use
-  const [disableSortPop, setDisableSortPop] = useState(false); //disabling the button when the other one is in use
+  // items displayed before sorting (courtsmenu)
+  const [menuBeforeSort, setMenuBeforeSort] = useState([]);
+  //should sort based off item popularity
+  const [shouldSortPop, setShouldSortPop] = useState(false);
+  // sort the menu items based on the rating
+  const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]);
+  //disabling the button when the other one is in use
+  const [disableSort, setDisableSort] = useState(false);
+  //disabling the button when the other one is in use
+  const [disableSortPop, setDisableSortPop] = useState(false);
 
   let username = user.username;
 
@@ -243,8 +254,6 @@ const Menu = () => {
     // eslint-disable-next-line
   }, [shouldSortPop]);
 
-  console.log(courtsMenu);
-
   /* selecting preferences and restrictions from checkbox */
   const handleSelectPrefsClick = () => {
     //this is for handling the submit button of preferences
@@ -338,7 +347,6 @@ const Menu = () => {
           `/menuInfo/prefs/${location}/${username}`
         );
         const courtsItems = response.data;
-        console.log("courts items is");
         setMatchingItems(courtsItems);
       } catch (error) {
         console.log(error);
@@ -407,17 +415,55 @@ const Menu = () => {
     );
   }
 
+  const navigate = useNavigate();
+  //searchbar component. cannot search for just any value, have to select from dropdown
+  //params: current menu state (pass in courtsMenu)
   function Searchbar(menu) {
+    function handleInputChange(event, value) {
+      if (!value) {
+        return;
+      }
+      if (value.ID) {
+        console.log(value.ID);
+        navigate("/foodInfo/" + value.ID);
+      }
+    }
     return (
-      <Autocomplete
-        disablePortal
-        id="menu-search-bar"
-        value={menu}
-        sx={{ width: 0.9 }}
-        renderInput={(params) => (
-          <TextField {...params} label="Search for an item" />
-        )}
-      />
+      <Box>
+        <Autocomplete
+          disablePortal
+          autoComplete={true}
+          autoHighlight={true}
+          id="menu-search-bar"
+          options={menu}
+          getOptionLabel={(option) => option.name}
+          onChange={handleInputChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Search for an item" />
+          )}
+          sx={{
+            pt: "5px",
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "& .MuiOutlinedInput-input": {
+              color: "White",
+            },
+            "& .MuiInputLabel-outlined": {
+              color: "White",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "White",
+            },
+            "&.Mui-focused .MuiInputLabel-outlined": {
+              color: "White",
+            },
+          }}
+        />
+      </Box>
     );
   }
 
@@ -468,6 +514,7 @@ const Menu = () => {
       <Stack className="stack" spacing={2} ml={"50px"}>
         <div classname="stackedFilter">
           <h4>Search for a specific item:</h4>
+          {Searchbar(courtsMenu)}
         </div>
         <div className="stackedFilter">
           <h4>Apply filters:</h4>
