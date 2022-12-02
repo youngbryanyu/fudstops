@@ -334,6 +334,7 @@ const Menu = () => {
       try {
         const response = await axios.get(`/menuInfo/${location}`);
         console.log(response.data);
+        const courtsItems = response.data;
         setCourtsMenu(courtsItems);
         setAllItems(courtsItems);
       } catch (error) {
