@@ -160,7 +160,7 @@ const Notifications = () => {
                 const res = await axios.get(`/recommendations/saved/${user.username}`);
                 const prefsAndRestsObj = res.data;
 
-                if(prefsAndRestsObj.message != "All Good!") {
+                if(prefsAndRestsObj.message !== "All Good!") {
                     sendNotifyText("Add more saved items!");
                     return;
                 }
@@ -201,7 +201,7 @@ const Notifications = () => {
 
                     count++;
 
-                    if(count == 20) break;
+                    if(count === 20) break;
 
                 }
 

@@ -134,13 +134,13 @@ const Menu = () => {
     if (location === WILEY) {
       window.open(WILEY_ADDR, "_blank");
     }
-    if (location == FORD) {
+    if (location === FORD) {
       window.open(FORD_ADDR, "_blank");
     }
-    if (location == EARHART) {
+    if (location === EARHART) {
       window.open(EARHART_ADDR, "_blank");
     }
-    if (location == HILLENBRAND) {
+    if (location === HILLENBRAND) {
       window.open(HILLENBRAND_ADDR, "_blank");
     }
   };
@@ -157,17 +157,17 @@ const Menu = () => {
       setEmail("cavanare@purdue.edu");
       setLoc("498 S Martin Jischke Drive West Lafayette, IN 47906");
     }
-    if (location == FORD) {
+    if (location === FORD) {
       setNumber("(765) 494-2482");
       setEmail("ahallmen@purdue.edu");
       setLoc("1122 West Stadium Avenue West Lafayette, IN 47906");
     }
-    if (location == EARHART) {
+    if (location === EARHART) {
       setNumber("(765) 496-6925");
       setEmail("coryb@purdue.edu");
       setLoc("1275 1st Street West Lafayette, IN 47906");
     }
-    if (location == HILLENBRAND) {
+    if (location === HILLENBRAND) {
       setNumber("(765) 496-0461");
       setEmail("nmputubw@purdue.edu");
       setLoc("1301 3rd Street West Lafayette, IN 47906");
@@ -515,7 +515,7 @@ const Menu = () => {
         </Box>
       </div>
       <div className="filter">
-        {view == "SelectPrefs" && (
+        {view === "SelectPrefs" && (
           <>
             <h4 className="space">{`Input your restrictions and preferences:`}</h4>
             <h6>(menu will update after submitting)</h6>
@@ -568,7 +568,7 @@ const Menu = () => {
         )}
       </div>
       <div className="filter2">
-        {view == "SelectPrefs" && (
+        {view === "SelectPrefs" && (
           <>
             <FormGroup>
               <FormControlLabel

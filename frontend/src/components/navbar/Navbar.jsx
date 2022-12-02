@@ -107,7 +107,7 @@ const Navbar = () => {
                     {/* <Search className="icon" /> */}
                     {/* <Notifications className="icon" /> */}
                     {
-                        data && data.length != 0 ? (
+                        data && data.length !== 0 ? (
                             <>
                                 <div>
                                     {data.map((singleData) => {

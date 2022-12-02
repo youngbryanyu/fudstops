@@ -39,7 +39,7 @@ const Popular = () => {
 
     /* return the proper number of stars for a menu item */
     function getStars(rating) {
-        if (rating == 0) {
+        if (rating === 0) {
             return (<> (No Ratings)</>
             )
         }

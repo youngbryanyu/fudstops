@@ -17,7 +17,7 @@ export default function Searchbar(menu) {
       disablePortal
       id="menu-search-bar"
       options={menu}
-      sx={{ width: 0.3 }}
+      sx={{ width: 0.9 }}
       renderInput={(params) => (
         <TextField {...params} label="Search for an item" />
       )}

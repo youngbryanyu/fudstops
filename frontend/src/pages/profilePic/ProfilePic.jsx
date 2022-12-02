@@ -124,7 +124,7 @@ export default function ProfPic() {
                 <div className="container">
                     <form>
                         {
-                            data && data.length != 0 ? (
+                            data && data.length !== 0 ? (
                                 <>
                                     <div>
                                         {data.map((singleData) => {
