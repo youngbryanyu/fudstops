@@ -279,8 +279,8 @@ const Home = () => {
         navigate("/foodInfo/" + value.ID);
       }
     }
-    const renderOptions = (props: React.HTMLAttributes<HTMLElement>, option: Partial<any>) => {
-        return <li {...props} key={option.ID}>{option.name}</li>
+    const renderOptions = (props: React.HTMLAttributes<HTMLElement>, option: Partial<any>) => { /* ignore the red underlines */
+        return <li {...props} key={option.ID}>{option.name}</li> /* the key ensures that search results are accurate */
     }
     return (
       <Box>
