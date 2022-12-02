@@ -470,6 +470,24 @@ router.get("/popular", async (req, res) => {
 });
 
 // this endpoint returns all menu items of the provided dining court
+router.get("/all", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+
+    try {
+        const menuItems = await MenuItem.find({
+            dateServed: today,
+        });
+
+        if (!menuItems) { //this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
+        res.status(200).json(menuItems);
+    } catch (error) { console.log(error); }
+});
+
+// this endpoint returns all menu items of the provided dining court
 router.get("/:diningCourt", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());

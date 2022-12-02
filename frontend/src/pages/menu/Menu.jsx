@@ -333,7 +333,7 @@ const Menu = () => {
     const getCourtsItems = async () => {
       try {
         const response = await axios.get(`/menuInfo/${location}`);
-        const courtsItems = response.data;
+        console.log(response.data);
         setCourtsMenu(courtsItems);
         setAllItems(courtsItems);
       } catch (error) {
@@ -512,7 +512,7 @@ const Menu = () => {
       </div>
       {/* using the MUI stack component to vertically stack the filtering options, then will stack search bar on top */}
       <Stack className="stack" spacing={2} ml={"50px"}>
-        <div classname="stackedFilter">
+        <div className="stackedFilter">
           <h4>Search for a specific item:</h4>
           {Searchbar(courtsMenu)}
         </div>

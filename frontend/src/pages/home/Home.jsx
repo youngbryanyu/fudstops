@@ -48,6 +48,8 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   let username = user.username;
 
+  const [fullMenu, setFullMenu] = useState([]); //keep track of full menu
+
   // preferences
   const VEGAN = "Vegan";
   const VEGETARIAN = "Vegetarian";
@@ -206,6 +208,18 @@ const Home = () => {
       }
     };
 
+    const getFullMenu = async () => {
+      let temp = [];
+      try {
+        const response = await axios.get(`/menuInfo/all`);
+        const courtsItems = response.data;
+        console.log(response.data);
+        setFullMenu(courtsItems);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const getItemsMatchingUser = async () => {
       try {
         const matchingCourts = [];
@@ -236,6 +250,7 @@ const Home = () => {
 
     getItemsMatchingUser();
     getAllDiningCourts(); // get all dining courts after b/c we want to show all dining courts
+    getFullMenu();
 
     // eslint-disable-next-line
   }, [location]);
@@ -306,53 +321,62 @@ const Home = () => {
   return (
     <div className="home">
       <Navbar />
-      <div>
-        <h4 className="moreSpace">{`View Dining Courts!`}</h4>
-        <h6>(click to view info)</h6>
-        <Box
-          sx={{
-            width: "100%",
-            height: 180,
-            maxWidth: 360,
-            bgcolor: "background.paper",
-          }}
-          className="list"
-        >
-          <Paper style={{ maxHeight: 400, overflow: "auto" }}>
-            <List>{courtsMenu.map((item) => listItem(item))}</List>
-          </Paper>
-        </Box>
-      </div>
-      <div className="filter">
-        <h4>Select Your Filters!</h4>
-        <h6>(click to open options)</h6>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel>Filters</InputLabel>
-            <Select
-              id="demo-simple-select"
-              value={view}
-              label="Filter"
-              onChange={handleChange}
-              classes={{ root: classes.root, select: classes.selected }}
+      <Stack spacing={2}>
+        <div className="stackedFilter">
+          <h4>Search all menus:</h4>
+          {Searchbar(fullMenu)}
+        </div>
+        <Stack spacing={2} direction="row">
+          <div className="stackedFilter">
+            <h4>{`View Dining Courts!`}</h4>
+            <h6>(click to view info)</h6>
+            <Box
+              sx={{
+                width: "100%",
+                height: 180,
+                maxWidth: 360,
+                bgcolor: "background.paper",
+              }}
+              className="list"
             >
-              <MenuItem value={1}>
-                Dining courts with items matching my restrictions/preferences
-              </MenuItem>
-              <MenuItem value={2}>Input restrictions/preferences</MenuItem>
-              <MenuItem value={3}>{`All Dining Courts`}</MenuItem>
-            </Select>
-          </FormControl>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox size="small" color="secondary" />}
-              label={"Sort Alphabetically"}
-              checked={shouldSort}
-              onChange={handleSortClick}
-            />
-          </FormGroup>
-        </Box>
-      </div>
+              <Paper style={{ maxHeight: 400, overflow: "auto" }}>
+                <List>{courtsMenu.map((item) => listItem(item))}</List>
+              </Paper>
+            </Box>
+          </div>
+          <div className="stackedFilter">
+            <h4>Select Your Filters!</h4>
+            <h6>(click to open options)</h6>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel>Filters</InputLabel>
+                <Select
+                  id="demo-simple-select"
+                  value={view}
+                  label="Filter"
+                  onChange={handleChange}
+                  classes={{ root: classes.root, select: classes.selected }}
+                >
+                  <MenuItem value={1}>
+                    Dining courts with items matching my
+                    restrictions/preferences
+                  </MenuItem>
+                  <MenuItem value={2}>Input restrictions/preferences</MenuItem>
+                  <MenuItem value={3}>{`All Dining Courts`}</MenuItem>
+                </Select>
+              </FormControl>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox size="small" color="secondary" />}
+                  label={"Sort Alphabetically"}
+                  checked={shouldSort}
+                  onChange={handleSortClick}
+                />
+              </FormGroup>
+            </Box>
+          </div>
+        </Stack>
+      </Stack>
       <div className="filter">
         {view === "SelectPrefs" && (
           <>
