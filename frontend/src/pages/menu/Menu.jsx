@@ -3,6 +3,8 @@ import Stack from "@mui/material/Stack";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import TextField from "@mui/material/TextField";
+import Autocomplete /* , {  createFilterOptions  } */ from "@mui/material/Autocomplete";
 import Paper from "@material-ui/core/Paper";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -405,6 +407,20 @@ const Menu = () => {
     );
   }
 
+  function Searchbar(menu) {
+    return (
+      <Autocomplete
+        disablePortal
+        id="menu-search-bar"
+        value={menu}
+        sx={{ width: 0.9 }}
+        renderInput={(params) => (
+          <TextField {...params} label="Search for an item" />
+        )}
+      />
+    );
+  }
+
   // prototype for displaying a default message for if there is no response for a meal
   // function displayMenu(menu) {
   //     if(!menu) {
@@ -450,7 +466,7 @@ const Menu = () => {
       </div>
       {/* using the MUI stack component to vertically stack the filtering options, then will stack search bar on top */}
       <Stack className="stack" spacing={2} ml={"50px"}>
-        <div classname="stackedFilter"> 
+        <div classname="stackedFilter">
           <h4>Search for a specific item:</h4>
         </div>
         <div className="stackedFilter">
@@ -507,11 +523,19 @@ const Menu = () => {
                 onChange={handleMeals}
                 classes={{ root: classes.root, select: classes.selected }}
               >
-                <MenuItem value={1}>{`View ${location}'s Breakfast Menu`}</MenuItem>
-                <MenuItem value={2}>{`View ${location}'s Brunch Menu`}</MenuItem>
+                <MenuItem
+                  value={1}
+                >{`View ${location}'s Breakfast Menu`}</MenuItem>
+                <MenuItem
+                  value={2}
+                >{`View ${location}'s Brunch Menu`}</MenuItem>
                 <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
-                <MenuItem value={4}>{`View ${location}'s Late Lunch Menu`}</MenuItem>
-                <MenuItem value={5}>{`View ${location}'s Dinner Menu`}</MenuItem>
+                <MenuItem
+                  value={4}
+                >{`View ${location}'s Late Lunch Menu`}</MenuItem>
+                <MenuItem
+                  value={5}
+                >{`View ${location}'s Dinner Menu`}</MenuItem>
               </Select>
             </FormControl>
           </Box>
