@@ -1,4 +1,5 @@
 // Javascript for page displaying menu items for a dining court
+import Stack from "@mui/material/Stack";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -447,73 +448,75 @@ const Menu = () => {
           </Paper>
         </Box>
       </div>
-      <div className="filter">
-        <h4>Apply filters:</h4>
-        <h6>(click to view options)</h6>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel>Filters</InputLabel>
-            <Select
-              id="demo-simple-select"
-              value={view}
-              label="Filter"
-              onChange={handleChange}
-              classes={{ root: classes.root, select: classes.selected }}
-            >
-              <MenuItem value={1}>{`View ${location}'s Full Menu`}</MenuItem>
-              <MenuItem value={2}>
-                Select Custom Preferences & Restrictions
-              </MenuItem>
-              <MenuItem value={3}>
-                Items Matching My Preferences & Restrictions
-              </MenuItem>
-            </Select>
-          </FormControl>
+      {/* using the MUI stack component to vertically stack the filtering options, then will stack search bar on top */}
+      <Stack className="stack" spacing={2} ml={"50px"}>
+        <div classname="stackedFilter"> 
+          <h4>Search for a specific item:</h4>
+        </div>
+        <div className="stackedFilter">
+          <h4>Apply filters:</h4>
+          <h6>(click to view options)</h6>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Filters</InputLabel>
+              <Select
+                id="demo-simple-select"
+                value={view}
+                label="Filter"
+                onChange={handleChange}
+                classes={{ root: classes.root, select: classes.selected }}
+              >
+                <MenuItem value={1}>{`View ${location}'s Full Menu`}</MenuItem>
+                <MenuItem value={2}>
+                  Select Custom Preferences & Restrictions
+                </MenuItem>
+                <MenuItem value={3}>
+                  Items Matching My Preferences & Restrictions
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox size="small" color="secondary" />}
-              label={"Sort Alphabetically"}
-              checked={shouldSort}
-              onChange={handleSortClick}
-              disabled={disableSort}
-            />
-            <FormControlLabel
-              control={<Checkbox size="small" color="secondary" />}
-              label={"Sort by Item Popularity"}
-              checked={shouldSortPop}
-              onChange={handleSortClickPop}
-              disabled={disableSortPop}
-            />
-          </FormGroup>
-        </Box>
-      </div>
-      <div className="filter">
-        <h4>Select Meals:</h4>
-        <h6>(click to view options)</h6>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel>Filters</InputLabel>
-            <Select
-              id="demo-simple-select"
-              value={meal}
-              label="Filter"
-              onChange={handleMeals}
-              classes={{ root: classes.root, select: classes.selected }}
-            >
-              <MenuItem
-                value={1}
-              >{`View ${location}'s Breakfast Menu`}</MenuItem>
-              <MenuItem value={2}>{`View ${location}'s Brunch Menu`}</MenuItem>
-              <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
-              <MenuItem
-                value={4}
-              >{`View ${location}'s Late Lunch Menu`}</MenuItem>
-              <MenuItem value={5}>{`View ${location}'s Dinner Menu`}</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </div>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox size="small" color="secondary" />}
+                label={"Sort Alphabetically"}
+                checked={shouldSort}
+                onChange={handleSortClick}
+                disabled={disableSort}
+              />
+              <FormControlLabel
+                control={<Checkbox size="small" color="secondary" />}
+                label={"Sort by Item Popularity"}
+                checked={shouldSortPop}
+                onChange={handleSortClickPop}
+                disabled={disableSortPop}
+              />
+            </FormGroup>
+          </Box>
+        </div>
+        <div className="stackedFilter">
+          <h4>Select Meals:</h4>
+          <h6>(click to view options)</h6>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Filters</InputLabel>
+              <Select
+                id="demo-simple-select"
+                value={meal}
+                label="Filter"
+                onChange={handleMeals}
+                classes={{ root: classes.root, select: classes.selected }}
+              >
+                <MenuItem value={1}>{`View ${location}'s Breakfast Menu`}</MenuItem>
+                <MenuItem value={2}>{`View ${location}'s Brunch Menu`}</MenuItem>
+                <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
+                <MenuItem value={4}>{`View ${location}'s Late Lunch Menu`}</MenuItem>
+                <MenuItem value={5}>{`View ${location}'s Dinner Menu`}</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </div>
+      </Stack>
       <div className="filter">
         {view === "SelectPrefs" && (
           <>
