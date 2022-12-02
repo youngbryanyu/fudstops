@@ -17,7 +17,7 @@ import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import Button from "@material-ui/core/Button";
 import Navbar from "../../components/navbar/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../../authContext/AuthContext";
 import "./home.scss";
 import axios from "axios";
@@ -279,6 +279,9 @@ const Home = () => {
         navigate("/foodInfo/" + value.ID);
       }
     }
+    const renderOptions = (props: React.HTMLAttributes<HTMLElement>, option: Partial<any>) => {
+        return <li {...props} key={option.ID}>{option.name}</li>
+    }
     return (
       <Box>
         <Autocomplete
@@ -292,6 +295,7 @@ const Home = () => {
           renderInput={(params) => (
             <TextField {...params} label="Search for an item" />
           )}
+          renderOption={renderOptions}
           sx={{
             pt: "5px",
             "&:hover .MuiOutlinedInput-notchedOutline": {

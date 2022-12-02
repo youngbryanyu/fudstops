@@ -164,7 +164,7 @@ const Popular = () => {
             <Navbar />
             <div>
                 <h4 className="moreSpace">{`Popular Items Today:`}</h4><h6>(click to view info)</h6>
-                <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
+                <Box sx={{ width: '100%', height: 400, maxWidth: 1000, bgcolor: 'background.paper' }} className="list">
                     <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
                         <List>
                             {existsPopularItems ? (
