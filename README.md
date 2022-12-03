@@ -26,7 +26,7 @@ In the `/backend` directory run:
 
 - The page will reload if you make edits.
 
-### Running backend API tests
+### Running automated backend API endpoint tests
 
 In the `/backend` directory run:
 
