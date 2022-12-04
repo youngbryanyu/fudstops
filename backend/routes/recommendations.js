@@ -13,7 +13,6 @@ router.get("/saved/:username", async (req, res) => {
         const savedItems = await Saved.find({ username: req.params.username });
 
         if (!savedItems || savedItems.length == 0) { //this means no saved items were found
-
             // we will return all menu items, with a boolean to indicate that the mesage
             // "save more items to have better recommendations"
 
@@ -66,9 +65,11 @@ router.get("/saved/:username", async (req, res) => {
         let index = 0;
 
         savedItems.forEach(async (item) => {
-
             const menuItem = await MenuItem.findOne({ ID: item.menuItemID }); //the itemObj of this saved item
-            const itemsAllergens = menuItem.allergens;
+
+            var itemsAllergens;
+            itemsAllergens = menuItem.allergens;
+
             // now go through its allergens and add true attributes to respective elements in array
             if (!itemsAllergens || itemsAllergens.length)
                 itemsAllergens.forEach((allergen) => {
@@ -182,7 +183,6 @@ router.get("/saved/:username", async (req, res) => {
                     }
 
                 } //after this loop the final attributes have been found
-
                 if (finalPrefs.length == 0 && finalRests.length == 0) { //this means no attributes were >= 3 weight
 
                     //we will return all menu items, with a boolean to indicate that the mesage

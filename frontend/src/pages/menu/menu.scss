@@ -11,61 +11,74 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
 
-.header {
-    font-weight: bold;
-}
-
-.text {
-    color: white;
-}
-
-.space {
-    margin-top: 5px;
-}
-
-.filter {
-
-    margin-left: 50px;
-
-}
-
-.filter2 {
-
-    margin-left: 10px;
-
-}
-
-//for use in stack component (padding is weird)
-.stackedFilter {
-
-    padding-top: 10px;
-
-}
-
-
-.menuTimes {
-    margin-left: 10px;
-}
-
-.moreSpace {
-    margin-top: 25px;
-}
-.evenMoreSpace {
-    margin-top: 35px;
-}
-.contactInfo {
-   font-weight:bold;
-   transform: translate(0px, 340px);
-   position: absolute;
-   .icon{
-        transform: translate(0px, 5px);
+    .header {
+        font-weight: bold;
+    }
+    
+    .text {
+        color: white;
+    }
+    
+    .space {
+        margin-top: 5px;
+    }
+    
+    .filter {
+        margin-left: 50px;
+    }
+    
+    .filter2 {
+        margin-left: 10px;
     }
 
-    .location {
-        &:hover {
-            cursor: pointer;
+    .smallListItem {
+        font-size: 14px;
+    }
+
+    .listItem {
+        // font-size: 18px;
+        font-weight: bold;
+    }
+    
+    //for use in stack component (padding is weird)
+    .stack {
+        margin-left: 25px;
+        .stackedFilter {
+            margin-top: 0px;
+            padding-top: 10px;
+        }
+    }
+    
+    .menuItems {
+        margin-left: 25px;
+    }
+    
+    .menuTimes {
+        // margin-left: -125px;
+    }
+    
+    .moreSpace {
+        margin-top: 25px;
+    }
+    
+    .evenMoreSpace {
+        margin-top: 35px;
+    }
+    
+    .contactInfo {
+        font-weight: bold;
+        transform: translate(0px, 340px);
+        position: absolute;
+    
+        .icon {
+            transform: translate(0px, 5px);
+        }
+    
+        .location {
+            &:hover {
+                cursor: pointer;
+            }
         }
     }
 }

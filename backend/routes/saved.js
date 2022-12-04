@@ -50,7 +50,7 @@ router.get("/allSaved/:username", async (req, res) => {
 
         const response = await Saved.find({username: req.params.username});
 
-        if(response == null) {
+        if(response.length === 0) {
             res.status(500).json("No user found");
             return;
         }

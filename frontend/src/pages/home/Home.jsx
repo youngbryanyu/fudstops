@@ -13,8 +13,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import Button from "@material-ui/core/Button";
+// import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+// import Button from "@material-ui/core/Button";
 import Navbar from "../../components/navbar/Navbar";
 import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect, useContext, useRef } from "react";
@@ -30,9 +30,10 @@ import Autocomplete /* , {  createFilterOptions  } */ from "@mui/material/Autoco
 const DINING_COURTS = ["Wiley", "Earhart", "Ford", "Hillenbrand", "Windsor"];
 
 /* filter type constants */
-const USERS_PREFS = 0;
-const MATCHING_ITEMS = 1;
-const ALL_ITEMS = 2;
+const ALL_ITEMS = 0;
+const USERS_PREFS = 1;
+const MATCHING_ITEMS = 2;
+
 
 /* styling for text */
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +48,13 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
     const classes = useStyles();
     let { location } = useParams();
-    const [courtsMenu, setCourtsMenu] = useState([]); /* current items displayed in UI */
+    const [courtsMenu, setCourtsMenu] = useState(DINING_COURTS); /* current items displayed in UI */
     const [allItems, setAllItems] = useState([]); /* keep cache of all items (items are dining courts) */
     const [matchingItems, setMatchingItems] = useState([]); /* keep cache of matching user's prefs items */
     const [selectedItems, setSelectedItems] = useState([]); /* keep track of the selected checkbox items */
-    const [view, setView] = useState(2); /* keep track of which filter option is currently chosen */
+    const [view, setView] = useState(ALL_ITEMS); /* keep track of which filter option is currently chosen */
+    console.log(courtsMenu)
+    console.log("const: " + DINING_COURTS)
 
     const { user } = useContext(AuthContext); /* content for user */
     let username = user.username;
@@ -126,12 +129,8 @@ const Home = () => {
     };
 
     /* alphabetical sorting */
-    const isFirstRender = useRef(true);
+    
     useEffect(() => {
-        if (isFirstRender.current === true) {
-            isFirstRender.current = false;
-            return;
-        }
         if (shouldSort) {
             setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
             courtsMenu.sort();
@@ -148,8 +147,8 @@ const Home = () => {
         }
         try {
             loading.current = false;
-            setAllItems(DINING_COURTS);
-            setCourtsMenu(DINING_COURTS);
+            setAllItems(JSON.parse(JSON.stringify(courtsMenu)));
+            setCourtsMenu(JSON.parse(JSON.stringify(courtsMenu)));
         } catch (error) {
             console.log(error);
         }
@@ -164,7 +163,7 @@ const Home = () => {
         try {
             const response = await axios.get(`/menuInfo/all`);
             const courtsItems = response.data;
-            console.log(response.data);
+            // console.log(response.data);
             loading.current = false;
             setFullMenu(courtsItems);
         } catch (error) {
@@ -285,6 +284,11 @@ const Home = () => {
         }
     };
 
+    /* set menu before sorting each time something updates */
+    useEffect(() => {
+        setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
+    }, [courtsMenu]);
+
     /* useEffect for handling selecting items */
     useEffect(() => {
         if (view === USERS_PREFS) {
@@ -335,7 +339,7 @@ const Home = () => {
 
         /* the key ensures that search results are accurate */
         const renderOptions = (props: React.HTMLAttributes<HTMLElement>, option: Partial<any>) => { /* ignore the red underlines */
-            return <li {...props} key={option.ID}>{option.name}</li> 
+            return <li {...props} key={option.ID}>{option.name}</li>
         }
         return (
             <Box>
@@ -348,7 +352,7 @@ const Home = () => {
                     getOptionLabel={(option) => option.name}
                     onChange={handleInputChange}
                     renderInput={(params) => (
-                        <TextField {...params} label="Search for an item" />
+                        <TextField {...params} label="Search for a menu item" />
                     )}
                     renderOption={renderOptions}
                     sx={{
@@ -382,7 +386,7 @@ const Home = () => {
             <Navbar />
             <Stack spacing={2}>
                 <div className="stackedFilter">
-                    <h4>Search all menus items :</h4>
+                    {/* <h4>Search all menus items :</h4> */}
                     {Searchbar(fullMenu)}
                 </div>
                 <Stack spacing={2} direction="row">
@@ -392,14 +396,14 @@ const Home = () => {
                         <Box
                             sx={{
                                 width: "100%",
-                                height: 180,
+                                maxHeight: 200,
                                 maxWidth: 360,
                                 bgcolor: "background.paper",
+                                borderRadius: 5
                             }}
                             className="list"
                         >
-                            <Paper style={{ maxHeight: 400, overflow: "auto" }}>
-                                {console.log(loading.current)}
+                            <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                                 {
                                     loading.current ? (
                                         <List>
@@ -433,7 +437,7 @@ const Home = () => {
                         </Box>
                     </div>
                     <div className="stackedFilter">
-                        <h4>Select filter: </h4>
+                        {/* <h4>Select filter: </h4> */}
                         {/* <h6>(click to open options)</h6> */}
                         <Box sx={{ minWidth: 120 }}>
                             <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
@@ -445,11 +449,11 @@ const Home = () => {
                                     onChange={handleChange}
                                     classes={{ root: classes.root, select: classes.selected }}
                                 >
-                                    <MenuItem value={0}>
+                                    <MenuItem value={ALL_ITEMS}>All dining courts</MenuItem>
+                                    <MenuItem value={USERS_PREFS}>
                                         Dining courts satisfying my preferences/restrictions
                                     </MenuItem>
-                                    <MenuItem value={1}>Custom preferences/restrictions</MenuItem>
-                                    <MenuItem value={2}>All dining courts</MenuItem>
+                                    <MenuItem value={MATCHING_ITEMS}>Custom preferences/restrictions</MenuItem>
                                 </Select>
                             </FormControl>
                             <FormGroup>

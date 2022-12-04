@@ -13,32 +13,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
 
-.header {
-    font-weight: bold;
-}
-
-.text {
-    color: white;
-}
-
-.space {
-    margin-top: 5px;
-}
-
-.filter {
-
-    margin-left: 50px;
-
-}
-
-.filter2 {
-
-    margin-left: 10px;
-
-}
-
-.moreSpace {
-    margin-top: 25px;
+    .header {
+        font-weight: bold;
+    }
+    
+    .text {
+        color: white;
+    }
+    
+    .space {
+        margin-top: 5px;
+    }
+    
+    .filter {
+        margin-left: 10px;
+    }
+    
+    .filter2 {
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    
+    .moreSpace {
+        margin-top: 25px;
+    }
 }
