@@ -4,6 +4,20 @@ A convenient and centralized spot for students to view menus & dining locations,
 
 ## Available Scripts
 
+### Cloning the repository
+- Run `git clone https://github.com/yyu2002/fudstops.git" in your desired directory.
+- Optional: Run `npm install yarn` to install yarn as the package manager
+
+### Starting the back end
+
+Before starting the frontend, run `yarn` in the `/backend` to install any missing dependencies.
+
+In the `/backend` directory run:
+
+`yarn start` or `npm run start`
+
+- The page will reload if you make edits.
+
 ### Starting the front end
 
 Before starting the frontend, run `yarn` in the `/frontend` to install any missing dependencies.
@@ -16,17 +30,7 @@ In the `/frontend` directory run:
 - Open http://localhost:3000 to view it in the browser.
 - The page will reload if you make edits.
 
-### Starting the back end
-
-Before starting the frontend, run `yarn` in the `/backend` to install any missing dependencies.
-
-In the `/backend` directory run:
-
-`yarn start` or `npm run start`
-
-- The page will reload if you make edits.
-
-### Running backend API tests
+### Running automated backend API endpoint tests
 
 In the `/backend` directory run:
 
