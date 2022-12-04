@@ -19,8 +19,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-
-
 //the layout will be new recommendation page that has a 
 //list component on left, a filter component on right
 //1st filter option is "Give Me Recommendations Based On Saved Items"
@@ -62,8 +60,6 @@ const Recommendations = () => {
 
     const [menuBeforeSortPop, setMenuBeforeSortPop] = useState([]); // sort the menu items based on the rating
     const [shouldSortPop, setShouldSortPop] = useState(false); //should sort based ff item popularity
-
-
 
     /* fields for meal type */
     const ALL_MEALS = 2;
@@ -138,7 +134,8 @@ const Recommendations = () => {
         } catch (error) { console.log(error) };
     };
 
-    const handleRecTypeChange = (event) => { //this is for handling the filters options
+    /* when user changes recommendation type */
+    const handleRecTypeChange = (event) => { // handling the filters options
         loading.current = true // loading
         if (event.target.value === BASED_ON_SAVED) {
             setRecommendationType(BASED_ON_SAVED)
@@ -147,6 +144,7 @@ const Recommendations = () => {
         }
     };
 
+    /* when user changes meal type */
     const handleMealChange = (event) => {
         loading.current = true // loading
         if (event.target.value === ALL_MEALS) {
@@ -175,7 +173,7 @@ const Recommendations = () => {
         }
     }, [recommendationType, mealType]);
 
-    function listItem(item) { //display a menu item
+    function listItem(item) { // display a menu item
         const name = item.name;
         const id = item.ID
 
@@ -192,23 +190,23 @@ const Recommendations = () => {
         setShouldSortPop(!shouldSortPop);
     }
 
-     /*Sort by rating(popular items) */
-     const isFirstRenderPop = useRef(true);
-     useEffect(() => {
-         if (isFirstRenderPop.current === true) {
-             isFirstRenderPop.current = false;
-             return;
-         }
-         // sort courts menu then set it to the sorted
-         if(shouldSortPop) {
-             setMenuBeforeSortPop(JSON.parse(JSON.stringify(courtsMenu))); 
-             courtsMenu.sort((a,b) => (a.avgRating < b.avgRating) ? 1 : ((b.avgRating < a.avgRating) ? -1 : 0)); //make the most highly rated items appear at the top of the list
- 
-         }else if(!shouldSortPop) {
-             setCourtsMenu(menuBeforeSortPop);
-         }
-         // eslint-disable-next-line
-     }, [shouldSortPop]);
+    /*Sort by rating(popular items) */
+    const isFirstRenderPop = useRef(true);
+    useEffect(() => {
+        if (isFirstRenderPop.current === true) {
+            isFirstRenderPop.current = false;
+            return;
+        }
+        // sort courts menu then set it to the sorted
+        if (shouldSortPop) {
+            setMenuBeforeSortPop(JSON.parse(JSON.stringify(courtsMenu)));
+            courtsMenu.sort((a, b) => (a.avgRating < b.avgRating) ? 1 : ((b.avgRating < a.avgRating) ? -1 : 0)); //make the most highly rated items appear at the top of the list
+
+        } else if (!shouldSortPop) {
+            setCourtsMenu(menuBeforeSortPop);
+        }
+        // eslint-disable-next-line
+    }, [shouldSortPop]);
 
 
 
@@ -253,12 +251,12 @@ const Recommendations = () => {
                         <Select id="demo-simple-select" value={recommendationType} label="Filter" onChange={handleRecTypeChange}
                             classes={{ root: classes.root, select: classes.selected }}
                         >
-                            <MenuItem value={0}>Recommendations Based On My Prefs/Rests</MenuItem>
-                            <MenuItem value={1}>Recommendations Based On Saved Items</MenuItem>
+                            <MenuItem value={0}>Recommend Based On My Preferences/Restrictions</MenuItem>
+                            <MenuItem value={1}>Recommend Based On Saved Items</MenuItem>
                         </Select>
                     </FormControl>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort by Item Popularity"} checked={shouldSortPop} onChange={handleSortClickPop}/>
+                        <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort by Item Popularity"} checked={shouldSortPop} onChange={handleSortClickPop} />
                     </FormGroup>
                 </Box>
                 <div>
