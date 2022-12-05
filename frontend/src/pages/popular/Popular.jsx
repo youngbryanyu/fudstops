@@ -30,7 +30,11 @@ const Popular = () => {
                 const courtsItems = response.data;
                 loading.current = false; /* done loading */
                 setpopularItems(courtsItems);
-            } catch (error) { console.log(error) };
+            } catch (error) { 
+                loading.current = false; /* done loading */
+                setpopularItems([]);
+                console.log(error) 
+            };
         };
 
         setpopularItems([]); // this is to set the menu to blank (to clear the prior stuff while loading)
