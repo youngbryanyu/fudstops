@@ -41,7 +41,6 @@ const Favorites = () => {
         setShouldSort(!shouldSort);
     }
 
-
     /**
     * Load dining courts items on page load and alters anytime the location changes
     */
@@ -55,7 +54,6 @@ const Favorites = () => {
             } catch (error) { 
                 loading.current = false /* not loading anymore after items are loaded */
                 setCourtsMenu([]);
-                console.log("hi")
                 console.log(error);
             };
         };
