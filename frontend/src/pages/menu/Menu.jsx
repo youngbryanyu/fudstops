@@ -584,24 +584,7 @@ const Menu = () => {
         <div className="menu">
             <Navbar />
             <div className="menuTimes">
-                <h4 className="evenMoreSpace">{`When ${location} is open:`}</h4>
-                <Box
-                    sx={{
-                        width: "100%",
-                        maxHeight: 100,
-                        maxWidth: 250,
-                        bgcolor: "background.paper",
-                        borderRadius: 5
-                    }}
-                    className="list"
-                >
-                    <Paper style={{ maxHeight: 300, maxWidth: 250, overflow: "auto" }}>
-                        <List>{times.map((time) => listTimes(time))}</List>
-                    </Paper>
-                </Box>
-
-                <h4 className="evenMoreSpace">{`How busy is ${location}?`}</h4>
-
+            <h4 className="howBusy">{`How busy is ${location}?`}</h4>
                 <Box
                     sx={{
                         width: "100%",
@@ -620,6 +603,22 @@ const Menu = () => {
                                 </span>
                             </ListItem>
                         </List>
+                    </Paper>
+                </Box>
+
+                <h4 className="moreSpace">{`When ${location} is open:`}</h4>
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxHeight: 100,
+                        maxWidth: 250,
+                        bgcolor: "background.paper",
+                        borderRadius: 5
+                    }}
+                    className="list"
+                >
+                    <Paper style={{ maxHeight: 300, maxWidth: 250, overflow: "auto" }}>
+                        <List>{times.map((time) => listTimes(time))}</List>
                     </Paper>
                 </Box>
             </div>
