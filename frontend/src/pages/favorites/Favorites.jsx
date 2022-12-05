@@ -52,7 +52,12 @@ const Favorites = () => {
                 const courtsItems = response.data;
                 loading.current = false /* not loading anymore after items are loaded */
                 setCourtsMenu(courtsItems);
-            } catch (error) { console.log(error) };
+            } catch (error) { 
+                loading.current = false /* not loading anymore after items are loaded */
+                setCourtsMenu([]);
+                console.log("hi")
+                console.log(error);
+            };
         };
 
         if (username != null) {
