@@ -43,15 +43,13 @@ const FoodInfo = () => {
         __v: 0
     }); //tracks menu item
 
-    // TODO create
-
     const handleClick0 = () => {
         setStarClick1(false);
         setStarClick2(false);
         setStarClick3(false);
         setStarClick4(false);
         setStarClick5(false);
-        setScore(0);
+        // setScore(0);
     }
     const handleClick1 = () => {
         setStarClick1(true);
@@ -59,7 +57,7 @@ const FoodInfo = () => {
         setStarClick3(false);
         setStarClick4(false);
         setStarClick5(false);
-        setScore(1);
+        // setScore(1);
     }
     const handleClick2 = () => {
         setStarClick1(true);
@@ -67,7 +65,7 @@ const FoodInfo = () => {
         setStarClick3(false);
         setStarClick4(false);
         setStarClick5(false);
-        setScore(2);
+        // setScore(2);
     }
     const handleClick3 = () => {
         setStarClick1(true);
@@ -75,7 +73,7 @@ const FoodInfo = () => {
         setStarClick3(true);
         setStarClick4(false);
         setStarClick5(false);
-        setScore(3);
+        // setScore(3);
     }
     const handleClick4 = () => {
         setStarClick1(true);
@@ -83,7 +81,7 @@ const FoodInfo = () => {
         setStarClick3(true);
         setStarClick4(true);
         setStarClick5(false);
-        setScore(4);
+        // setScore(4);
     }
     const handleClick5 = () => {
         setStarClick1(true);
@@ -91,7 +89,7 @@ const FoodInfo = () => {
         setStarClick3(true);
         setStarClick4(true);
         setStarClick5(true);
-        setScore(5);
+        // setScore(5);
     }
     const handleSavedClick = () => {
         setSavedClick(!savedClick);
@@ -208,22 +206,52 @@ const FoodInfo = () => {
 
         const updateRatingInDB = async () => {
             try {
+                var rating;
+                if (starClick5) {
+                    rating = 5
+                } else if (starClick4) {
+                    rating = 4
+                } else if (starClick3) {
+                    rating = 3
+                } else if (starClick2) {
+                    rating = 2
+                } else if (starClick1) {
+                    rating = 1
+                }
                 await axios.post('/ratings', {
                     username: user.username,
                     menuItemID: menuItemID,
-                    rating: score
+                    rating: rating
                 });
                 console.log("successfully updated rating of menuItemId: " + menuItemID);
             } catch (error) {
                 console.log("failed to update rating: " + error);
+            } finally {
+                setScore(rating)
             }
         }
-
         if (menuItemID != null) {
             updateRatingInDB(); // update the preferences in the database
         }// eslint-disable-next-line
+    }, [starClick1, starClick2, starClick3, starClick4, starClick5]);
 
-    }, [score]);
+    /* useEffect to udpate avg rating of menu item on page when user rates something */
+    useEffect(() => {
+        async function updateAvgRating() {
+            try {
+                const response = await axios.get('/ratings/' + menuItemID);
+                console.log("successfully updated rating of menuItemId: " + menuItemID);
+                console.log(response.data.avgRating)
+                setAvg(response.data.avgRating);
+    
+            } catch (error) {
+                console.log("failed to update avg rating: " + error);
+            }
+        }
+        updateAvgRating();
+    }, [score])
+
+    
 
     /* Get nutrition info */
     const nutrition = menuItem.nutritionFacts.map((fact) =>

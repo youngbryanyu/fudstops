@@ -63,6 +63,7 @@ router.post("/load", async (req, res) => { // use async/await to ensure request 
                         start: mealstart,
                         end: mealend,
                     }
+                    console.log(curmealinfo)
                     mealInfo.push(curmealinfo)
                     // type contains final meal type
                     // mealstart contains this meal's start time, mealend contains end time
@@ -279,7 +280,7 @@ router.post("/prefsAndRests", async (req, res) => {
     }
 });
 
-// this gets all items from today regardless of dining court given the prefs and rests
+// this gets items from today matching the meal type from a dining court given the prefs and rests
 router.post("/prefsAndRests/:mealType", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
@@ -514,21 +515,42 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
     var d = new Date();
     var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
     try {
-        const meal = req.params.meal.replace("-", " ")
-        const menuItems = await (MenuItem.find({
-            $and: [{
-                dateServed: today,
-                courtData: {
-                    $elemMatch: { $elemMatch: { $in: [req.params.diningCourt] } }
-                }
-            },
+        const menuItems = await (MenuItem.aggregate([
             {
-                dateServed: today,
-                courtData: {
-                    $elemMatch: { $elemMatch: { $in: [req.params.meal] } }
+                $unwind: "$courtData"
+            }, {
+                $match: {
+                    $and: [{
+                        courtData: {
+                            $elemMatch: { $in: [req.params.diningCourt] }
+                        }
+                    },
+                    {
+                        courtData: {
+                            $elemMatch: { $in: [req.params.meal] }
+                        }
+                    }, {
+                        dateServed: today
+                    }]
                 }
-            }]
-        }));
+            }, {
+                $group: { /* deduplicate results */
+                    _id: "$ID",
+                    "ID": { $first: "$ID"},
+                    "name": { $first: "$name"},
+                    "courtData": { $first: "$courtData"},
+                    "dateServed": { $first: "$dateServed"},
+                    "isVegetarian": { $first: "$isVegetarian"},
+                    "allergens": { $first: "$allergens"},
+                    "nutritionFacts": { $first: "$nutritionFacts"},
+                    "ingredients": { $first: "$ingredients"},
+                    "avgRating": { $first: "$avgRating"},
+                    "__v": { $first: "$__v"},
+                }
+            }
+        ]));
+
+        // console.log(menuItems);
         if (!menuItems) { //this means items were not found
             res.status(500).json("No items found");
             return;
@@ -536,8 +558,8 @@ router.get("/meals/:diningCourt/:meal", async (req, res) => {
 
         console.log("Successfully retrieved " + req.params.diningCourt + "'s " + req.params.meal + " menu")
         res.status(200).json(menuItems);
-    } catch (error) { 
-        console.log(error); 
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -696,9 +718,9 @@ router.get("/busy/:diningCourt", async (req, res) => {
         var busytime = "not busy";
         if (court === "Wiley") {
             console.log("wiley")
-            if(d.getHours() > 20) {
+            if (d.getHours() > 20) {
                 busytime = "not too busy"
-            } else if (d.getHours() > 18 ) {
+            } else if (d.getHours() > 18) {
                 busytime = "as busy as it gets"
             } else if (d.getHours() > 16) {
                 busytime = "a little busy"
@@ -716,9 +738,9 @@ router.get("/busy/:diningCourt", async (req, res) => {
         }
         else if (court === "Windsor") {
             console.log("windsor")
-            if(d.getHours() > 20 ) {
+            if (d.getHours() > 20) {
                 busytime = "closed"
-            } else if (d.getHours() > 18 ) {
+            } else if (d.getHours() > 18) {
                 busytime = "not too busy"
             } else if (d.getHours() > 16) {
                 busytime = "a little busy"
@@ -740,9 +762,9 @@ router.get("/busy/:diningCourt", async (req, res) => {
         }
         else if (court === "Ford") {
             console.log("ford")
-            if(d.getHours() > 20 ) {
+            if (d.getHours() > 20) {
                 busytime = "closed"
-            } else if (d.getHours() > 18 ) {
+            } else if (d.getHours() > 18) {
                 busytime = "a little busy"
             } else if (d.getHours() > 16) {
                 busytime = "a little busy"
@@ -760,9 +782,9 @@ router.get("/busy/:diningCourt", async (req, res) => {
         }
         else if (court === "Earhart") {
             console.log("earhart")
-            if(d.getHours() > 20 ) {
+            if (d.getHours() > 20) {
                 busytime = "not busy"
-            } else if (d.getHours() > 18 ) {
+            } else if (d.getHours() > 18) {
                 busytime = "a little busy"
             } else if (d.getHours() > 16) {
                 busytime = "not too busy"
@@ -779,11 +801,233 @@ router.get("/busy/:diningCourt", async (req, res) => {
             }
         }
         console.log("Successfully retrieved " + req.params.diningCourt + "'s busy time at " + d)
-        console.log("busy time is: " + busytime );
+        console.log("busy time is: " + busytime);
         res.status(200).json(busytime);
         return;
-    } catch (error) { 
-        console.log(error); 
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+/* gets items matching custom prefs and rests of a particular meal type from a dining court*/
+router.post("/prefsAndRests/:diningCourt/:mealType", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+
+    try {
+
+        const rests = req.body.restrictions; //for example could be - "Coconut", "Peanuts"
+        const prefs = req.body.preferences; //for example could be - "Vegan"
+
+        // get all menu items
+        const menuItems = await (MenuItem.aggregate([
+            {
+                $unwind: "$courtData"
+            }, {
+                $match: {
+                    $and: [{
+                        courtData: {
+                            $elemMatch: { $in: [req.params.diningCourt] }
+                        }
+                    },
+                    {
+                        courtData: {
+                            $elemMatch: { $in: [req.params.mealType] }
+                        }
+                    }, {
+                        dateServed: today
+                    }]
+                }
+            }, {
+                $group: { /* deduplicate results */
+                    _id: "$ID",
+                    "ID": { $first: "$ID"},
+                    "name": { $first: "$name"},
+                    "courtData": { $first: "$courtData"},
+                    "dateServed": { $first: "$dateServed"},
+                    "isVegetarian": { $first: "$isVegetarian"},
+                    "allergens": { $first: "$allergens"},
+                    "nutritionFacts": { $first: "$nutritionFacts"},
+                    "ingredients": { $first: "$ingredients"},
+                    "avgRating": { $first: "$avgRating"},
+                    "__v": { $first: "$__v"},
+                }
+            }
+        ]));
+
+        if (!menuItems) { // this means items were not found
+            res.status(500).json("No items found");
+            return;
+        }
+
+        if (rests.length == 0 && prefs.length == 0) { // no prefs or rests provided, so all items work
+            res.status(200).json(menuItems);
+            return;
+        }
+
+        //then find out the rests & prefs
+
+        let matchingItems = [];
+
+        menuItems.forEach((item) => { //for each item we check if it matches all preferences
+
+            let allergens = item.allergens;
+            let skipRests = false;
+            let skipPrefs = false;
+
+            //these if-checks below are testing edge cases
+            if (allergens == null) {
+                skipRests = true;
+                skipPrefs = true;
+            }
+            if (allergens.length == 0 && (prefs.length != 0 || rests.length != 0)) {
+                skipRests = true;
+                skipPrefs = true;
+            }
+
+            allergens.forEach((allergen) => { //first check rests criteria
+                if (!skipRests && rests.includes(allergen.Name) && allergen.Value == true) {
+                    skipRests = true;
+                }
+            });
+
+            if (!skipRests) { //if the item passes all the requested rests
+                allergens.forEach((allergen) => { //then we check if it passes the requested prefs
+
+                    if (!skipPrefs && prefs.includes(allergen.Name) && allergen.Value == false) {
+
+                        skipPrefs = true;
+
+                    }
+                });
+                if (!skipPrefs) matchingItems.push(item); // this item matches both prefs & rests
+            }
+        });
+        res.status(200).json(matchingItems);
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
+});
+
+// this endpoint returns all menu items of the provided dining court that aligns 
+// with a user's dietary preferences and restrictions of a specific meal time
+router.get("/prefs/:diningCourt/:username/:mealType", async (req, res) => {
+    var d = new Date();
+    var today = new Date(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+    // console.log("today is " + d);
+    try {
+        const user = await User.findOne({
+            username: req.params.username
+        });
+        if (!user) {
+            res.status(500).json("User doesn't exist");
+            return;
+        }
+        const prefResponse = await Preference.findOne({
+            username: req.params.username
+        });
+        const restResponse = await Restriction.findOne({
+            username: req.params.username
+        });
+        // get preferences from response
+        let preferences;
+        if (!prefResponse) {
+            preferences = [];
+        }
+        else {
+            preferences = prefResponse.preferences;
+        }
+        // get restrictions from response
+        let restrictions;
+        if (!restResponse) {
+            restrictions = [];
+        }
+        else {
+            restrictions = restResponse.restrictions;
+        }
+
+        /* query menu items */
+        const menuItems = await (MenuItem.aggregate([
+            {
+                $unwind: "$courtData"
+            }, {
+                $match: {
+                    $and: [{
+                        courtData: {
+                            $elemMatch: { $in: [req.params.diningCourt] }
+                        }
+                    },
+                    {
+                        courtData: {
+                            $elemMatch: { $in: [req.params.mealType] }
+                        }
+                    }, {
+                        dateServed: today
+                    }]
+                }
+            }, {
+                $group: { /* deduplicate results */
+                    _id: "$ID",
+                    "ID": { $first: "$ID"},
+                    "name": { $first: "$name"},
+                    "courtData": { $first: "$courtData"},
+                    "dateServed": { $first: "$dateServed"},
+                    "isVegetarian": { $first: "$isVegetarian"},
+                    "allergens": { $first: "$allergens"},
+                    "nutritionFacts": { $first: "$nutritionFacts"},
+                    "ingredients": { $first: "$ingredients"},
+                    "avgRating": { $first: "$avgRating"},
+                    "__v": { $first: "$__v"},
+                }
+            }
+        ]));
+
+        if (!menuItems || menuItems.length == 0) { // this means items were not found
+            res.status(200).json([]); // empty
+            return;
+        }
+        let courtsItems = [];
+        menuItems.forEach((item) => {
+            let courtsArray = item.courtData;
+
+            if (courtsArray == null) return;
+
+            allergens = item.allergens;
+            let matchesPrefs = true;
+
+            /* if doesn't match all restrictions then continue */
+            if (restrictions.length > 0) {
+                if (allergens.length === 0) { /* edge case for when item has no allergen info */
+                    matchesPrefs = false;
+                }
+                for (const allergen of allergens) {
+                    if (restrictions.includes(allergen.Name) && allergen.Value === true) {
+                        matchesPrefs = false;
+                        break;
+                    }
+                }
+            }
+
+            /* if doesn't match all preferences then continue */
+            if (preferences.length > 0) {
+                if (allergens.length === 0) { /* edge case for when item has no allergen info */
+                    matchesPrefs = false;
+                }
+                for (const allergen of allergens) {
+                    if (preferences.includes(allergen.Name) && allergen.Value === false) {
+                        matchesPrefs = false;
+                        break;
+                    }
+                }
+            }
+            if (matchesPrefs) {
+                courtsItems.push(item);
+            }
+        });
+        res.status(200).json(courtsItems);
+    } catch (error) {
+        console.log(error);
     }
 });
 

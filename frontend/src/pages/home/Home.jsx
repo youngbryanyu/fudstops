@@ -129,7 +129,6 @@ const Home = () => {
     };
 
     /* alphabetical sorting */
-    
     useEffect(() => {
         if (shouldSort) {
             setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
@@ -268,6 +267,8 @@ const Home = () => {
 
     /* handle filter selection change */
     const handleChange = (event) => {
+        setShouldSort(false); // reset sorting when something changes
+
         // this is for handling the filters options
         if (event.target.value === USERS_PREFS) { /* match users pref/rests */
             /* loading not needed b/c of cache */
@@ -289,7 +290,7 @@ const Home = () => {
         setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
     }, [courtsMenu]);
 
-    /* useEffect for handling selecting items */
+    /* useEffect for handling selecting filters */
     useEffect(() => {
         if (view === USERS_PREFS) {
             getItemsMatchingUser();
@@ -299,6 +300,15 @@ const Home = () => {
             getFullMenu();
         }
     }, [view]);
+
+    /* edge case: useEffect for instantaneous custom prefs updates */
+    useEffect(() => {
+        if (view === MATCHING_ITEMS) {
+            // setCourtsMenu(["loading"]);
+            handleSelectPrefsClick();
+        } 
+    }, [vegetarian, vegan, coconut, eggs, fish, gluten, sesame, shellfish,
+        soy, treeNuts, wheat, milk, peanuts]);
 
     /**
      * Load dining courts items on page load and alters anytime the location changes
@@ -385,25 +395,21 @@ const Home = () => {
         <div className="home">
             <Navbar />
             <Stack spacing={2}>
-                <div className="stackedFilter">
-                    {/* <h4>Search all menus items :</h4> */}
-                    {Searchbar(fullMenu)}
-                </div>
-                <Stack spacing={2} direction="row">
+                <Stack spacing={2} direction="row" className="stack">
                     <div className="stackedFilter">
                         <h4>{`Dining courts:`}</h4>
                         {/* <h6>(click to view info)</h6> */}
                         <Box
                             sx={{
                                 width: "100%",
-                                maxHeight: 200,
+                                height: 180,
                                 maxWidth: 360,
                                 bgcolor: "background.paper",
                                 borderRadius: 5
                             }}
                             className="list"
                         >
-                            <Paper style={{ maxHeight: 200, overflow: "auto" }}>
+                            <Paper style={{ maxHeight: 180, overflow: "auto" }}>
                                 {
                                     loading.current ? (
                                         <List>
@@ -439,8 +445,12 @@ const Home = () => {
                     <div className="stackedFilter">
                         {/* <h4>Select filter: </h4> */}
                         {/* <h6>(click to open options)</h6> */}
-                        <Box sx={{ minWidth: 120 }}>
-                            <FormControl error fullWidth sx={{ m: 1, minWidth: 120 }}>
+                        <div className="searchbar">
+                            {/* <h4>Search all menus items :</h4> */}
+                            {Searchbar(fullMenu)}
+                        </div>
+                        <Box sx={{ minWidth: 200 }} className="filters">
+                            <FormControl error fullWidth sx={{ m: 1, minWidth: 200 }}>
                                 <InputLabel>Filters</InputLabel>
                                 <Select
                                     id="demo-simple-select"
@@ -456,7 +466,7 @@ const Home = () => {
                                     <MenuItem value={MATCHING_ITEMS}>Custom preferences/restrictions</MenuItem>
                                 </Select>
                             </FormControl>
-                            <FormGroup>
+                            <FormGroup className="checkbox">
                                 <FormControlLabel
                                     control={<Checkbox size="small" color="secondary" />}
                                     label={"Sort Alphabetically"}

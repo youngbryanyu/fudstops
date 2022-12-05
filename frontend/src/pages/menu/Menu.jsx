@@ -1,6 +1,6 @@
 // Javascript for page displaying menu items for a dining court
 import Stack from "@mui/material/Stack";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
+// import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -15,8 +15,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import Button from "@material-ui/core/Button";
+// import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+// import Button from "@material-ui/core/Button";
 import Navbar from "../../components/navbar/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
@@ -35,17 +35,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-/* filter constants */
-const FULL_MENU = 0;
-const CUSTOM_PREFS = 1;
-const MY_PREFS = 2;
-
-/* meal time constants */
-
 const Menu = () => {
     const classes = useStyles();
     let { location } = useParams();
     const { user } = useContext(AuthContext);
+
+    /* filter constants */
+    const FULL_MENU = 0;
+    const CUSTOM_PREFS = 1;
+    const MY_PREFS = 2;
+
+    /* fields for meal type */
+    const ALL_MEALS = 0;
+    const BREAKFAST = 1;
+    const BRUNCH = 2;
+    const LUNCH = 3;
+    const LATE_LUNCH = 4
+    const DINNER = 5
+    const [mealType, setMealType] = useState(ALL_MEALS);
+    const mealTypes = ["", "Breakfast", "Unknown", "Lunch", "Snack", "Dinner"];
 
     const [meal, setMeal] = useState("");
     //keep track of all menu items
@@ -59,7 +67,7 @@ const Menu = () => {
     //keep track of matching user's prefs items
     const [matchingItems, setMatchingItems] = useState([]);
     //keep track of which filterconst [] option is currently chosen
-    const [view, setView] = useState(0);
+    const [view, setView] = useState(FULL_MENU);
 
     const [shouldSort, setShouldSort] = useState(false);
     // items displayed before sorting (courtsmenu)
@@ -74,6 +82,8 @@ const Menu = () => {
     const [disableSortPop, setDisableSortPop] = useState(false);
 
     let username = user.username;
+
+    const loading = useRef(true); /* whether page is loading */
 
     // preferences
     const VEGAN = "Vegan";
@@ -215,12 +225,7 @@ const Menu = () => {
     };
 
     /* Sorting useEffect */
-    const isFirstRender = useRef(true);
     useEffect(() => {
-        if (isFirstRender.current === true) {
-            isFirstRender.current = false;
-            return;
-        }
         // sort courts menu then set it to the sorted
         if (shouldSort) {
             setDisableSortPop(true);
@@ -242,12 +247,7 @@ const Menu = () => {
     }, [shouldSort]);
 
     /*Sort by rating(popular items) */
-    const isFirstRenderPop = useRef(true);
     useEffect(() => {
-        if (isFirstRenderPop.current === true) {
-            isFirstRenderPop.current = false;
-            return;
-        }
         // sort courts menu then set it to the sorted
         if (shouldSortPop) {
             setDisableSort(true);
@@ -263,7 +263,7 @@ const Menu = () => {
     }, [shouldSortPop]);
 
     /* selecting preferences and restrictions from checkbox */
-    const handleSelectPrefsClick = () => {
+    const handleSelectPrefsClick = async () => {
         //this is for handling the submit button of preferences
         prefs = [];
         rests = [];
@@ -284,86 +284,162 @@ const Menu = () => {
 
         const getItemsFromSelections = async () => {
             try {
-                const response = await axios.post(
-                    `/menuInfo/prefsAndRests/${location}`,
-                    {
-                        preferences: prefs,
-                        restrictions: rests,
-                    }
-                );
+                var response;
+                if (mealType === ALL_MEALS) {
+                    response = await axios.post(
+                        `/menuInfo/prefsAndRests/${location}`,
+                        {
+                            preferences: prefs,
+                            restrictions: rests,
+                        }
+                    );
+                } else {
+                    response = await axios.post(
+                        `/menuInfo/prefsAndRests/${location}/${mealTypes[mealType]}`,
+                        {
+                            preferences: prefs,
+                            restrictions: rests,
+                        }
+                    );
+                }
                 const courtsItems = response.data;
+                loading.current = false; /* done loading */
                 setSelectedItems(courtsItems);
                 setCourtsMenu(courtsItems);
             } catch (error) {
                 console.log(error);
             }
         };
+
         getItemsFromSelections();
     };
 
+    /* returns whether no checkboxes are selected */
+    function noCheckBoxesSelected() {
+        return (!vegetarian && !vegan && !coconut && !eggs && !fish && !gluten && !sesame
+            && !shellfish && !soy && !treeNuts && !wheat && !milk && !peanuts);
+    }
+
+    /* set menu before sorting each time something updates */
+    useEffect(() => {
+        setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
+    }, [courtsMenu]);
+
+    /* handles changing filters */
     const handleChange = (event) => {
+        loading.current = true; /* need to load */
+        setShouldSort(false); /* reset sorting when user changes filter */
+        setShouldSortPop(false);
+
         //this is for handling the filters options
-        if (event.target.value === 0) {
+        if (event.target.value === FULL_MENU) {
             //this means the user wants to view all items
-            setView("AllItems");
+            setView(FULL_MENU);
             setCourtsMenu(allItems);
-        } else if (event.target.value === 1) {
+        } else if (event.target.value === CUSTOM_PREFS) {
             //this means user wants to select from checkbox
-            setView("SelectPrefs");
+            setView(CUSTOM_PREFS);
             setCourtsMenu(selectedItems);
-        } else if (event.target.value === 2) {
+        } else if (event.target.value === MY_PREFS) {
             //this means the user selected Items Matching My Prefs & Rests
-            setView("MatchingItems");
+            setView(MY_PREFS);
             setCourtsMenu(matchingItems);
-            console.log(matchingItems);
         }
     };
 
+    /* handle changing mealtype */
     const handleMeals = (event) => {
+        loading.current = true; /* need to load */
+        setShouldSort(false); /* reset sorting when user changes filter */
+        setShouldSortPop(false);
+
         //this is for handling the meal selection options
-        if (event.target.value === 1) {
-            setMeal("Breakfast");
-        } else if (event.target.value === 2) {
-            setMeal("Brunch");
-        } else if (event.target.value === 3) {
-            setMeal("Lunch");
-        } else if (event.target.value === 4) {
-            setMeal("Late-Lunch");
+        if (event.target.value === ALL_MEALS) {
+            setMealType(ALL_MEALS);
+        } else if (event.target.value === BREAKFAST) {
+            setMealType(BREAKFAST);
+        } else if (event.target.value === BRUNCH) {
+            setMealType(BRUNCH);
+        } else if (event.target.value === LUNCH) {
+            setMealType(LUNCH);
+        } else if (event.target.value === LATE_LUNCH) {
+            setMealType(LATE_LUNCH);
         } else if (event.target.value === 5) {
-            setMeal("Dinner");
+            setMealType(DINNER);
         }
     };
+
+    /* useEffect for handling selecting filters */
+    useEffect(() => {
+        if (view === MY_PREFS) {
+            getItemsMatchingUser();
+        } else if (view === CUSTOM_PREFS) {
+            // setCourtsMenu(["loading"]);
+            handleSelectPrefsClick();
+        } else if (view === FULL_MENU) {
+            getCourtsItems();
+        }
+    }, [view, mealType]);
+
+    /* edge case: useEffect for instantaneous custom prefs updates */
+    useEffect(() => {
+        if (view === CUSTOM_PREFS) {
+            // setCourtsMenu(["loading"]);
+            handleSelectPrefsClick();
+        } 
+    }, [vegetarian, vegan, coconut, eggs, fish, gluten, sesame, shellfish,
+        soy, treeNuts, wheat, milk, peanuts]);
 
     const [busyLevel, setBusyLevel] = useState("");
+
+    /* get all items from court */
+    const getCourtsItems = async () => {
+        try {
+            var response;
+            if (mealType === ALL_MEALS) {
+                response = await axios.get(`/menuInfo/${location}`);
+            } else {
+                response = await axios.get(`/menuInfo/meals/${location}/${mealTypes[mealType]}`);
+            }
+            // console.log(response.data);
+            const courtsItems = response.data;
+            loading.current = false; /* done loading (must end load in between) */
+            setCourtsMenu(courtsItems);
+            setAllItems(courtsItems);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    /* get items matching user preferences */
+    const getItemsMatchingUser = async () => {
+        try {
+            var response;
+            console.log("mealtype is " + mealTypes[mealType])
+            if (mealType === ALL_MEALS) {
+                response = await axios.get(
+                    `/menuInfo/prefs/${location}/${username}`
+                );
+                console.log("getting prefs for all")
+            } else {
+                response = await axios.get(
+                    `/menuInfo/prefs/${location}/${username}/${mealTypes[mealType]}`
+                );
+                console.log("getting prefs for " + mealTypes[mealType])
+            }
+            const courtsItems = response.data;
+            loading.current = false; /* done loading (must end load in between) */
+            setCourtsMenu(courtsItems);
+            setMatchingItems(courtsItems);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     /**
      * Load dining courts items on page load and alters anytime the location changes (when user first enters the page)
      */
     useEffect(() => {
-        const getCourtsItems = async () => {
-            try {
-                const response = await axios.get(`/menuInfo/${location}`);
-                console.log(response.data);
-                const courtsItems = response.data;
-                setCourtsMenu(courtsItems);
-                setAllItems(courtsItems);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        const getItemsMatchingUser = async () => {
-            try {
-                const response = await axios.get(
-                    `/menuInfo/prefs/${location}/${username}`
-                );
-                const courtsItems = response.data;
-                setMatchingItems(courtsItems);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
         const getTimes = async () => {
             try {
                 const response = await axios.get(`/menuInfo/courts/${location}`);
@@ -385,33 +461,21 @@ const Menu = () => {
         };
 
         if (location !== null) {
-            setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
+            setMealType(ALL_MEALS); /* reset filters to default (this causes slight visual glitch) */
+            setView(FULL_MENU);
+            setShouldSort(false); /* reset sorting */
+            setShouldSortPop(false);
+
+            loading.current = true; /* loading new page */
+            setCourtsMenu(["loading"]); // this is to set the menu to blank (to clear the prior stuff while loading) -> causes slight visual glitch
             getCourtsItems();
             getTimes();
-            getItemsMatchingUser();
             getBusy();
         }
         // eslint-disable-next-line
     }, [location]);
 
-    useEffect(() => {
-        const getItemsMatchingMeal = async () => {
-            try {
-                const response = await axios.get(`/menuInfo/meals/${location}/${meal}`);
-                const data = response.data;
-                setCourtsMenu(data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        if (meal !== null) {
-            setCourtsMenu([]); //this is to set the menu to blank (to clear the prior stuff while loading)
-            getItemsMatchingMeal();
-        }
-        // eslint-disable-next-line
-    }, [meal]);
-
+    /* creates list for meal times */
     function listTimes(time) {
         const type = time.mealType;
         const start = time.start;
@@ -516,13 +580,14 @@ const Menu = () => {
         <div className="menu">
             <Navbar />
             <div className="menuTimes">
-                <h4 className="evenMoreSpace">{`${location}'s meal times:`}</h4>
+                <h4 className="evenMoreSpace">{`When ${location} is open:`}</h4>
                 <Box
                     sx={{
                         width: "100%",
                         maxHeight: 100,
                         maxWidth: 250,
                         bgcolor: "background.paper",
+                        borderRadius: 5
                     }}
                     className="list"
                 >
@@ -539,6 +604,7 @@ const Menu = () => {
                         maxHeight: 100,
                         maxWidth: 360,
                         bgcolor: "background.paper",
+                        borderRadius: 5
                     }}
                     className="list"
                 >
@@ -563,11 +629,38 @@ const Menu = () => {
                         height: 400,
                         maxWidth: 360,
                         bgcolor: "background.paper",
+                        borderRadius: 5
                     }}
                     className="list"
                 >
                     <Paper style={{ maxHeight: 400, overflow: "auto" }}>
-                        <List>{courtsMenu.map((item) => listItem(item))}</List>
+                        {
+                            loading.current || courtsMenu[0] === "loading" ? (
+                                <List>
+                                    <ListItem component="div" disablePadding button={true}>
+                                        <span className="header">{"Loading..."}</span>
+                                    </ListItem>
+                                </List>
+                            ) : (
+                                view === CUSTOM_PREFS && noCheckBoxesSelected() ? (
+                                    <List>
+                                        <ListItem component="div" disablePadding button={true}>
+                                            <span className="header">{"Select some preferences/restrictions."}</span>
+                                        </ListItem>
+                                    </List>
+                                ) : (
+                                    courtsMenu.length !== 0 ? (
+                                        <List>{courtsMenu.map((item) => listItem(item))}</List>
+                                    ) : (
+                                        <List>
+                                            <ListItem component="div" disablePadding button={true}>
+                                                <span className="header">{"No items served at this time."}</span>
+                                            </ListItem>
+                                        </List>
+                                    )
+                                )
+                            )
+                        }
                     </Paper>
                 </Box>
             </div>
@@ -590,17 +683,17 @@ const Menu = () => {
                                 onChange={handleChange}
                                 classes={{ root: classes.root, select: classes.selected }}
                             >
-                                <MenuItem value={0}>{`View ${location}'s Full Menu`}</MenuItem>
-                                <MenuItem value={1}>
+                                <MenuItem value={ALL_MEALS}>{`No filters`}</MenuItem>
+                                <MenuItem value={CUSTOM_PREFS}>
                                     Select Custom Preferences & Restrictions
                                 </MenuItem>
-                                <MenuItem value={2}>
+                                <MenuItem value={MY_PREFS}>
                                     Items Matching My Preferences & Restrictions
                                 </MenuItem>
                             </Select>
                         </FormControl>
 
-                        
+
                     </Box>
                 </div>
                 <div className="stackedFilter">
@@ -611,28 +704,21 @@ const Menu = () => {
                             <InputLabel>Meal type</InputLabel>
                             <Select
                                 id="demo-simple-select"
-                                value={meal}
+                                value={mealType}
                                 label="Filter"
                                 onChange={handleMeals}
                                 classes={{ root: classes.root, select: classes.selected }}
                             >
-                                <MenuItem
-                                    value={1}
-                                >{`View ${location}'s Breakfast Menu`}</MenuItem>
-                                <MenuItem
-                                    value={2}
-                                >{`View ${location}'s Brunch Menu`}</MenuItem>
-                                <MenuItem value={3}>{`View ${location}'s Lunch Menu`}</MenuItem>
-                                <MenuItem
-                                    value={4}
-                                >{`View ${location}'s Late Lunch Menu`}</MenuItem>
-                                <MenuItem
-                                    value={5}
-                                >{`View ${location}'s Dinner Menu`}</MenuItem>
+                                <MenuItem value={ALL_MEALS}>{`All meal types`}</MenuItem>
+                                <MenuItem value={BREAKFAST}>{`Breakfast`}</MenuItem>
+                                <MenuItem value={BRUNCH}>{`Brunch`}</MenuItem>
+                                <MenuItem value={LUNCH}>{`Lunch`}</MenuItem>
+                                <MenuItem value={LATE_LUNCH}>{`Late Lunch`}</MenuItem>
+                                <MenuItem value={DINNER}>{`Dinner`}</MenuItem>
                             </Select>
                         </FormControl>
 
-                        <FormGroup>
+                        <FormGroup className="checkboxes">
                             <FormControlLabel
                                 control={<Checkbox size="small" color="secondary" />}
                                 label={"Sort Alphabetically"}
@@ -652,9 +738,9 @@ const Menu = () => {
                 </div>
             </Stack>
             <div className="filter">
-                {view === "SelectPrefs" && (
+                {view === CUSTOM_PREFS && (
                     <>
-                        <h4 className="space">{`Input your restrictions and preferences:`}</h4>
+                        <h4 className="space">{`Select custom preferences and restrictions:`}</h4>
                         {/* <h6>(menu will update after submitting)</h6> */}
                         <FormGroup>
                             <FormControlLabel
@@ -705,7 +791,7 @@ const Menu = () => {
                 )}
             </div>
             <div className="filter2">
-                {view === "SelectPrefs" && (
+                {view === CUSTOM_PREFS && (
                     <>
                         <FormGroup>
                             <FormControlLabel
@@ -745,14 +831,14 @@ const Menu = () => {
                                 onChange={handlePeanuts}
                             />
                         </FormGroup>
-                        <Button
+                        {/* <Button
                             onClick={handleSelectPrefsClick}
                             variant="contained"
                             endIcon={<ArrowUpwardIcon />}
                             className="moreSpace"
                         >
                             Submit
-                        </Button>
+                        </Button> */}
                     </>
                 )}
             </div>

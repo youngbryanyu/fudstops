@@ -15,7 +15,7 @@
     justify-content: center;
 
     .header {
-        font-weight: bold;
+        font-weight: normal;
     }
     
     .text {
@@ -37,5 +37,15 @@
     
     .moreSpace {
         margin-top: 25px;
+    }
+
+    h4 {
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
+
+    .checkbox {
+        align-items: center;
     }
 }

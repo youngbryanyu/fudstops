@@ -1,5 +1,5 @@
 // Stying for page displaying a user's favorite menu items
-.menu {
+.favorites {
     width: 100vw;
     height: 100vh;
     background: linear-gradient(
@@ -14,32 +14,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .header {
+        font-weight: normal;
+    }
+    
+    .text {
+        color: white;
+    }
+    
+    .space {
+        margin-top: 5px;
+    }
+    
+    .filter {
+    
+        margin-left: 50px;
+    
+    }
+    
+    .filter2 {
+        margin-left: 10px;
+    }
+    
+    .moreSpace {
+        margin-top: 25px;
+    }
+
+    h4 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .items {
+        text-align: center;
+    }
+    .checkbox {
+        align-items: center;
+    }
 }
 
-.header {
-    font-weight: bold;
-}
-
-.text {
-    color: white;
-}
-
-.space {
-    margin-top: 5px;
-}
-
-.filter {
-
-    margin-left: 50px;
-
-}
-
-.filter2 {
-
-    margin-left: 10px;
-
-}
-
-.moreSpace {
-    margin-top: 25px;
-}

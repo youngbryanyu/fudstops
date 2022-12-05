@@ -181,8 +181,10 @@ const Recommendations = () => {
 
     /* when user changes recommendation type */
     const handleRecTypeChange = (event) => { // handling the filters options
-        loading.current = true // loading
+        setShouldSortPop(false); // reset sorting when user changes option
+        loading.current = true; // loading
         noItems.current = false;
+
         if (event.target.value === BASED_ON_SAVED) {
             setRecommendationType(BASED_ON_SAVED)
         } else if (event.target.value === BASED_ON_PREFS) {
@@ -192,8 +194,10 @@ const Recommendations = () => {
 
     /* when user changes meal type */
     const handleMealChange = (event) => {
-        loading.current = true // loading
+        setShouldSortPop(false); // reset sorting when user changes option
+        loading.current = true; // loading
         noItems.current = false;
+
         if (event.target.value === ALL_MEALS) {
             setMealType(ALL_MEALS)
         } else if (event.target.value === BREAKFAST) {
@@ -238,11 +242,12 @@ const Recommendations = () => {
         );
     }
 
+    /* when user clicks on sorting button */
     const handleSortClickPop = () => {
         setShouldSortPop(!shouldSortPop);
     }
 
-    /*Sort by rating(popular items) */
+    /* Sort by rating(popular items) */
     useEffect(() => {
         // sort courts menu then set it to the sorted
         if (shouldSortPop) {
@@ -262,7 +267,7 @@ const Recommendations = () => {
             <div>
                 <h4 className="moreSpace">{"Recommended items:"}</h4>
                 {/* <h6>(click to view info)</h6> */}
-                <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }} className="list">
+                <Box sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper', borderRadius: 5 }} className="list">
                     <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
                         {/* {console.log(noItems.current)} */}
                         {
@@ -340,7 +345,7 @@ const Recommendations = () => {
                             <Select id="demo-simple-select" value={mealType} label="Filter" onChange={handleMealChange}
                                 classes={{ root: classes.root, select: classes.selected }}
                             >
-                                <MenuItem value={ALL_MEALS}>{`All Meal types`}</MenuItem>
+                                <MenuItem value={ALL_MEALS}>{`All meal types`}</MenuItem>
                                 <MenuItem value={BREAKFAST}>{`Breakfast`}</MenuItem>
                                 <MenuItem value={BRUNCH}>{`Brunch`}</MenuItem>
                                 <MenuItem value={LUNCH}>{`Lunch`}</MenuItem>
@@ -348,7 +353,7 @@ const Recommendations = () => {
                                 <MenuItem value={DINNER}>{`Dinner`}</MenuItem>
                             </Select>
                         </FormControl>
-                        <FormGroup>
+                        <FormGroup className="checkbox">
                             <FormControlLabel control={<Checkbox size="small" color="secondary" />} label={"Sort by Item Popularity"} checked={shouldSortPop} onChange={handleSortClickPop} />
                         </FormGroup>
                     </Box>

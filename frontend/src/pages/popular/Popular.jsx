@@ -11,9 +11,10 @@ import axios from "axios";
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import StarIcon from '@material-ui/icons/Star';
 import { StarHalf } from "@material-ui/icons";
+import { useRef } from "react";
 
 const Popular = () => {
-
+    const loading = useRef(true); /* whether page is loading */
     const [popularItems, setpopularItems] = useState([]); // the current items displayed in list
     const [existsPopularItems, setExistsPopularItems] = useState(true); // whether any items exist above the popular threshold
     /**
@@ -27,6 +28,7 @@ const Popular = () => {
                     setExistsPopularItems(false);
                 }
                 const courtsItems = response.data;
+                loading.current = false; /* done loading */
                 setpopularItems(courtsItems);
             } catch (error) { console.log(error) };
         };
@@ -163,17 +165,28 @@ const Popular = () => {
         <div className="menu">
             <Navbar />
             <div>
-                <h4 className="moreSpace">{`Popular Items Today:`}</h4><h6>(click to view info)</h6>
+                <h4 className="moreSpace">{`Popular items today:`}</h4>
+                {/* <h6>(click to view info)</h6> */}
                 <Box sx={{ width: '100%', height: 400, maxWidth: 1000, bgcolor: 'background.paper' }} className="list">
                     <Paper style={{ maxHeight: 400, overflow: 'auto' }}>
                         <List>
-                            {existsPopularItems ? (
-                                popularItems.map((item) => listItem(item))
-                            ) : (
-                                <ListItem component="div" button={true}>
-                                    <span>No popular items today</span>
-                                </ListItem>
-                            )
+                            {
+                                loading.current ? (
+                                    <List>
+                                        <ListItem component="div" disablePadding button={true}>
+                                            <span className="header">{"Loading..."}</span>
+                                        </ListItem>
+                                    </List>
+                                ) : (
+                                    existsPopularItems ? (
+                                        popularItems.map((item) => listItem(item))
+                                    ) : (
+                                        <ListItem component="div" button={true}>
+                                            <span>No popular items today</span>
+                                        </ListItem>
+                                    )
+                                )
+
                             }
                         </List>
                     </Paper>
