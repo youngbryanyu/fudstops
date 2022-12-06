@@ -295,6 +295,7 @@ const Home = () => {
         if (view === USERS_PREFS) {
             getItemsMatchingUser();
         } else if (view === MATCHING_ITEMS) {
+            setShouldSort(false); // reset sorting when something changes
             handleSelectPrefsClick();
         } else if (view === ALL_ITEMS) {
             getFullMenu();
@@ -305,6 +306,7 @@ const Home = () => {
     useEffect(() => {
         if (view === MATCHING_ITEMS) {
             // setCourtsMenu(["loading"]);
+            setShouldSort(false); // reset sorting when something changes
             handleSelectPrefsClick();
         } 
     }, [vegetarian, vegan, coconut, eggs, fish, gluten, sesame, shellfish,
