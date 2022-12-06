@@ -53,8 +53,8 @@ const Home = () => {
     const [matchingItems, setMatchingItems] = useState([]); /* keep cache of matching user's prefs items */
     const [selectedItems, setSelectedItems] = useState([]); /* keep track of the selected checkbox items */
     const [view, setView] = useState(ALL_ITEMS); /* keep track of which filter option is currently chosen */
-    console.log(courtsMenu)
-    console.log("const: " + DINING_COURTS)
+    // console.log(courtsMenu)
+    // console.log("const: " + DINING_COURTS)
 
     const { user } = useContext(AuthContext); /* content for user */
     let username = user.username;
@@ -199,6 +199,7 @@ const Home = () => {
                 }
             }
             loading.current = false; /* done loading */
+            setCourtsMenu(matchingCourts);
             setMatchingItems(matchingCourts);
         } catch (error) {
             console.log(error);
@@ -255,8 +256,8 @@ const Home = () => {
 
                 // set dining courts to those that have items that match selected dietary preferences in filter menu
                 loading.current = false;
-                setSelectedItems(matchingCourts);
                 setCourtsMenu(matchingCourts);
+                setSelectedItems(matchingCourts);
             } catch (error) {
                 console.log(error);
             }
@@ -295,7 +296,6 @@ const Home = () => {
         if (view === USERS_PREFS) {
             getItemsMatchingUser();
         } else if (view === MATCHING_ITEMS) {
-            setShouldSort(false); // reset sorting when something changes
             handleSelectPrefsClick();
         } else if (view === ALL_ITEMS) {
             getFullMenu();
@@ -306,7 +306,6 @@ const Home = () => {
     useEffect(() => {
         if (view === MATCHING_ITEMS) {
             // setCourtsMenu(["loading"]);
-            setShouldSort(false); // reset sorting when something changes
             handleSelectPrefsClick();
         } 
     }, [vegetarian, vegan, coconut, eggs, fish, gluten, sesame, shellfish,
