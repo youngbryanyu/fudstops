@@ -60,7 +60,7 @@ const PersonalInfo = () => {
             getUserInfo();
             isFirstRender.current = false;
         }
-    });
+    }); // TODO: dont make this infinite
 
     /**
     * Have success message  disappear after 5 seconds
@@ -74,76 +74,78 @@ const PersonalInfo = () => {
     }, [successful]);
 
     /* update username using enter/return key */
-    const handleUpdateUsernameEnter = async (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            // reset all error messages at start of event
-            setError(false);
+    // const handleUpdateUsernameEnter = async (e) => {
+    //     if (e.key === 'Enter') {
+    //         e.preventDefault();
+    //         // reset all error messages at start of event
+    //         setError(false);
 
-            /* check valid username */
-            if (!isValidUsernameFormat(newUsername)) {
-                setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
-                setMessageColor(RED);
-                setError(true);
-                return;
-            }
+    //         /* check valid username */
+    //         if (!isValidUsernameFormat(newUsername)) {
+    //             setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
+    //             setMessageColor(RED);
+    //             setError(true);
+    //             return;
+    //         }
 
-            try {
-                await axios.put(putUrl, {
-                    username: newUsername,
-                }, {
-                    headers: {
-                        token:
-                            auth
-                    }
-                });
-                setMessage(SUCCESS_MESSAGE);
-                setMessageColor(WHITE);
-                setSuccessful(true);
-            } catch (err) {
-                setMessage(EXISTING_CREDENTIALS_ERROR);
-                setMessageColor(RED);
-                setError(true);
-                console.log(err);
-            }
-            getUserInfo();
-        }
-    }
+    //         try {
+    //             await axios.put(putUrl, { /* change username */
+    //                 username: newUsername,
+    //             }, {
+    //                 headers: {
+    //                     token:
+    //                         auth
+    //                 }
+    //             });
+
+    //             await axios.put(`users/updateDBs/${username}/${newUsername}`); /* update other DBs after username change */
+    //             setMessage(SUCCESS_MESSAGE);
+    //             setMessageColor(WHITE);
+    //             setSuccessful(true);
+    //         } catch (err) {
+    //             setMessage(EXISTING_CREDENTIALS_ERROR);
+    //             setMessageColor(RED);
+    //             setError(true);
+    //             console.log(err);
+    //         }
+    //         getUserInfo();
+    //     }
+    // }
 
     // update username
-    const updateUserName = async (e) => {
-        e.preventDefault();
-        // reset all error messages at start of event
-        setError(false);
+    // const updateUserName = async (e) => {
+    //     e.preventDefault();
+    //     // reset all error messages at start of event
+    //     setError(false);
 
-        /* check valid username */
-        if (!isValidUsernameFormat(newUsername)) {
-            setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
-            setMessageColor(RED);
-            setError(true);
-            return;
-        }
+    //     /* check valid username */
+    //     if (!isValidUsernameFormat(newUsername)) {
+    //         setMessage(INVALID_USERNAME_ERROR + MIN_USERNAME_LENGTH);
+    //         setMessageColor(RED);
+    //         setError(true);
+    //         return;
+    //     }
 
-        try {
-            await axios.put(putUrl, {
-                username: newUsername,
-            }, {
-                headers: {
-                    token:
-                        auth
-                }
-            });
-            setMessage(SUCCESS_MESSAGE);
-            setMessageColor(WHITE);
-            setSuccessful(true);
-        } catch (err) {
-            setMessage(EXISTING_CREDENTIALS_ERROR);
-            setMessageColor(RED);
-            setError(true);
-            console.log(err);
-        }
-        getUserInfo();
-    };
+    //     try {
+    //         await axios.put(putUrl, {
+    //             username: newUsername,
+    //         }, {
+    //             headers: {
+    //                 token:
+    //                     auth
+    //             }
+    //         });
+    //         setMessage(SUCCESS_MESSAGE);
+    //         setMessageColor(WHITE);
+    //         setSuccessful(true);
+    //     } catch (err) {
+    //         setMessage(EXISTING_CREDENTIALS_ERROR);
+    //         setMessageColor(RED);
+    //         setError(true);
+    //         console.log(err);
+    //     }
+    //     getUserInfo();
+    // };
 
     /* update email using enter/return key */
     const handleUpdateEmailEnter = async (e) => {
@@ -173,6 +175,9 @@ const PersonalInfo = () => {
                 setMessageColor(WHITE);
                 setSuccessful(true);
             } catch (err) {
+                setMessage(EXISTING_CREDENTIALS_ERROR);
+                setMessageColor(RED);
+                setError(true);
                 console.log(err);
             }
             getUserInfo();
@@ -206,6 +211,9 @@ const PersonalInfo = () => {
             setMessageColor(WHITE);
             setSuccessful(true);
         } catch (err) {
+            setMessage(EXISTING_CREDENTIALS_ERROR);
+            setMessageColor(RED);
+            setError(true);
             console.log(err);
         }
         getUserInfo();
@@ -227,7 +235,7 @@ const PersonalInfo = () => {
             }
             try {
                 await axios.put(putUrl, {
-                    phone: newNumber,
+                    phone: stripNonDigits(newNumber),
                 }, {
                     headers: {
                         token:
@@ -238,6 +246,9 @@ const PersonalInfo = () => {
                 setMessageColor(WHITE);
                 setSuccessful(true);
             } catch (err) {
+                setMessage(EXISTING_CREDENTIALS_ERROR);
+                setMessageColor(RED);
+                setError(true);
                 console.log(err);
             }
             getUserInfo();
@@ -259,7 +270,7 @@ const PersonalInfo = () => {
         }
         try {
             await axios.put(putUrl, {
-                phone: newNumber,
+                phone: stripNonDigits(newNumber),
             }, {
                 headers: {
                     token:
@@ -270,6 +281,9 @@ const PersonalInfo = () => {
             setMessageColor(WHITE);
             setSuccessful(true);
         } catch (err) {
+            setMessage(EXISTING_CREDENTIALS_ERROR);
+            setMessageColor(RED);
+            setError(true);
             console.log(err);
         }
         getUserInfo();
@@ -370,8 +384,8 @@ const PersonalInfo = () => {
                         </button>
                         <button className="infoButton">Username: <span>{username}</span> </button>
 
-
-                        <label>
+                        {/* Issue with linking collections with username and changing username so deleted this */}
+                        {/* <label>
                             <div className="infoType"> {"Change username: "}</div>
                             <input
                                 type="username"
@@ -381,7 +395,8 @@ const PersonalInfo = () => {
                             />
                             <button onClick={updateUserName} className="formButton">Submit</button>
 
-                        </label>
+                        </label> */}
+
 
                         <label>
                             <div className="infoType"> {"Change email: "}</div>

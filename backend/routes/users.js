@@ -8,8 +8,10 @@ const Problem = require("../models/Problem");
 const Rating = require("../models/Rating");
 const ResetPasswordToken = require("../models/ResetPasswordToken");
 const Saved = require("../models/Saved");
+const Notify = require("../models/Notify");
 const CryptoJS = require("crypto-js");
-const verify = require("../verifyToken")
+const verify = require("../verifyToken");
+
 
 // UPDATE - update user
 router.put("/:id", verify, async (req, res) => { // ":" is param and "?" is query param
@@ -35,6 +37,78 @@ router.put("/:id", verify, async (req, res) => { // ":" is param and "?" is quer
         }
     } else {
         res.status(403).json("You can only update your own account!");
+    }
+});
+
+/* update all other DB info when username changes */
+router.put("/updateDBs/:newUsername/:oldUsername", async (req, res) => {
+    try {
+        /* update user image */
+        await Image.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+
+        /* update notify */
+        await Notify.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+
+        /* update preferences */
+        await Preference.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+
+        /* update restrictions */
+        await Restriction.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+
+        /* update problem */
+        await Problem.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+        
+        /* update rating */
+        await Rating.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+
+        /* update saved */
+        await Saved.findOneAndUpdate(
+            {
+                username: req.params.oldUsername
+            },
+            {
+                username: req.params.newUsername
+            });
+        
+        res.status(201).json("Successfully updated other DB info after username change");
+    } catch (error) {
+        res.status(500).json("Error updating other DB info after username change");
     }
 });
 
@@ -79,6 +153,11 @@ router.delete("/:id/:username", verify, async (req, res) => {
 
             /* Delete user's saved items */
             await Saved.deleteMany({
+                username: req.params.username
+            });
+
+            /* Delete user's notify data */
+            await Notify.deleteMany({
                 username: req.params.username
             });
 
