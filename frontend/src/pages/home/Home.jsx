@@ -132,9 +132,11 @@ const Home = () => {
     useEffect(() => {
         if (shouldSort) {
             setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
-            courtsMenu.sort();
+
+            const temp = JSON.parse(JSON.stringify(courtsMenu));
+            setCourtsMenu(JSON.parse(JSON.stringify(temp.sort())));
         } else {
-            setCourtsMenu(menuBeforeSort);
+            setCourtsMenu(JSON.parse(JSON.stringify(menuBeforeSort)));
         }
     }, [shouldSort]);
 
@@ -164,6 +166,7 @@ const Home = () => {
             const courtsItems = response.data;
             // console.log(response.data);
             loading.current = false;
+            // setCourtsMenu(courtsItems)
             setFullMenu(courtsItems);
         } catch (error) {
             console.log(error);
@@ -174,6 +177,8 @@ const Home = () => {
     const getItemsMatchingUser = async () => {
         /* if matching items are already cached */
         if (matchingItems.length !== 0) {
+            // loading.current = false; /* done loading */
+            // firstRender.current = false;
             return;
         }
 
@@ -200,8 +205,8 @@ const Home = () => {
             }
             loading.current = false; /* done loading */
             firstRender.current = false;
-            setCourtsMenu(matchingCourts);
             setMatchingItems(matchingCourts);
+            setCourtsMenu(matchingCourts);
         } catch (error) {
             console.log(error);
         }
@@ -273,7 +278,7 @@ const Home = () => {
 
         // this is for handling the filters options
         if (event.target.value === USERS_PREFS) { /* match users pref/rests */
-            /* loading not needed b/c of cache */
+            /* cached these results so no loading */
             setView(USERS_PREFS);
             setCourtsMenu(matchingItems);
         } else if (event.target.value === MATCHING_ITEMS) { /* select custom prefs/rests*/
@@ -288,9 +293,9 @@ const Home = () => {
     };
 
     /* set menu before sorting each time something updates */
-    useEffect(() => {
-        setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
-    }, [courtsMenu]);
+    // useEffect(() => {
+    //     setMenuBeforeSort(JSON.parse(JSON.stringify(courtsMenu)));
+    // }, [courtsMenu]);
 
     /* useEffect for handling selecting filters */
     useEffect(() => {
