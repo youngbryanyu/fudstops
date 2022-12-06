@@ -366,7 +366,7 @@ const PersonalInfo = () => {
                 <div className="container">
                     <form>
                         <h1>Personal Info</h1>
-                        <button className="infoButton">
+                        <button type='button' className="infoButton">
                             {"Phone Number: "}
                             <span>
                                 {
@@ -374,7 +374,7 @@ const PersonalInfo = () => {
                                 }
                             </span>
                         </button>
-                        <button className="infoButton">
+                        <button type='button' className="infoButton">
                             {"Email: "}
                             <span>
                                 {
@@ -382,7 +382,7 @@ const PersonalInfo = () => {
                                 }
                             </span>
                         </button>
-                        <button className="infoButton">Username: <span>{username}</span> </button>
+                        <button type='button' className="infoButton">Username: <span>{username}</span> </button>
 
                         {/* Issue with linking collections with username and changing username so deleted this */}
                         {/* <label>

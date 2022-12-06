@@ -73,7 +73,7 @@
                 //     align-items: center;
                 // }
 
-                button {
+                .button2 {
                     height: 40px;
                     border-radius: 5px;
                     background-color: goldenrod;
@@ -84,6 +84,23 @@
                     border: none;
                     width: 500px;
                     margin: 5px;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .backButton {
+                    height: 40px;
+                    border-radius: 5px;
+                    background-color: goldenrod;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    border: none;
+                    width: 500px;
+                    margin: 5px;
+                    align-items: center;
+                    justify-content: center;
                 }
 
                 .infoButton {
@@ -93,8 +110,9 @@
                     color: black;
                     font-size: 18px;
                     font-weight: 500;
-                    cursor: pointer;
+                    // cursor: pointer;
                     border: none;
+                    
 
                     span {
                         font-weight: 400;
