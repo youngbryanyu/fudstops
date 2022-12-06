@@ -199,6 +199,7 @@ const Home = () => {
                 }
             }
             loading.current = false; /* done loading */
+            firstRender.current = false;
             setCourtsMenu(matchingCourts);
             setMatchingItems(matchingCourts);
         } catch (error) {
@@ -307,7 +308,7 @@ const Home = () => {
         if (view === MATCHING_ITEMS) {
             // setCourtsMenu(["loading"]);
             handleSelectPrefsClick();
-        } 
+        }
     }, [vegetarian, vegan, coconut, eggs, fish, gluten, sesame, shellfish,
         soy, treeNuts, wheat, milk, peanuts]);
 
@@ -315,6 +316,7 @@ const Home = () => {
      * Load dining courts items on page load and alters anytime the location changes
      * also load up an array with every menu item for use in the searchbar
      */
+    const firstRender = useRef(true); /* API call takes too long and if user switches to 2nd filter too quickly it causes issue */
     useEffect(() => {
         loading.current = true;
         getItemsMatchingUser();
@@ -426,17 +428,26 @@ const Home = () => {
                                                 </ListItem>
                                             </List>
                                         ) : (
-                                            courtsMenu.length !== 0 ? (
-                                                <List>
-                                                    {courtsMenu.map((item) => listItem(item))}
-                                                </List>
-                                            ) : (
+                                            view === USERS_PREFS && firstRender.current ? ( /* edge case visual fix */
                                                 <List>
                                                     <ListItem component="div" disablePadding button={true}>
-                                                        <span className="header">{"No dining courts open today."}</span>
+                                                        <span className="header">{"Loading..."}</span>
                                                     </ListItem>
                                                 </List>
+                                            ) : (
+                                                courtsMenu.length !== 0 ? (
+                                                    <List>
+                                                        {courtsMenu.map((item) => listItem(item))}
+                                                    </List>
+                                                ) : (
+                                                    <List>
+                                                        <ListItem component="div" disablePadding button={true}>
+                                                            <span className="header">{"No dining courts open today."}</span>
+                                                        </ListItem>
+                                                    </List>
+                                                )
                                             )
+
                                         )
                                     )
                                 }
@@ -461,10 +472,11 @@ const Home = () => {
                                     classes={{ root: classes.root, select: classes.selected }}
                                 >
                                     <MenuItem value={ALL_ITEMS}>All dining courts</MenuItem>
+                                    <MenuItem value={MATCHING_ITEMS}>Custom preferences/restrictions</MenuItem>
                                     <MenuItem value={USERS_PREFS}>
                                         Dining courts satisfying my preferences/restrictions
                                     </MenuItem>
-                                    <MenuItem value={MATCHING_ITEMS}>Custom preferences/restrictions</MenuItem>
+                                    
                                 </Select>
                             </FormControl>
                             <FormGroup className="checkbox">
