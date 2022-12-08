@@ -31,8 +31,10 @@ const Settings = () => {
                 <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
                     <Grid item xs={6}>
                         <div className="about">
-                            <Box className="box"><span className="title">{"Info & Settings"}</span></Box>
-                            <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box>
+                            <Box className="box">
+                                <span className="title">{"Info & Settings"}</span>
+                                </Box>
+                            {/* <Box className="box"><span className="boxDesc">{"Edit Your Profile, Preferences, Account Info!"}</span></Box> */}
                         </div>
                     </Grid>
 

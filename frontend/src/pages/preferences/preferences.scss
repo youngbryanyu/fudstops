@@ -35,7 +35,7 @@
         .header {
             display: inline-flex;
             padding: 8px;
-            font-size: 25px;
+            font-size: 18px;
             background-color: black;
             border-radius: 5px;
 
@@ -44,6 +44,20 @@
             // }
 
         }
+
+        .pageTitle {
+            display: inline-flex;
+            padding: 8px;
+            font-size: 30px;
+            background-color: black;
+            border-radius: 5px;
+
+            // &:hover {
+            //     background-color: rgb(32, 218, 218);
+            // }
+
+        }
+        
 
         .boxHeader2 {
             display: inline-flex;
@@ -66,7 +80,15 @@
             background-color: black;
             border-radius: 5px;
             // font-family: 'Playfair Display', serif;
+        }
 
+        .pageDesc {
+            display: inline-flex;
+            padding: 10px;
+            font-size: 14px;
+            background-color: black;
+            border-radius: 5px;
+            // font-family: 'Playfair Display', serif;
         }
 
         .boxDesc {
@@ -286,21 +308,24 @@
         width: 25%;
         height: 60%;
         position: absolute;
-        left: 70%;
+        left: 68%;
         bottom: 100px;
         color: white;
         display: inline-flex;
         flex-direction: column;
+        padding-top: 50px;
+        top: 27%
     }
 
     .info5 {
-        width: 25%;
+        width: 30%;
         height: 60%;
-        left: 85%;
+        left: 82%;
         position: absolute;
         bottom: 100px;
         color: white;
         display: inline-flex;
         flex-direction: column;
+        top: 34%
     }
 }

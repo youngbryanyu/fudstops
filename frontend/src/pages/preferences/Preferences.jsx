@@ -253,15 +253,16 @@ const Preferences = () => {
             <Grid container rowSpacing={10} columnSpacing={{ xs: 10, sm: 2, md: 3 }}>
                 <Grid item xs={2}>
                     <div className="about">
-                        <Box className="box"><span className="header">Dietary Preferences</span></Box>
-                        <Box className="box"><span className="boxCaption">{"Select Your Dietary Preferences & Restrictions!"}</span></Box>
+                        <Box className="box"><span className="pageTitle">Dietary Preferences</span></Box>
+                        <Box className="box"><span className="pageDesc">{"Select Your Dietary Preferences & Restrictions!"}</span></Box>
                     </div>
                 </Grid>
 
                 <Grid item xs={3}>
                     <div className="info2">
+                        <Box className="box"><span className="header">Preferences</span></Box>
                         <FormGroup>
-                            <Box className="box"><span className="header">Preferences</span></Box>
+
                             <Box className="box"><span className="boxHeader2">
                                 <FormControlLabel control={<Checkbox />} label={VEGETARIAN} checked={vegetarian} onChange={handleVegetarian} />
                             </span></Box>
@@ -274,8 +275,9 @@ const Preferences = () => {
 
                 <Grid item xs={1}>
                     <div className="info3-1">
+                        <Box className="box"><span className="header">Restrictions</span></Box>
                         <FormGroup  >
-                            <Box className="box"><span className="header">Restrictions</span></Box>
+
                             <Box className="box"><span className="boxHeader2">
                                 <FormControlLabel control={<Checkbox />} label={COCONUT + " free"} checked={coconut} onChange={handleCoconut} />
                             </span></Box>
