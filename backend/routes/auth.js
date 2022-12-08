@@ -32,6 +32,8 @@ router.post("/login", async (req, res) => {
                 { username: req.body.loginMethod}
             ]
         });
+
+       
         if (!user) {
             res.status(401).json("Invalid email, phone, or username"); // if no matching email in DB
             return;

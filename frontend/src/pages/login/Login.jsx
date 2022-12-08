@@ -32,6 +32,7 @@ export default function Login() {
 
         // strip non-digits if user is trying to login with phone number
         const loginMethod = isValidPhoneFormat(emailOrPhoneOrUsername) ? stripNonDigits(emailOrPhoneOrUsername) : emailOrPhoneOrUsername;
+        console.log("login method is " + loginMethod);
         login({ loginMethod, password }, dispatch).then( // login and store the user in local storage (context)
             returnedUser => setUser(returnedUser) // get user from login
         ); // note: the useState here is causing a warning
@@ -40,6 +41,7 @@ export default function Login() {
     /**
     * After log in attempt, set flag for whether or not it was a successful attempt (to determine whether to display error message)
     */
+   
     const isFirstRender = useRef(true);
     useEffect(() => {
         if (isFirstRender.current) {

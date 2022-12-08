@@ -71,7 +71,7 @@ const Recommendations = () => {
     const LATE_LUNCH = 4
     const DINNER = 5
     const [mealType, setMealType] = useState(ALL_MEALS);
-    const mealTypes = ["", "Breakfast", "Brunch", "Lunch", "Late Lunch", "Dinner"];
+    const mealTypes = ["", "Breakfast", "Unknown", "Lunch", "Snack", "Dinner"];
 
     /* get recommendations based on saved items */
     async function getRecommendationsBasedOnSavedItems(mealType) {
