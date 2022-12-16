@@ -42,7 +42,7 @@ export default function Login() {
     * After log in attempt, set flag for whether or not it was a successful attempt (to determine whether to display error message)
     */
    
-    const isFirstRender = useRef(true);
+    const isFirstRender = useRef(true); 
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
