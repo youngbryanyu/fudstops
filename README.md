@@ -5,7 +5,7 @@ A convenient and centralized spot for students to view menus & dining locations,
 ## Available Scripts
 
 ### Cloning the repository
-- Run `git clone https://github.com/yyu2002/fudstops.git" in your desired directory.
+- Run `git clone https://github.com/yyu2002/fudstops.git` in your desired directory.
 - Optional: Run `npm install yarn` to install yarn as the package manager
 
 ### Starting the back end
