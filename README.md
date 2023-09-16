@@ -1,12 +1,14 @@
-# Füdstops: Dining Recommendations for Students
+# Füdstops: Dining Recommendations for Students - Documentation
 
 A convenient and centralized spot for students to view menus & dining locations, rate items, save favorites, and receive personalized food recommendations!
 
-## Available Scripts
+## Workspace Setup
 
 ### Cloning the repository
 - Run `git clone https://github.com/yyu2002/fudstops.git` in your desired directory.
 - Optional: Run `npm install yarn` to install yarn as the package manager
+
+## Running the Application
 
 ### Starting the back end
 
