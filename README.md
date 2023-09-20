@@ -1,6 +1,6 @@
 # Füdstops: Dining Recommendations for Students - Documentation
 
-A convenient and centralized spot for students to view menus & dining locations, rate items, save favorites, receive personalized food recommendations and much more! 🍔
+A convenient and centralized spot for Purdue students to view menus & dining locations, rate items, save favorites, receive personalized food recommendations and much more! 🍔
 
 ## Workspace Setup
 
