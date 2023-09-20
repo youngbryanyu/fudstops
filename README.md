@@ -6,11 +6,11 @@ A convenient and centralized spot for students to view menus & dining locations,
 
 ### Cloning the repository
 - Run `git clone https://github.com/yyu2002/fudstops.git` in your desired directory.
-- Optional: Run `npm install yarn` to install yarn as the package manager
+- Run `npm install yarn` to install yarn as the package manager.
 
 ## Running the Application
 
-### Starting the back end
+### Starting the backend 
 
 Before starting the frontend, run `yarn` in the `/backend` to install any missing dependencies.
 
