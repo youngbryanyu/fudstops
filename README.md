@@ -64,7 +64,7 @@ Next time if you are prompted for your username and password when pushing, use y
 We have set up a MongoDB cluster though MongoDB Atlas, hosted on AWS. Follow the below steps to make sure you are setup for development. The necessary credentials are contained in the [credentials document](https://docs.google.com/document/d/1XyIoMjj3yVY9TDJR9R39AVFLrzpDo_KEBhMqWR9ADTs/edit) which is private (must request access).
 
 #### Setting Up Network Access for your IP Address
-1. Navigate to [cloud.mongodb.com](https://cloud.mongodb.com/). Select the Titan Health App organization and project.
+1. Navigate to [cloud.mongodb.com](https://cloud.mongodb.com/) and log into the Titan Health App account using the credentials in the [credentials document](https://docs.google.com/document/d/1XyIoMjj3yVY9TDJR9R39AVFLrzpDo_KEBhMqWR9ADTs/edit). Select the Titan Health App organization and project.
 2. Under the `SECURITY` section on the left, go to `Quickstart`, and scroll down to `Add entries to your IP Access List`. Simply click `Add My Current IP Address`, and your device's IP will be granted access to the Database cluster. You can also add your IP in to the access list in the `Network Access` section but it's easier to do it through `Quickstart`.
 
 
