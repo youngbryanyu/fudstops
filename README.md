@@ -5,7 +5,7 @@ A convenient and centralized spot for Purdue students to view menus & dining loc
 ## Workspace Setup
 
 ### Cloning the repository
-- Run `git clone https://github.com/yyu2002/fudstops.git` in your desired directory.
+- Run `git clone https://github.com/youngbryanyu/fudstops.git` in your desired directory.
 - Run `npm install yarn` to install yarn as the package manager.
 
 ## Running the Application
@@ -41,7 +41,7 @@ Next, just run the following:
 1. `git pull` to pull in any changes before committing. If the pull pull and rebase fails due to conflicting local changes run `git stash`, then `git pull`, then `git stash pop`. Fix any conflicts and commit when finished.
 2. `git commit -m <message>` to commit your changes.
 3. `git push` to push the changes to the remote branch that will be created by default based on the config set above.
-4. Navigate to [Pull requests](https://github.com/yyu2002/Titan_Health_App/pulls) to create the pull request onto the `main` branch. Get the necessary approvals then merge and delete the branch.
+4. Navigate to [Pull requests](https://github.com/youngbryanyu/Titan_Health_App/pulls) to create the pull request onto the `main` branch. Get the necessary approvals then merge and delete the branch.
 
 <ins> Make sure not to push anything from `node_modules` when committing and pushing changes. We don't want tons of dependencies stored in our repository.<ins>
 
@@ -49,7 +49,7 @@ Next, just run the following:
 The follow requirements must be met before pushing changes onto the `main` branch:
 - Must be an invited contributor to the repository
 - Must have 1 approval from another contributor
-- Must have 1 approval from the repository owner (yyu2002)
+- Must have 1 approval from the repository owner (youngbryanyu)
 
 ### Personal Access Tokens
 You may need to set up a personal access token for authentication due to GitHub's newer security guidelines. See [this](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) documentation for how to do so (create a classic token), or follow the steps below:
