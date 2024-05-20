@@ -25,6 +25,9 @@ In the `/backend` directory run:
  - `yarn test` to run tests asynchronously
  - `yarn test --runInBand` to run them one by one
 
+## Contributing
+~~If you are interested in contributing, reach out to youngyu2002@gmail.com~~. This project has currently been paused. If you are interested in running it or extending it, you will need to:
+
 ## Development
 
 For more details on how to use yarn as a package manager, see the [yarn CLI documentation](https://classic.yarnpkg.com/lang/en/docs/cli/).
