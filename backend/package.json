@@ -18,7 +18,7 @@
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
-    "express": "^4.18.1",
+    "express": "^4.19.2",
     "jest": "^29.2.0",
     "joi": "^17.6.3",
     "joi-password-complexity": "^5.1.0",
